@@ -1,0 +1,92 @@
+{% load static humanize %}
+
+{% if request.resolver_match.url_name == 'instructor-courses' %}
+<!-- Section Header -->
+<div class="flex items-center justify-between mb-8">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900">All Courses</h1>
+    <p class="text-sm text-gray-500 mt-1">
+      Manage and track your course content
+    </p>
+  </div>
+  <span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-sm font-medium text-gray-600">
+    {{ courses.count }} {{ courses.count|pluralize:'course,courses' }}
+  </span>
+</div>
+{% endif %}
+
+
+<!-- Course Grid -->
+{% if courses %}
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+  {% for course in courses %}
+  <a href="{{ course.get_absolute_url }}">
+    <article class="group bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">
+
+      <!-- Thumbnail -->
+      <div class="relative h-44 bg-gradient-to-br from-indigo-500 to-purple-600 overflow-hidden">
+        <img src="{{ course.thumbnail.url }}" alt="{{ course.name }}" class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500" loading="lazy">
+
+        <!-- Price Badge -->
+        <div class="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-lg shadow-sm">
+          <span class="text-xs font-bold text-indigo-700">${{ course.price }}</span>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="p-4">
+        <h3 class="font-semibold text-gray-900 text-[15px] leading-snug mb-1.5 line-clamp-2 group-hover:text-indigo-600 transition-colors">
+          {{ course.name }}
+        </h3>
+        <p class="text-sm text-gray-500 mb-4 line-clamp-2 leading-relaxed truncate">
+          {{ course.description }}
+        </p>
+
+        <!-- Stats Row -->
+        <div class="flex items-center gap-3 mb-4">
+          <div class="flex items-center gap-1.5 text-xs text-gray-500">
+            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+            </svg>
+            {{ course.total_videos }} {{ course.total_videos|pluralize:'video,videos' }}
+          </div>
+          <div class="w-px h-3 bg-gray-200"></div>
+          <div class="flex items-center gap-1.5 text-xs text-gray-500">
+            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+            </svg>
+            {{ course.total_students }} {{ course.total_students|pluralize:'student,students' }}
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+          <div class="flex items-center gap-2">
+            <img src="{{ course.instructor.avatar.url }}" alt="{{ course.instructor.username }}" class="w-6 h-6 rounded-full object-cover border border-gray-200">
+            <span class="text-xs font-medium text-gray-600">{% if course.instructor == request.user %} You {% else %} {{ course.instructor.full_name }} {% endif %}</span>
+          </div>
+          <time class="text-[11px] text-gray-400" datetime="{{ course.created_at|date:'c' }}">
+            {{ course.created_at|naturaltime }}
+          </time>
+        </div>
+      </div>
+
+    </article>
+  </a>
+  {% endfor %}
+</div>
+
+{% else %}
+<!-- Empty State -->
+<div class="flex flex-col items-center justify-center py-24 text-center">
+  <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4 ring-1 ring-gray-100">
+    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+    </svg>
+  </div>
+  <h3 class="text-base font-semibold text-gray-900 mb-1">No courses found</h3>
+  <p class="text-sm text-gray-500">
+    Try adjusting your search terms.
+  </p>
+</div>
+{% endif %}

@@ -1,0 +1,107 @@
+from django.urls import path, re_path, include
+
+from .views import (
+  CustomSignupView,
+  CustomEmailVerificationSentView,
+  CustomConfirmEmailView,
+  CustomLoginView,
+  CustomLoginCancelledView,
+  CustomLoginErrorView,
+  CustomPasswordResetView,
+  CustomPasswordResetDoneView,
+  CustomPasswordResetFromKeyView,
+  CustomPasswordResetFromKeyDoneView,
+  ProfileView,
+  EditProfileView,
+  CustomEmailView,
+  CustomPasswordChangeView,
+  CustomPasswordChangeDoneView,
+  CustomPasswordSetView,
+  CustomPasswordSetDoneView,
+  CustomLogoutView,
+  CustomConnectionsView,
+  SettingsView,
+  DescriptionView,
+  ProfileViewsList,
+  NotificationView,
+  NotificationDetailView,
+  FindFriendView,
+  InstructorWalletView,
+  InstructorCoursesView,
+)
+
+urlpatterns = [
+  path('courses/', InstructorCoursesView.as_view(), name='instructor-courses'),
+  path("wallet/<int:pk>/", InstructorWalletView.as_view(), name="wallet"),
+  path("find/friends/", FindFriendView.as_view(), name="find-friends"),
+  path(
+    "notification/details/<int:pk>/",
+    NotificationDetailView.as_view(),
+    name="notification-detail",
+  ),
+  path("notification/", NotificationView.as_view(), name="notification"),
+  path("profile/views/", ProfileViewsList.as_view(), name="profile-views"),
+  path("description/", DescriptionView.as_view(), name="description"),
+  path("settings/", SettingsView.as_view(), name="settings"),
+  path("3rdparty/", CustomConnectionsView.as_view(), name="socialaccount_connections"),
+  path(
+    "3rdparty/login/error/",
+    CustomLoginErrorView.as_view(),
+    name="socialaccount_login_error",
+  ),
+  path(
+    "3rdparty/login/cancelled/",
+    CustomLoginCancelledView.as_view(),
+    name="socialaccount_login_cancelled",
+  ),
+  path(
+    "password/change/done/",
+    CustomPasswordChangeDoneView.as_view(),
+    name="password_change_done",
+  ),
+  path(
+    "password/change/",
+    CustomPasswordChangeView.as_view(),
+    name="account_change_password",
+  ),
+  path(
+    "password/set/done/", CustomPasswordSetDoneView.as_view(), name="password_set_done"
+  ),
+  path("password/set/", CustomPasswordSetView.as_view(), name="account_set_password"),
+  path("email/", CustomEmailView.as_view(), name="account_email"),
+  path("update/profile/", EditProfileView.as_view(), name="edit-profile"),
+  path("profile/<slug:slug>/", ProfileView.as_view(), name="profile"),
+  path(
+    "password/reset/key/done/",
+    CustomPasswordResetFromKeyDoneView.as_view(),
+    name="account_reset_password_from_key_done",
+  ),
+  re_path(
+    r"^password/reset/key/(?P<uidb36>[0-9A-Za-z]+)-(?P<key>.+)/$",
+    CustomPasswordResetFromKeyView.as_view(),
+    name="account_reset_password_from_key",
+  ),
+  path(
+    "password/reset/done/",
+    CustomPasswordResetDoneView.as_view(),
+    name="account_reset_password_done",
+  ),
+  path(
+    "password/reset/", CustomPasswordResetView.as_view(), name="account_reset_password"
+  ),
+  path("login/", CustomLoginView.as_view(), name="account_login"),
+  re_path(
+    r"^confirm-email/(?P<key>[-:\w]+)/$",
+    CustomConfirmEmailView.as_view(),
+    name="account_confirm_email",
+  ),
+  path(
+    "confirm-email/",
+    CustomEmailVerificationSentView.as_view(),
+    name="account_email_verification_sent",
+  ),
+  path("logout/", CustomLogoutView.as_view(), name="account_logout"),
+  path("signup/", CustomSignupView.as_view(), name="account_signup"),
+  # Allauth Urls
+  path("", include("allauth.urls")),
+]

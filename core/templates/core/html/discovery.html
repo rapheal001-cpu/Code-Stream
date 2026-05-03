@@ -1,0 +1,75 @@
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+
+{% block title %}
+Search | Code Stream
+{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+{% include 'core/base/header.html' %}
+
+<main class="container flex flex-col p-6 space-y-6 items-center max-w-md mx-auto min-h-screen">
+
+  <!-- Header -->
+  <div class="text-center mb-5">
+    <h1 class="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-indigo-900 bg-clip-text text-transparent mb-2 flex items-center gap-2">
+      <div class="relative w-6 h-6">
+        <!-- Static dot -->
+        <span class="absolute inset-0 rounded-full bg-indigo-600"></span>
+        <!-- Smooth ping -->
+        <span class="absolute inset-0 rounded-full bg-indigo-400 animate-ping"></span>
+      </div>
+      Discovery
+    </h1>
+    <p class="text-slate-500 text-sm">
+      Find what you're looking for
+    </p>
+  </div>
+
+  <!-- Card 1: Search Friend -->
+  <a href="{% url 'find-friends' %}" class="group relative w-full bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden border border-slate-100">
+    <div class="absolute inset-0 bg-gradient-to-br from-indigo-500 via-indigo-700 to-indigo-900 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-indigo-600 to-indigo-700 opacity-100 group-hover:opacity-0 transition-opacity duration-300"></div>
+
+    <div class="relative flex items-center p-6 space-x-5">
+      <div class="flex-shrink-0 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-3xl shadow-inner group-hover:scale-110 transition-transform duration-300 group-hover:rotate-6">
+        👥
+      </div>
+      <div class="flex-1 text-left">
+        <h3 class="text-white font-bold text-xl group-hover:tracking-wide transition-all duration-300">Find Friends</h3>
+        <p class="text-white text-sm mt-1 opacity-80 group-hover:opacity-100 transition-opacity">
+          Connect with classmates
+        </p>
+      </div>
+      <div class="text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all duration-300">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Shine effect -->
+    <div class="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 group-hover:left-full transition-all duration-1000 ease-in-out"></div>
+  </a>
+
+  <!-- Bottom decoration -->
+  <div class="mt-8 text-center">
+    <div class="flex space-x-2 justify-center mb-2">
+      <div class="w-2 h-2 rounded-full bg-indigo-800 animate-pulse"></div>
+    </div>
+
+    <p class="text-xs text-slate-400">
+      Quick access to all resources
+    </p>
+  </div>
+
+</main>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'core/base/javascript/header.js' %}" type="text/javascript"></script>
+{% endblock %}

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <title>Welcome to Code Stream</title>
+  <style>
+    /* Reset */
+    body { margin: 0;
+    padding: 0;
+    width: 100% !important;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    }
+    img { border: 0;
+    outline: none;
+    text-decoration: none;
+    -ms-interpolation-mode: bicubic;
+    }
+    a { text-decoration: none;
+    }
+
+    /* Responsive */
+    @media only screen and (max-width: 600px) {
+    .email-wrapper { padding: 20px 16px !important;
+    }
+    .email-container { border-radius: 16px !important;
+    }
+    .email-header { padding: 40px 24px !important;
+    }
+    .email-body { padding: 32px 24px !important;
+    }
+    .email-footer { padding: 32px 24px !important;
+    }
+    .feature-grid { flex-direction: column !important;
+    gap: 16px !important;
+    }
+    .feature-item { width: 100% !important;
+    }
+    .social-links { gap: 12px !important;
+    }
+    h1 { font-size: 26px !important;
+    }
+    h2 { font-size: 20px !important;
+    }
+    }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f1f5f9; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #334155;">
+
+  <!-- Preview Text -->
+  <div style="display: none; max-height: 0; overflow: hidden; mso-hide: all;">
+    Welcome to Code Stream! Start your learning journey today with our courses and community. &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847; &#8199;&#847;
+  </div>
+
+  <!-- Wrapper -->
+  <div class="email-wrapper" style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+
+    <!-- Main Card -->
+    <div class="email-container" style="background-color: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);">
+
+      <!-- Header -->
+      <div class="email-header" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); padding: 56px 40px; text-align: center; position: relative;">
+        <!-- Subtle pattern overlay -->
+        <div style="position: absolute; inset: 0; opacity: 0.1; background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;"></div>
+
+        <div style="position: relative; z-index: 1;">
+          <!-- Logo -->
+          <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.15); border-radius: 16px; margin: 0 auto 24px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+          </div>
+
+          <h1 style="color: #ffffff; font-size: 32px; font-weight: 800; margin: 0; letter-spacing: -0.02em; line-height: 1.2;">
+            Welcome to Code Stream
+          </h1>
+          <p style="color: rgba(255,255,255,0.85); font-size: 17px; margin: 12px 0 0 0; font-weight: 400;">
+            Your journey to mastery starts now
+          </p>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="email-body" style="padding: 48px 40px;">
+
+        <!-- Greeting -->
+        <h2 style="color: #0f172a; font-size: 22px; font-weight: 700; margin: 0 0 12px 0; letter-spacing: -0.01em;">
+          Hi {{ user.username|capfirst }},
+        </h2>
+
+        <p style="color: #475569; font-size: 16px; line-height: 1.75; margin: 0 0 28px 0;">
+          We're thrilled to have you join our community of learners and creators. Code Stream is your gateway to <strong style="color: #0f172a;">mastering new skills</strong>, <strong style="color: #0f172a;">building real projects</strong>, and <strong style="color: #0f172a;">connecting with passionate developers</strong>.
+        </p>
+
+        <!-- CTA Button -->
+        <div style="text-align: center; margin: 36px 0;">
+          <a href="{{ site_url }}" style="display: inline-block; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; text-decoration: none; padding: 16px 36px; border-radius: 12px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35); transition: transform 0.2s;">
+            Start Learning Now
+          </a>
+        </div>
+
+        <!-- Divider -->
+        <div style="height: 1px; background: linear-gradient(90deg, transparent, #e2e8f0, transparent); margin: 36px 0;"></div>
+
+        <!-- Features -->
+        <p style="color: #64748b; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 20px 0;">
+          What you can do
+        </p>
+
+        <div class="feature-grid" style="display: flex; gap: 16px; margin-bottom: 8px;">
+
+          <!-- Feature 1 -->
+          <div class="feature-item" style="flex: 1; background: #f8fafc; border-radius: 16px; padding: 24px; border: 1px solid #f1f5f9;">
+            <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 7l-7 5 7 5V7z"></path>
+                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+              </svg>
+            </div>
+            <h3 style="margin: 0 0 6px 0; color: #0f172a; font-size: 15px; font-weight: 700;">Video Learning</h3>
+            <p style="margin: 0; color: #64748b; font-size: 14px; line-height: 1.55;">
+              Watch real developers build real projects from scratch
+            </p>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="feature-item" style="flex: 1; background: #f8fafc; border-radius: 16px; padding: 24px; border: 1px solid #f1f5f9;">
+            <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #10b981, #34d399); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            <h3 style="margin: 0 0 6px 0; color: #0f172a; font-size: 15px; font-weight: 700;">Community</h3>
+            <p style="margin: 0; color: #64748b; font-size: 14px; line-height: 1.55;">
+              Connect with fellow learners and experienced mentors
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Feature 3 (full width) -->
+        <div style="background: #f8fafc; border-radius: 16px; padding: 24px; border: 1px solid #f1f5f9;">
+          <div style="display: flex; align-items: flex-start; gap: 16px;">
+            <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #f59e0b, #fbbf24); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+            </div>
+            <div>
+              <h3 style="margin: 0 0 6px 0; color: #0f172a; font-size: 15px; font-weight: 700;">Hands-on Challenges</h3>
+              <p style="margin: 0; color: #64748b; font-size: 14px; line-height: 1.55;">
+                Test your skills with practical exercises and coding challenges designed to push your limits
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quote -->
+        <div style="margin: 32px 0 0 0; background: linear-gradient(90deg, #4f46e5, #7c3aed); border-radius: 16px; padding: 1px;">
+          <div style="background: #ffffff; border-radius: 15px; padding: 24px;">
+            <p style="margin: 0; color: #475569; font-size: 15px; font-style: italic; line-height: 1.7;">
+              "Every expert was once a beginner. Your journey to mastery starts with a single step."
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="email-footer" style="background-color: #f8fafc; padding: 40px; text-align: center; border-top: 1px solid #e2e8f0;">
+
+        <p style="margin: 0 0 8px 0; color: #0f172a; font-size: 16px; font-weight: 600;">
+          Need help getting started?
+        </p>
+        <a href="{{ site_url }}/about" style="display: inline-block; color: #4f46e5; font-weight: 500; font-size: 14px; margin-bottom: 28px;">
+          Contact our support team →
+        </a>
+
+        <!-- Social Links -->
+        <div class="social-links" style="display: flex; justify-content: center; gap: 12px; margin-bottom: 28px;">
+          <a href="#" style="width: 36px; height: 36px; background: #e2e8f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; transition: background 0.2s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="color: #475569;">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+          </a>
+          <a href="#" style="width: 36px; height: 36px; background: #e2e8f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; transition: background 0.2s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="color: #475569;">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+            </svg>
+          </a>
+          <a href="#" style="width: 36px; height: 36px; background: #e2e8f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; transition: background 0.2s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #475569;">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+          </a>
+          <a href="#" style="width: 36px; height: 36px; background: #e2e8f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; transition: background 0.2s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="color: #475569;">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+            </svg>
+          </a>
+        </div>
+
+        <div style="height: 1px; background: #e2e8f0; margin: 0 0 24px 0;"></div>
+
+        <p style="margin: 0 0 4px 0; color: #94a3b8; font-size: 13px;">
+          You're receiving this because you signed up for Code Stream
+        </p>
+        <p style="margin: 0; color: #94a3b8; font-size: 13px;">
+          © {% now "Y" %} Code Stream. All rights reserved.
+        </p>
+
+      </div>
+
+    </div>
+
+    <!-- Unsubscribe / Legal (outside card) -->
+    <div style="text-align: center; padding: 24px 0 0 0;">
+      <a href="#" style="color: #94a3b8; font-size: 12px;">Unsubscribe</a>
+      <span style="color: #cbd5e1; margin: 0 8px;">|</span>
+      <a href="#" style="color: #94a3b8; font-size: 12px;">Privacy Policy</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

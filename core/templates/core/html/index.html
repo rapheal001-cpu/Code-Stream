@@ -1,0 +1,70 @@
+{% extends 'core/base/base.html' %}
+
+{% load static django_htmx %}
+
+{% block title %}
+Code Stream
+{% endblock %}
+
+{% block content %}
+
+<!-- Logged In but No Role -->
+{% if request.user.is_authenticated and not request.user.role %}
+
+<!-- Role Selection -->
+{% include 'core/partials/account_role_selection.html' %}
+
+{% else %}
+
+<!-- Header -->
+{% include 'core/base/header.html' %}
+
+<!-- Main App -->
+<main class="p-4 pb-8 bg-gray-50 min-h-screen">
+
+  <!-- Scrollable instructors row -->
+  <div class="flex max-w-6xl mx-auto gap-5 overflow-x-auto pb-3 scrollbar-hide border-b border-gray-400 mb-3">
+    {% for instructor in instructors %}
+    <a href="{{ instructor.get_absolute_url }}" class="flex flex-col items-center flex-shrink-0 cursor-pointer group">
+      <!-- Avatar with ring -->
+      <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-indigo-800 group-hover:border-indigo-600 transition-colors">
+        <img src="{{ instructor.avatar.url }}" alt="{{ instructor.username }}" class="w-full h-full object-cover">
+      </div>
+      <!-- Username -->
+      <span class="text-xs text-gray-700 mt-2 max-w-[4rem] truncate group-hover:text-indigo-700 transition-colors">{{ instructor.username }}</span>
+    </a>
+    {% endfor %}
+  </div>
+
+  <!-- Search Input -->
+  <div class="max-w-xl mx-auto mb-8">
+    <div class="relative">
+      <input type="text" name="search" placeholder="Search courses..." class="w-full pl-10 pr-8 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all" hx-get="{% url 'core:index-view' %}" hx-trigger="keyup changed delay:300ms, search" hx-target="#course-grid" hx-swap="innerHTML" hx-indicator="#search-spinner" />
+    <!-- Search Icon -->
+    <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+    <!-- Loading Spinner -->
+    <div id="search-spinner" class="htmx-indicator absolute right-3 top-1/2 -translate-y-1/2">
+      <svg class="animate-spin w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- Course Grid (target for HTMX swaps) -->
+<div id="course-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  {% include 'core/partials/index_content.html' %}
+</div>
+
+</main>
+
+{% endif %}
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'core/base/javascript/header.js' %}" type="text/javascript"></script>
+{% endblock %}

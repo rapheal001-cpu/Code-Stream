@@ -1,0 +1,216 @@
+{% extends 'core/base/base.html' %} 
+
+{% load humanize %}
+
+{% block title %} 
+  {{ user.username }} | Profile Views 
+{% endblock %} 
+
+{% block content %}
+
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-100 flex flex-col items-center pt-4 pb-16 px-4 sm:px-6">
+	<!-- Floating Back Button -->
+	<a
+		href="{{ user.get_absolute_url }}"
+		class="self-start mb-8 group flex items-center gap-2 text-slate-600 font-medium hover:text-indigo-600 transition-all duration-300 ease-out hover:-translate-x-1">
+		<span
+			class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-sm group-hover:shadow-md group-hover:bg-indigo-50 transition-all duration-300">
+			<svg
+				class="w-4 h-4"
+				fill="none"
+				stroke="currentColor"
+				viewBox="0 0 24 24">
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M15 19l-7-7 7-7" />
+			</svg>
+		</span>
+		<span class="hidden sm:inline">Back to Profile</span>
+	</a>
+
+	<!-- Header Section -->
+	<div class="text-center mb-8 space-y-2">
+		<h1
+			class="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-slate-900 via-indigo-900 to-slate-900 bg-clip-text text-transparent tracking-tight">
+			Profile Views
+		</h1>
+
+		{% if viewer %}
+		<div
+			class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/60 backdrop-blur-sm border border-slate-200/50 shadow-sm">
+			<span class="relative flex h-2 w-2">
+				<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-800 opacity-75"></span>
+				<span
+					class="relative inline-flex rounded-full h-2 w-2 bg-indigo-800"></span>
+			</span>
+			<p class="text-slate-600 text-sm font-medium">
+				{% with cv=viewer.count %}
+				{{ cv }} {{ cv|pluralize:"person,people" }} viewed this profile
+				{% endwith %} 
+			</p>
+		</div>
+		{% endif %}
+	</div>
+
+	{% if viewer %}
+
+	<!-- Main List Container -->
+	<div class="w-full max-w-xl">
+		<div
+			class="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 overflow-hidden">
+			<ul class="divide-y divide-slate-100">
+				{% for v in viewer %}
+				<li class="group relative">
+					<!-- Hover Gradient Background -->
+					<div
+						class="absolute inset-0 bg-gradient-to-r from-indigo-50/0 via-indigo-50/0 to-indigo-50/0 group-hover:from-indigo-50/50 group-hover:via-indigo-50/30 group-hover:to-indigo-50/50 transition-all duration-500 ease-out opacity-0 group-hover:opacity-100"></div>
+
+					<a
+						href="{{ v.get_absolute_url }}"
+						class="relative flex items-center justify-between px-6 py-5 transition-all duration-300 ease-out hover:pl-7 group-hover:shadow-sm">
+						<div class="flex items-center gap-4">
+							<!-- Avatar with Ring -->
+							<div class="relative">
+								<img
+									src="{{ v.avatar.url }}"
+									alt="{{ v.username }}"
+									class="w-12 h-12 rounded-full object-cover ring-2 ring-white shadow-sm group-hover:shadow-md group-hover:ring-indigo-100 transition-all duration-300 group-hover:scale-105" />
+							</div>
+
+							<div class="flex flex-col">
+								<p
+									class="font-semibold text-slate-800 group-hover:text-indigo-700 transition-colors duration-300">
+									{{ v.username }}
+								</p>
+								<p
+									class="text-xs text-slate-500 flex items-center gap-1.5">
+									<svg
+										class="w-3 h-3 text-slate-400"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24">
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+									</svg>
+									Viewed your profile
+								</p>
+							</div>
+						</div>
+
+						<!-- Time with Arrow -->
+						<div class="flex items-center gap-3">
+							<span
+								class="text-sm font-medium text-slate-400 group-hover:text-indigo-600 transition-colors duration-300">
+								{{ v.view_at|naturaltime }}
+							</span>
+							<svg
+								class="w-5 h-5 text-slate-300 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all duration-300"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24">
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M9 5l7 7-7 7" />
+							</svg>
+						</div>
+					</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+
+		<!-- Bottom Stats -->
+		<div class="mt-6 flex justify-center">
+			<div
+				class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-sm border border-slate-200/50 text-xs text-slate-500 font-medium">
+				<svg
+					class="w-4 h-4 text-slate-400"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24">
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+				</svg>
+				Showing last {{ viewer.count }} views
+			</div>
+		</div>
+	</div>
+
+	{% else %}
+
+	<!-- Modern Empty State -->
+	<div class="relative w-full max-w-md">
+		<!-- Decorative Background Elements -->
+		<div
+			class="absolute -top-20 -left-20 w-64 h-64 bg-indigo-200 rounded-full mix-blend-multiply filter blur-xl opacity-30"></div>
+		<div
+			class="absolute -top-20 -right-20 w-64 h-64 bg-violet-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animation-delay-2000"></div>
+		<div
+			class="absolute -bottom-20 left-20 w-64 h-64 bg-slate-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animation-delay-4000"></div>
+
+		<div
+			class="relative bg-white/70 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 p-12 text-center overflow-hidden">
+			<!-- Animated Eye Icon -->
+			<div class="relative mb-6 inline-block">
+				<div
+					class="absolute inset-0 bg-indigo-100 rounded-full blur-xl opacity-50 animate-pulse"></div>
+				<div
+					class="relative text-6xl filter drop-shadow-lg transform transition-transform hover:scale-110 duration-500 cursor-default">
+					👀
+				</div>
+			</div>
+
+			<h3 class="text-xl font-bold text-slate-800 mb-2">No views yet</h3>
+
+			<p
+				class="text-slate-500 text-sm leading-relaxed max-w-xs mx-auto mb-6">
+				Your profile is waiting to be discovered. When visitors check
+				out your profile, they'll appear here in real-time.
+			</p>
+
+			<!-- Action Button -->
+			<a
+				href="{{ user.get_absolute_url }}"
+				class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium text-sm shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-105 transition-all duration-300">
+				<svg
+					class="w-4 h-4"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24">
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z" />
+				</svg>
+				Return to Profile
+			</a>
+
+			<!-- Decorative Dots -->
+			<div class="absolute top-4 right-4 flex gap-1">
+				<div class="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
+				<div class="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
+				<div class="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
+			</div>
+		</div>
+	</div>
+
+	{% endif %}
+</div>
+
+{% endblock %}

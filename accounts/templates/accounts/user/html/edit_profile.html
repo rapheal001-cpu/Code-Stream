@@ -1,0 +1,178 @@
+{% extends 'core/base/base.html' %}
+
+{% load static widget_tweaks %}
+
+{% block title %}
+Edit Profile | Code Stream
+{% endblock %}
+
+{% block content %}
+
+<main class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  
+  <div class="w-full max-w-2xl mx-auto">
+    
+    <!-- Header -->
+    <div class="mb-8 text-center">
+      <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Edit Profile</h1>
+      <p class="mt-2 text-gray-600">Update your personal information and profile picture</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 overflow-hidden">
+      
+      <!-- Top Accent Bar -->
+      <div class="h-2 bg-gradient-to-r from-indigo-600 via-indigo-900 to-indigo-600"></div>
+
+      <form action="{% url 'edit-profile' %}" method="POST" enctype="multipart/form-data" class="p-8 sm:p-10 space-y-8">
+        
+        {% csrf_token %}
+
+        <!-- Avatar Section -->
+        <div class="flex flex-col items-center">
+          <div class="relative group">
+            <!-- Avatar Container -->
+            <div class="relative w-36 h-36 rounded-full overflow-hidden ring-4 ring-gray-100 group-hover:ring-indigo-100 transition-all duration-300">
+              <img
+                id="avatar-preview"
+                src="{{ user.avatar.url }}"
+                alt="{{ user.username }}"
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              
+              <!-- Overlay -->
+              <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </div>
+            </div>
+            
+            <!-- Camera Icon Badge -->
+            <div class="absolute bottom-1 right-1 w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg ring-4 ring-white group-hover:scale-110 transition-transform duration-300">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+            </div>
+
+            <label for="id_avatar" class="absolute inset-0 cursor-pointer">
+              <span class="sr-only">Change avatar</span>
+            </label>
+          </div>
+
+          <p class="mt-4 text-sm text-gray-500 font-medium">Click to upload new photo</p>
+          
+          <span class="hidden">
+            {{ form.avatar|attr:"accept:image/*" }}
+          </span>
+
+          {% if form.avatar.errors %}
+            <p class="mt-2 text-sm text-red-600 flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              {{ form.avatar.errors.0 }}
+            </p>
+          {% endif %}
+        </div>
+
+        <!-- Form Fields Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          
+          <!-- First Name -->
+          <div class="space-y-2">
+            <label for="id_first_name" class="block text-sm font-semibold text-gray-700">
+              First Name
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              </div>
+              {{ form.first_name|add_class:"block w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition duration-200" }}
+            </div>
+            {% if form.first_name.errors %}
+              <p class="text-sm text-red-600 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                {{ form.first_name.errors.0 }}
+              </p>
+            {% endif %}
+          </div>
+
+          <!-- Last Name -->
+          <div class="space-y-2">
+            <label for="id_last_name" class="block text-sm font-semibold text-gray-700">
+              Last Name
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              </div>
+              {{ form.last_name|add_class:"block w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition duration-200" }}
+            </div>
+            {% if form.last_name.errors %}
+              <p class="text-sm text-red-600 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                {{ form.last_name.errors.0 }}
+              </p>
+            {% endif %}
+          </div>
+
+        </div>
+
+        <!-- Username (Full Width) -->
+        <div class="space-y-2">
+          <label for="id_username" class="block text-sm font-semibold text-gray-700">
+            Username
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span class="text-gray-400 font-medium">@</span>
+            </div>
+            {{ form.username|add_class:"block w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition duration-200" }}
+          </div>
+          {% if form.username.errors %}
+            <p class="text-sm text-red-600 flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              {{ form.username.errors.0 }}
+            </p>
+          {% endif %}
+          <p class="text-xs text-gray-500">This will be your public profile URL</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-300 transition-all duration-200 flex items-center justify-center gap-2 active:scale-95"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            Save Changes
+          </button>
+      </form>
+    
+      <!-- Footer -->
+      <div class="px-8 py-4 bg-gray-50 border-t border-gray-100">
+        <p class="text-center text-sm text-gray-500">
+          Back to 
+          <a href="{% url 'settings' %}" class="inline-flex items-center gap-1 font-medium text-indigo-600 hover:text-indigo-700 hover:underline transition-colors">
+            Settings 
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Security Note -->
+    <p class="mt-6 text-center text-sm text-gray-500">
+      Your information is securely stored and never shared with third parties.
+    </p>
+
+  </div>
+
+</main>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'accounts/javascript/edit_profile.js' %}"></script>
+{% endblock %}

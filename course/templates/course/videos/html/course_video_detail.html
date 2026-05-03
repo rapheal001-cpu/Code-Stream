@@ -1,0 +1,223 @@
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+{{ video.title }}/{{ video.owner.username }}
+{% endblock %}
+
+{% block content %}
+
+<main class="w-full bg-gray-50 min-h-screen">
+
+  <!-- ================= VIDEO SECTION ================= -->
+  <div class="relative bg-black">
+
+  <!-- Back Button -->
+  <a href="{% url 'course:course-videos' %}" class="absolute top-4 left-4 z-50 p-1 flex items-center justify-center rounded text-sm bg-white/90 backdrop-blur" id="back-link">
+    Back
+  </a>
+
+{% if request.user.is_subscribe %}
+
+  <!-- ================= PLAYABLE VIDEO ================= -->
+  <video src="{{ video.video.url }}" poster="{{ video.thumbnail.url }}" class="w-full object-contain max-h-[50vh] bg-black" id="video"></video>
+
+  <!-- Time Display -->
+  <div id="time" class="absolute bottom-3 left-1.5 text-xs md:text-sm px-2 py-1 bg-black/60 backdrop-blur text-white rounded">
+    00:00/00:00
+  </div>
+
+  <!-- Progress Bar -->
+  <input type="range" id="video-progress-bar" min="0" step="0.01" value="0" class="absolute bottom-0 w-full h-2 accent-indigo-600 outline-none z-20 rounded-none">
+
+  <!-- Controls -->
+  <div class="absolute inset-0 flex items-center justify-center gap-10 opacity-0 hover:opacity-100 transition duration-300" id="control-overlay">
+    
+    <button id="backward" class="w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center hover:scale-110 transition">
+      ⏪
+    </button>
+
+    <button id="play" class="w-14 h-14 rounded-full bg-white shadow-lg flex items-center justify-center text-lg hover:scale-110 transition">
+      ⏸️
+    </button>
+
+    <button id="forward" class="w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center hover:scale-110 transition">
+      ⏩
+    </button>
+    
+  </div>
+
+{% else %}
+
+<!-- ================= LOCKED VIDEO ================= -->
+  <div class="relative w-full max-h-[50vh] overflow-hidden">
+    
+    <img src="{{ video.thumbnail.url }}" class="w-full object-cover max-h-[50vh] blur-sm scale-105 brightness-75" alt="{{ video.title }}">
+
+  <!-- Dark Overlay -->
+  <div class="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center p-4">
+
+  <div class="bg-white/90 backdrop-blur p-6 rounded-xl shadow-xl max-w-sm w-full">
+    
+    <div class="text-4xl mb-3">🔒</div>
+    <h3 class="font-bold text-lg mb-2">
+      Subscribe
+    </h3>
+    <p class="text-sm text-gray-600 mb-4">
+      Subscribe to watch video and access comments.
+    </p>
+
+  </div>
+  
+  </div>
+
+  </div>
+  
+{% endif %}
+
+  </div>
+
+  <!-- ================= VIDEO INFO ================= -->
+  <div class="bg-white p-2 md:p-4 lg:p-4 xl:p-4 space-y-3 shadow-sm">
+
+    <h2 class="text-xl md:text-2xl font-bold text-gray-900">
+      {{ video.title|capfirst }}
+    </h2>
+
+    <p class="text-gray-600">
+      {{ video.description }}
+    </p>
+
+    <!-- Owner & Time -->
+    <div class="flex flex-wrap justify-between items-center gap-4 pt-2">
+
+    <a href="{{ video.owner.get_absolute_url }}" class="flex items-center gap-3">
+      <img src="{{ video.owner.avatar.url }}" class="w-12 h-12 rounded-full object-cover border">
+      <span class="font-semibold text-gray-800">
+        {{ video.owner.username }}
+      </span>
+    </a>
+
+    <span class="text-sm text-gray-500">
+      {{ video.created_at|naturaltime }}
+    </span>
+    </div>
+
+    <!-- Stats -->
+    <div class="flex flex-wrap gap-6 text-sm text-gray-600 border-t pt-3">
+
+    <a href="#">
+      👍 {{ video.likes.count }}
+    </a>
+    <span>
+      👁 {{ video.views.count }} views
+    </span>
+
+{% if request.user.is_subscribe %}
+    <a href="{{ video.video.url }}" download class="ml-auto text-indigo-600 hover:underline">
+      Download ({{ video.video.size|filesizeformat }})
+    </a>
+{% endif %}
+    </div>
+
+  </div>
+
+  <!-- ================= COMMENTS ================= -->
+{% if request.user.is_subscribe %}
+
+<div class="bg-gradient-to-br from-white to-gray-50 mt-4 p-6 rounded-t-lg border border-gray-200">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between border-b pb-3">
+  <h3 class="font-semibold text-xl text-gray-800 flex items-center gap-2">
+    💬 Comments
+  </h3>
+  <span class="text-sm text-gray-400">
+    {{ comments.count }} total{{ comments.count|pluralize }}
+  </span>
+  </div>
+
+  <!-- COMMENTS LIST -->
+  <div class="space-y-6 max-h-[50vh] overflow-y-auto px-2 mt-2 pt-1.5 scrollbar-thin scrollbar-thumb-gray-300">
+{% if comments %}
+{% for comment in comments %}
+{% if comment.sender == request.user %}
+  <!-- MY MESSAGE -->
+  <div class="flex justify-end">
+    <div class="relative max-w-[85%] md:max-w-[60%] bg-indigo-600 text-white p-2 rounded-t-lg rounded-bl-lg rounded-br-none shadow-lg">
+    <p class="text-sm leading-relaxed">
+      {{ comment.message }}
+    </p>
+    <div class="text-sm text-indigo-200 mt-1 text-right">
+      You • {{ comment.sent_at|naturaltime }}
+    </div>
+    </div>
+  </div>
+{% else %}
+  <!-- OTHER MESSAGE -->
+  <div class="flex gap-3 items-start">
+  <!-- Avatar -->
+  <a href="{{ comment.sender.get_absolute_url }}">
+    <img src="{{ comment.sender.avatar.url }}" class="w-5 h-5 rounded-full object-cover ring-1 ring-indigo-900 ring-offset-1">
+  </a>
+  
+  <div class="max-w-[85%] md:max-w-[60%] bg-white p-2 rounded-b-lg rounded-tr-lg rounded-tl-none border border-gray-200">
+    
+    <a href="{{ comment.sender.get_absolute_url }}" class="text-sm font-semibold text-indigo-600 hover:underline">
+      @{{ comment.sender.username }}
+    </a>
+    
+    <p class="text-sm text-gray-700 mt-1 leading-relaxed">
+      {{ comment.message }}
+    </p>
+  
+    <div class="text-sm text-gray-400 mt-2">
+      {{ comment.sent_at|naturaltime }}
+    </div>
+
+  </div>
+  
+  </div>
+{% endif %}
+
+{% endfor %}
+{% else %}
+  <div class="text-center py-10 text-gray-400">
+    <p class="text-sm">
+      No comments yet.
+    </p>
+    <p class="text-xs mt-1">
+      Be the first to start the conversation ✨
+    </p>
+      </div>
+{% endif %}
+  </div>
+
+  <!-- COMMENT INPUT -->
+  <form action="{{ video.get_absolute_url }}" method="POST" class="mt-4 flex items-center gap-2 p-1 rounded-lg shadow-md border-none ring-gray-200 ring-1 focus:ring-indigo-900 transition">
+    
+    {% csrf_token %}
+    
+    <input type="text" name="action" id="comment" value="comment" class="hidden"/>
+
+    <input type="text" name="message" placeholder="Write a comment..." class="flex-1 bg-transparent outline-none text-sm px-1 placeholder-gray-400">
+
+    <button type="submit" class="p-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-800 active:scale-80 transition font-medium">
+      Send
+    </button>
+
+  </form>
+
+</div>
+
+{% endif %}
+
+</main>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'course/javascript/course_video_detail.js' %}" type="text/javascript" charset="utf-8"></script>
+{% endblock %}

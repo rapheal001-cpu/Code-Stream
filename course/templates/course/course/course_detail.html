@@ -1,0 +1,379 @@
+{% extends 'core/base/base.html' %}
+
+{% load static humanize %}
+
+{% block title %}
+{{ course.name }} | Code Stream
+{% endblock %}
+
+{% block content %}
+
+{% include 'core/base/header.html' %}
+
+<div class="bg-gray-50 min-h-screen">
+  <!-- Back Navigation -->
+  <div class="bg-white border-b border-gray-200">
+    <div class="max-w-5xl mx-auto px-4 py-3">
+      <a href="{% url 'course:course-index' %}"
+        class="inline-flex items-center gap-2 px-3 py-2 -ml-3 text-sm font-medium text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Courses
+      </a>
+    </div>
+  </div>
+
+  <!-- Main Video Player -->
+  <div class="bg-black w-full shadow-2xl">
+    <div class="max-w-7xl mx-auto">
+      {% if active_video %}
+      {% if request.user in course.students.all or request.user == course.instructor %}
+      <video class="w-full aspect-video max-h-[80vh]" controls playsinline poster="{{ active_video.thumbnail.url }}">
+        <source src="{{ active_video.video.url }}" type="video/mp4">
+      </video>
+      {% else %}
+      <div class="aspect-video max-h-[80vh] flex items-center justify-center bg-gradient-to-t from-indigo-900 via-indigo-600 to-indigo-900">
+        <div class="text-center">
+          <svg class="w-16 h-16 text-white mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          <p class="text-white text-lg font-medium">
+            Buy the course to start learning
+          </p>
+        </div>
+      </div>
+      {% endif %}
+      {% else %}
+      <div class="aspect-video max-h-[80vh] flex items-center justify-center bg-gradient-to-t from-indigo-900 via-indigo-600 to-indigo-900">
+        <div class="text-center">
+          <svg class="w-16 h-16 text-white mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          <p class="text-white text-lg font-medium">
+            Select a video to start learning
+          </p>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Content Container -->
+  <div class="max-w-7xl mx-auto px-4 lg:px-6 py-6">
+    {% if request.user in course.students.all or request.user == course.instructor %}
+    {% if active_video %}
+    <!-- Video Info Section -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
+      <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+        <div class="flex-1">
+          <div class="flex items-center justify-between gap-3 mb-3">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
+              {{ course.name }}
+            </span>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-100">
+              {{ active_video.created_at|naturaltime }}
+            </span>
+          </div>
+          <h1 class="text-xl font-bold text-gray-900 leading-tight">
+            {{ active_video.title }}
+          </h1>
+        </div>
+      </div>
+
+      {% if active_video.description %}
+      <div class="mt-4 pt-4 border-t border-gray-200">
+        <p class="text-gray-600 leading-relaxed">
+          {{ active_video.description }}
+        </p>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <!-- Non-student Course Banner -->
+    <div class="bg-gradient-to-t from-indigo-900 via-indigo-600 to-indigo-900 rounded-2xl shadow-lg p-8 mb-8 flex flex-col items-center justify-center text-center text-white max-w-5xl mx-auto">
+      <h2 class="text-2xl font-bold mb-2">
+        {{ course.name }}
+      </h2>
+      <p class="text-indigo-200 text-lg">
+        {{ course.instructor.full_name|title }}
+      </p>
+    </div>
+    {% endif %}
+
+    <!-- Course Videos Grid -->
+    <div class="mb-6">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+        <!-- Video Count -->
+        <div class="flex items-center gap-3">
+          <h3 class="text-gray-600 font-medium">
+            {{ course.total_videos }} {{ course.total_videos|pluralize:'video,videos' }}
+          </h3>
+        </div>
+
+        <!-- Right: Action Buttons -->
+        <div class="flex items-center gap-3 flex-wrap justify-center">
+          {% if course.instructor == request.user %}
+          <a href="{% url 'course:update-course' slug=course.slug %}"
+            class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Edit Course
+          </a>
+
+          <button id="addVideoBtn" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Add Video
+          </button>
+          {% endif %}
+
+          <a href="{% url 'course:course-info' slug=course.slug %}"
+            class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Course Info
+          </a>
+        </div>
+      </div>
+
+      {% if request.user in course.students.all or request.user == course.instructor %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {% for video in videos %}
+        <div class="group block bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 {% if video.id == active_video.id %}ring-2 ring-indigo-500{% else %}hover:border-indigo-200{% endif %}">
+
+          <!-- Thumbnail -->
+          <div class="relative aspect-video bg-gray-900 overflow-hidden">
+            {% if video.thumbnail %}
+            <img
+            src="{{ video.thumbnail.url }}"
+            alt="{{ video.title }}"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+            >
+            {% else %}
+            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-900 via-indigo-600 to-indigo-800">
+              <svg class="w-8 h-8 text-white/80" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </div>
+            {% endif %}
+
+            <!-- Play Overlay -->
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
+              <div class="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300">
+                <svg class="w-5 h-5 text-indigo-600 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Now Playing Badge -->
+            {% if video.id == active_video.id %}
+            <div class="absolute top-3 left-3 bg-indigo-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-lg z-10">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+              </span>
+              PLAYING
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Info -->
+          <div class="p-4">
+            <h3 class="font-semibold text-sm line-clamp-2 leading-snug mb-1 {% if video.id == active_video.id %}text-indigo-600{% else %}text-gray-900 group-hover:text-indigo-600{% endif %} transition-colors">
+              {{ video.title }}
+            </h3>
+
+            {% if video.description %}
+            <p class="text-xs text-gray-500 line-clamp-1 mb-2">
+              {{ video.description }}
+            </p>
+            {% endif %}
+
+            <div class="flex items-center justify-between mt-2">
+              <p class="text-xs text-gray-400 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span class="truncate">{{ video.created_at|naturaltime }}</span>
+              </p>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-3 pt-3 border-t border-gray-100 flex justify-end">
+              <button
+                type="button"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-600 hover:text-white hover:bg-red-600 border border-red-200 hover:border-red-600 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
+                onclick="return confirm('Delete this video?') && deleteVideo({{ video.id }})"
+                >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="p-8">
+        <a href=""
+          class="max-w-md h-36 mx-auto rounded-xl bg-gradient-to-t from-indigo-900 via-indigo-600 to-indigo-900 text-white text-xl font-semibold flex justify-center items-center shadow-lg hover:from-indigo-800 hover:to-indigo-950 transition-all">
+          Buy Now
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Add Video Modal -->
+  <div id="addVideoModal" class="fixed inset-0 z-50 hidden">
+    <!-- Backdrop -->
+    <div id="modalBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity opacity-0"></div>
+
+    <!-- Modal Content -->
+    <div class="relative min-h-screen flex items-center justify-center p-4">
+      <div id="modalPanel" class="bg-white rounded-2xl shadow-2xl w-full max-w-lg transform scale-95 opacity-0 transition-all duration-200">
+        <!-- Header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <h2 class="text-lg font-bold text-gray-900">Add New Video</h2>
+          <button id="closeModalBtn" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Form -->
+        <form method="POST" enctype="multipart/form-data" class="px-6 py-6 space-y-5">
+          {% csrf_token %}
+
+          <!-- Title -->
+          <div>
+            <label for="id_title" class="block text-sm font-medium text-gray-700 mb-1.5">Title</label>
+            <input type="text" name="title" id="id_title"
+            class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
+            placeholder="Enter video title">
+            {% for error in form.title.errors %}
+            <p class="mt-1.5 text-sm text-red-600 flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              {{ error }}
+            </p>
+            {% endfor %}
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label for="id_description" class="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
+            <textarea name="description" id="id_description" rows="3"
+              class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow resize-none"
+              placeholder="Enter video description"></textarea>
+          </div>
+
+          <!-- Video File -->
+          <div>
+            <label for="id_video" class="block text-sm font-medium text-gray-700 mb-1.5">Video File</label>
+            <div class="relative">
+              <input type="file" name="video" id="id_video" accept="video/*"
+              class="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 file:cursor-pointer file:transition-colors cursor-pointer border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+              {% for error in form.video.errors %}
+              <p class="mt-1.5 text-sm text-red-600 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                {{ error }}
+              </p>
+              {% endfor %}
+            </div>
+            <p class="mt-1 text-xs text-gray-400">
+              Supported formats: MP4, WebM, MOV
+            </p>
+          </div>
+
+          <!-- Thumbnail -->
+          <div>
+            <label for="id_thumbnail" class="block text-sm font-medium text-gray-700 mb-1.5">Thumbnail</label>
+            <div class="relative">
+              <input type="file" name="thumbnail" id="id_thumbnail" accept="image/*"
+              class="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 file:cursor-pointer file:transition-colors cursor-pointer border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+            </div>
+            <p class="mt-1 text-xs text-gray-400">
+              Recommended: 1280x720 (16:9)
+            </p>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center justify-end gap-3 pt-2">
+            <button type="button" id="cancelBtn"
+              class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+              Cancel
+            </button>
+            <button type="submit"
+              class="px-4 py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
+              Upload Video
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'core/base/javascript/header.js' %}" type="text/javascript" charset="utf-8"></script>
+<script>
+  (function() {
+  const modal = document.getElementById('addVideoModal');
+  const backdrop = document.getElementById('modalBackdrop');
+  const panel = document.getElementById('modalPanel');
+  const openBtn = document.getElementById('addVideoBtn');
+  const closeBtn = document.getElementById('closeModalBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+
+  function openModal() {
+  modal.classList.remove('hidden');
+  void modal.offsetWidth;
+  backdrop.classList.remove('opacity-0');
+  panel.classList.remove('scale-95', 'opacity-0');
+  panel.classList.add('scale-100', 'opacity-100');
+  document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+  backdrop.classList.add('opacity-0');
+  panel.classList.remove('scale-100', 'opacity-100');
+  panel.classList.add('scale-95', 'opacity-0');
+  setTimeout(() => {
+  modal.classList.add('hidden');
+  document.body.style.overflow = '';
+  }, 200);
+  }
+
+  openBtn.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', closeModal);
+  cancelBtn.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', closeModal);
+
+  document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+  closeModal();
+  }
+  });
+  })();
+</script>
+{% endblock %}

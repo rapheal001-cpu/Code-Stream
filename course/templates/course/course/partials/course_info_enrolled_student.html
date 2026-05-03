@@ -1,0 +1,36 @@
+{% for student in students %}
+<a href="{{ student.get_absolute_url }}" class="student-item flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 transition-colors group">
+  {% if student.avatar %}
+  <img src="{{ student.avatar.url }}" alt="{{ student.username }}" class="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-sm">
+  {% else %}
+  <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-semibold text-sm ring-2 ring-white shadow-sm">
+    {{ student.username|first|upper }}
+  </div>
+  {% endif %}
+  <div class="flex-1 min-w-0">
+    <p class="text-sm font-medium text-gray-900 truncate group-hover:text-indigo-600 transition-colors">
+      {{ student.full_name }}
+    </p>
+    <p class="text-xs text-gray-500 truncate">
+      @{{ student.username }}
+    </p>
+  </div>
+  <svg class="w-4 h-4 text-gray-300 group-hover:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+  </svg>
+</a>
+{% empty %}
+<div class="flex flex-col items-center justify-center py-12 text-center">
+  <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+    </svg>
+  </div>
+  <p class="text-sm font-medium text-gray-900">
+    No students yet
+  </p>
+  <p class="text-xs text-gray-500 mt-1">
+    Be the first to enroll!
+  </p>
+</div>
+{% endfor %}

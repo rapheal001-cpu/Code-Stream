@@ -1,0 +1,28 @@
+<nav class="sticky top-0 z-50 flex items-center gap-3 bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-900 px-3 py-2 shadow-xl backdrop-blur-md">
+  
+  <!-- Back button -->
+  <a href="{% url 'course:course-index' %}" class="flex items-center justify-center gap-1 rounded-full bg-white/90 px-3 py-1.5 text-indigo-900 font-semibold hover:bg-white transition-all text-sm shadow-md active:scale-95">
+    Back
+  </a>
+  
+  <!-- Search wrapper -->
+  <div class="relative flex-1">
+    <form action="{% url 'course:course-videos' %}" method="GET" class="relative">
+      
+      <!-- Search Icon -->
+      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+        🔍
+      </span>
+
+      <!-- Search Input -->
+      <input type="text" id="search" name="search" placeholder="Search videos, title..." autocomplete="off" value="{{ search }}" class="w-full bg-white/95 pl-10 pr-24 py-2 text-sm font-medium text-gray-800 outline-none rounded-full"/>
+
+      <!-- Search Button -->
+      <button type="submit" class="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1 px-3 py-1.5 rounded-full bg-indigo-700 hover:bg-indigo-800 text-white text-xs font-semibold shadow-lg transition-all active:scale-95">
+        Search
+      </button>
+
+    </form>
+  </div>
+
+</nav>

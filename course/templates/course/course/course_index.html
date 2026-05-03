@@ -1,0 +1,63 @@
+{% extends 'core/base/base.html' %}
+
+{% load static humanize django_htmx %}
+
+{% block title %}
+Courses | Code Stream
+{% endblock %}
+
+{% block content %}
+
+{% include 'core/base/header.html' %}
+
+<main class="min-h-screen bg-gray-50 pb-24">
+
+  <!-- Hero Section with Search -->
+  <div class="relative bg-indigo-900 overflow-hidden">
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-12">
+      <div class="text-center max-w-3xl mx-auto">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight mb-6">
+          Master New Skills with <span class="text-indigo-300">Expert-Led</span> Courses
+        </h1>
+        <p class="text-lg text-indigo-200 mb-10 max-w-2xl mx-auto">
+          Learn from industry professionals and transform your career
+        </p>
+
+        <!-- Create Course Button -->
+        {% if request.user.role == 'instructor' %}
+        <a href="{% url 'course:create-course' %}">
+          <div class="bg-white/20 backdrop-blur-3xl mx-auto max-w-2xl rounded-full p-3 text-white font-semibold mb-8 md:mb-16 lg:mb-16 xl:mb-16 border border-white/30 shadow-lg shadow-white/10 shadow-inner hover:scale[98]">
+            Create Course
+          </div>
+        </a>
+        {% endif %}
+
+        <!-- Search Bar -->
+        <div class="relative max-w-2xl mx-auto">
+          <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none z-20">
+            <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+          <input type="text" class="w-full pl-14 pr-4 py-3 rounded-full bg-white/10 backdrop-blur-3xl text-white placeholder-white border border-white focus:border-white/20 focus:outline-none text-base text-white" placeholder="What do you want to learn today?" name="search" hx-get="{% url 'course:course-index' %}" hx-trigger="keyup changed delay:300ms" hx-target="#courses-grid" hx-swap="innerHTML">
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Courses Container -->
+
+  <div class="w-full mx-auto py-4 px-4 md:px-10 lg:px-14" id="courses-grid">
+
+    {% include 'course/course/partials/courses_list.html' %}
+
+  </div>
+
+</main>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'core/base/javascript/header.js' %}" type="text/javascript" charset="utf-8"></script>
+{% endblock %}

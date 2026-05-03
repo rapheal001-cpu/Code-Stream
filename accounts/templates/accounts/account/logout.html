@@ -1,0 +1,86 @@
+{% extends 'core/base/base.html' %}
+
+{% load account %}
+
+{% block title %}
+Logout | Code Stream
+{% endblock %}
+
+{% block content %}
+
+<main class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4 py-12">
+  
+  <div class="w-full max-w-md">
+    
+    <!-- Card -->
+    <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 overflow-hidden">
+      
+      <!-- Top Accent -->
+      <div class="h-2 bg-gradient-to-r from-orange-400 via-red-500 to-orange-400"></div>
+      
+      <div class="p-8 sm:p-10 text-center">
+        
+        <!-- Icon -->
+        <div class="mx-auto w-20 h-20 bg-red-50 rounded-2xl flex items-center justify-center mb-6">
+          <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+        </div>
+
+        <!-- Heading -->
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">
+          Sign Out
+        </h1>
+        
+        <p class="text-gray-500 mb-8">
+          You're currently signed in as <span class="font-semibold text-gray-900">{{ user.username|capfirst }}</span>. Are you sure you want to leave?
+        </p>
+
+        <!-- Actions -->
+        <form method="POST" action="{% url 'account_logout' %}" class="space-y-3">
+          {% csrf_token %}
+          
+          <button 
+            type="submit" 
+            name="account_logout" 
+            class="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold py-3.5 rounded-xl transition-all duration-200 shadow-lg shadow-red-200 hover:shadow-xl hover:shadow-red-300 active:scale-[0.98]"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"></path>
+            </svg>
+            Yes, Sign Out
+          </button>
+
+          <a 
+            href="{% url 'core:index-view' %}" 
+            class="w-full flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3.5 rounded-xl transition-all duration-200 active:scale-[0.98]"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            Stay Signed In
+          </a>
+        </form>
+
+        <!-- Session Info -->
+        <div class="mt-6 pt-6 border-t border-gray-100">
+          <p class="text-xs text-gray-400">
+            Your session will remain active on other devices until you sign out there too.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Brand -->
+    <div class="mt-8 text-center">
+      <p class="text-sm text-gray-400">Code Stream</p>
+    </div>
+
+  </div>
+
+</main>
+
+{% endblock %}

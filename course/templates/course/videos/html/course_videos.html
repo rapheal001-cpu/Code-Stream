@@ -1,0 +1,166 @@
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+Course Videos | Code Stream
+{% endblock %}
+
+{% block content %}
+
+<div class="min-h-screen bg-gray-50/50">
+  
+  <!-- Clean Sticky Header -->
+  <header class="sticky top-0 z-40 bg-white border-b border-gray-200/80 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 gap-4">
+        
+        <!-- Back & Title -->
+        <div class="flex items-center gap-4">
+          <a href="{% url 'course:course-index' %}" class="p-2 -ml-2 rounded-full text-gray-500 hover:bg-gray-100 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M19 12H5M12 19l-7-7 7-7"></path>
+            </svg>
+          </a>
+          <div>
+            <h1 class="text-lg font-semibold text-gray-900">Course Videos</h1>
+            <p class="text-xs text-gray-500">Latest uploads from instructors</p>
+          </div>
+        </div>
+
+        <!-- Search -->
+        <div class="flex-1 max-w-md hidden sm:block">
+          <form method="GET" action="{% url 'course:course-videos' %}" class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+              </svg>
+            </div>
+            <input 
+              type="text" 
+              name="q" 
+              placeholder="Search videos..."  
+              class="block w-full pl-10 pr-4 py-2 bg-gray-100 border-0 rounded-full text-sm text-gray-900 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-indigo-500 transition-all"
+              value="{{ request.GET.q }}"
+            >
+            {% if request.GET.q %}
+              <button type="button" onclick="window.location.href='{% url 'course:course-videos' %}'" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M18 6L6 18M6 6l12 12"></path>
+                </svg>
+              </button>
+            {% endif %}
+          </form>
+        </div>
+
+        <!-- Mobile Search Toggle -->
+        <button class="sm:hidden p-2 rounded-full text-gray-500 hover:bg-gray-100">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Stats Bar (Optional) -->
+    <div class="flex items-center gap-6 mb-8 text-sm text-gray-600">
+      <span>{{ videos|length }} videos available</span>
+    </div>
+
+    <!-- Video Grid - Clean 3-Column Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      
+      {% for video in videos %}
+        <article class="group bg-white rounded-2xl border border-gray-200/60 overflow-hidden hover:shadow-lg hover:border-gray-300 transition-all duration-300">
+          <a href="" class="block">
+            
+            <!-- Thumbnail Container -->
+            <div class="relative aspect-video bg-gray-900 overflow-hidden">
+              {% if video.thumbnail %}
+                <img src="{{ video.thumbnail.url }}" alt="{{ video.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+              {% else %}
+                <div class="w-full h-full bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center">
+                  <svg class="w-16 h-16 text-white/40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+              {% endif %}
+              
+              <!-- Duration Badge -->
+              <div class="absolute bottom-3 right-3 px-2 py-1 bg-black/80 text-white text-xs font-medium rounded-md">
+                {{ video.duration|default:"12:34" }}
+              </div>
+              
+              <!-- Hover Play Button -->
+              <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <div class="w-16 h-16 bg-white/95 rounded-full flex items-center justify-center shadow-xl transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                  <svg class="w-7 h-7 text-gray-900 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-4">
+              <!-- Title -->
+              <h3 class="font-semibold text-gray-900 line-clamp-2 mb-2 group-hover:text-indigo-600 transition-colors">
+                {{ video.title }}
+              </h3>
+              
+              <!-- Instructor -->
+              <div class="flex items-center gap-2 mb-3">
+                <div class="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-medium text-indigo-700">
+                  {{ video.course_owner.username|first|upper }}
+                </div>
+                <span class="text-sm text-gray-600">{{ video.course_owner.get_full_name|default:video.course_owner.username }}</span>
+              </div>
+
+              <!-- Meta Stats -->
+              <div class="flex items-center gap-3 text-xs text-gray-500">
+                <span class="flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                  </svg>
+                  {{ video.total_views|default:"0"|intcomma }}
+                </span>
+                <span>•</span>
+                <span>{{ video.created_at|naturaltime }}</span>
+              </div>
+            </div>
+          </a>
+        </article>
+        
+      {% empty %}
+        <!-- Empty State -->
+        <div class="col-span-full flex flex-col items-center justify-center py-20 text-center">
+          <div class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mb-5">
+            <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">No videos yet</h3>
+          <p class="text-gray-500 max-w-sm mb-6">Videos from instructors will appear here once they start uploading content.</p>
+        </div>
+      {% endfor %}
+
+    </div>
+  </main>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'core/base/javascript/header.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'course/javascript/course_videos.js' %}" type="text/javascript" charset="utf-8"></script>
+{% endblock %}

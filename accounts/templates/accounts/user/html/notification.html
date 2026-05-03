@@ -1,0 +1,168 @@
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+{% load humanize %}
+
+{% block title %} 
+Notifications | Code Stream 
+{% endblock %} 
+
+{% block content %}
+
+<div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-200 sticky top-0 z-10">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="{{ request.user.get_absolute_url }}" class="p-2 -ml-2 rounded-full text-gray-500 hover:bg-gray-100 transition-all duration-200"
+                >
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                    >
+                        <path d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </a>
+                <h1 class="text-lg font-semibold text-gray-900">
+                    Notifications
+                </h1>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-3xl mx-auto px-4 sm:px-6 py-6">
+
+        <!-- Notifications List -->
+        <div class="space-y-3">
+            {% for notification in notifications %}
+            <div class="group bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-all duration-200 border {% if not notification.is_read %}border-indigo-100 bg-indigo-50/30{% else %}border-gray-100{% endif %}"
+            >
+                <div class="flex items-start gap-4">
+                    <!-- Icon/Avatar -->
+                    <div class="flex-shrink-0">
+                        {% if notification.sender %}
+                        <img
+                            src="{{ notification.sender.avatar.url }}"
+                            alt="{{ notification.sender.username }}"
+                            class="w-10 h-10 rounded-full object-cover"
+                        />
+                        {% else %}
+                        <div
+                            class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center"
+                        >
+                            <svg
+                                class="w-5 h-5 text-indigo-600"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                                ></path>
+                            </svg>
+                        </div>
+                        {% endif %} {% if not notification.is_read %}
+                        <span
+                            class="absolute -mt-1 ml-7 w-3 h-3 bg-indigo-600 border-2 border-white rounded-full"
+                        ></span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Content -->
+                    <div class="flex-1 min-w-0">
+                        <a
+                            href="{{ notification.get_absolute_url }}"
+                            class="block group-hover:text-indigo-600 transition-colors"
+                        >
+                            <h2
+                                class="text-sm font-semibold text-gray-900 mb-1"
+                            >
+                                {{ notification.title }}
+                            </h2>
+                            <p
+                                class="text-sm text-gray-600 leading-relaxed mb-2"
+                            >
+                                {{ notification.message|truncatewords:20 }}
+                            </p>
+                            <div
+                                class="flex items-center gap-2 text-xs text-gray-400"
+                            >
+                                <svg
+                                    class="w-3.5 h-3.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline
+                                        points="12 6 12 12 16 14"
+                                    ></polyline>
+                                </svg>
+                                <span>{{ notification.created_at|naturaltime }}</span
+                                >
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex flex-col items-end gap-2">
+                  <form method="POST" action="{% url 'notification' %}" class="inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="delete_id" value="{{ notification.id }}"/>
+                    <button type="submit" class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                  </svg>
+                </button>
+                </form>
+                    </div>
+                </div>
+            </div>
+
+            {% empty %}
+
+            <!-- Empty State -->
+            <div class="text-center py-16">
+                <div
+                    class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
+                >
+                    <svg
+                        class="w-10 h-10 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                        ></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                    All caught up!
+                </h3>
+                <p class="text-gray-500 max-w-sm mx-auto">
+                    You don't have any notifications right now. We'll let you
+                    know when something important happens.
+                </p>
+            </div>
+
+            {% endfor %}
+        </div>
+
+    </main>
+</div>
+
+{% endblock %} 
+
+{% block javascript %}
+<script src="{% static 'core/base/javascript/header.js' %}" type="text/javascript"
+></script>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'core/base/base.html' %}
+
+{% load static widget_tweaks django_htmx %}
+
+{% block title %}
+Discover Friends | Code Stream
+{% endblock %}
+
+{% block content %}
+
+{% include 'core/base/header.html' %}
+
+<div class="min-h-screen bg-slate-50 py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+
+  <!-- Header Section -->
+  <div class="max-w-3xl mx-auto text-center mb-8 sm:mb-10">
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-indigo-900 tracking-tight mb-3 sm:mb-4">Discover People</h1>
+    <p class="text-base sm:text-lg text-slate-600">
+      Connect with friends and explore new communities.
+    </p>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="max-w-2xl mx-auto mb-10 sm:mb-12">
+    <div class="relative group">
+      <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+        <svg class="h-5 w-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <input type="text" name="search" placeholder="Search by name, username, or location..." class="block w-full pl-11 px-6 py-4 bg-white border-0 text-gray-800 placeholder-gray-400 rounded-full shadow-lg ring-1 ring-slate-900/5 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all" hx-get="{% url 'find-friends' %}" hx-trigger="keyup changed delay:300ms" hx-target="#user-list" hx-swap="innerHTML">
+    </div>
+  </div>
+
+  <!-- Friends Grid -->
+  <div id="user-list">
+    {% include 'accounts/user/partials/find_friend_list.html' %}
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'core/base/javascript/header.js' %}" type="text/javascript" charset="utf-8"></script>
+{% endblock %}

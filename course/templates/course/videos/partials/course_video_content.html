@@ -1,0 +1,74 @@
+{% load humanize %}
+
+<main class="p-4 pb-8 bg-gray-50 min-h-screen">
+
+{% if search %} 
+  <span class="font-semibold text-gray-500 p-1.5">
+    {% with sv=videos.count %}
+      Found {{ sv }} video{{ sv|pluralize }}
+    {% endwith %}
+    </span>
+{% endif %}
+  
+{% if videos %}
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+{% for video in videos %}
+  <div class="bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition relative overflow-hidden group">
+
+  <!-- Video / Thumbnail -->
+  <div class="relative bg-black h-52 md:h-60 lg:h-48 xl:h-56">
+    
+  <!-- Subscribed User Only Can Watch the video -->
+  <video src="{{ video.video.url }}" poster="{{ video.thumbnail.url }}" class="h-full w-full object-contain videos" loop></video>
+  
+  <!-- Access Badge -->
+{% if not user.is_subscribe %}
+  <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
+    <span class="px-4 py-2 bg-yellow-500 text-white font-bold rounded shadow-lg text-lg">
+      🔒 Lock
+    </span>
+  </div>
+{% endif %}
+  </div>
+  
+  <!-- Video Info -->
+  <div class="p-3 flex flex-col gap-2">
+    <a href="{{ video.get_absolute_url }}">
+    <h3 class="font-semibold line-clamp-2 md:text-lg">
+      {{ video.title }}
+    </h3>
+  {% if video.description %}
+    <p class="text-gray-600 text-sm line-clamp-3">
+      {{ video.description }}
+    </p>
+  {% endif %}
+    </a>
+    
+  <!-- Owner & Stats -->
+  <div class="flex justify-start items-center mt-3 gap-3">
+    <img src="{{ video.owner.avatar.url }}" alt="{{ video.owner.username }}" class="w-10 h-10 object-cover rounded-full">
+    <div class="flex flex-col text-sm">
+      <span class="text-gray-700">
+        {{ video.owner.username|capfirst }}
+      </span>
+      <span class="text-gray-500">
+        {{ video.total_likes }} like{{ video.total_likes|pluralize }} • {{ video.total_views }} view{{ video.total_views|pluralize }}
+      </span>
+      <span class="text-gray-400 text-xs">
+        {{ video.created_at|naturaltime }}
+      </span>
+    </div>
+  </div>
+  
+  </div>
+  
+  </div>
+{% endfor %}
+  </div>
+{% else %}
+  <div class="h-screen flex justify-center items-center text-3xl md:text-5xl font-bold text-gray-400">
+    No Videos Yet.
+  </div>
+{% endif %}
+
+</main>

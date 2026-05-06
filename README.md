@@ -24,6 +24,7 @@ It is designed to provide a smooth learning experience with user authentication,
 - **Database:** PostgreSQL / SQLite
 - **Media Storage:** Local media storage
 - **Authentication:** Django Auth System
+- **Payment:** Stripe
 
 ---
 

@@ -2,9 +2,9 @@
 
 {% if request.resolver_match.url_name == 'instructor-courses' %}
 <!-- Section Header -->
-<div class="flex items-center justify-between mb-8">
+<div class="flex items-center justify-between mb-8 max-w-5xl mx-auto">
   <div>
-    <h1 class="text-2xl font-bold text-gray-900">All Courses</h1>
+    <h1 class="text-2xl font-bold text-gray-900">My Courses</h1>
     <p class="text-sm text-gray-500 mt-1">
       Manage and track your course content
     </p>
@@ -62,31 +62,37 @@
         <!-- Footer -->
         <div class="flex items-center justify-between pt-3 border-t border-gray-100">
           <div class="flex items-center gap-2">
-            <img src="{{ course.instructor.avatar.url }}" alt="{{ course.instructor.username }}" class="w-6 h-6 rounded-full object-cover border border-gray-200">
-            <span class="text-xs font-medium text-gray-600">{% if course.instructor == request.user %} You {% else %} {{ course.instructor.full_name }} {% endif %}</span>
+            {% if course.instructor.avatar %}
+            <img src="{{ course.instructor.avatar.url }}" alt="{{ course.instructor.username }}" class="w-10 h-10 rounded-full object-cover border border-gray-200" />
+          {% else %}
+          <div class="w-10 h-10 rounded-full font-extrabold bg-indigo-800 text-white text-2xl flex justify-center items-center">
+            {{ course.instructor.username|first|upper }}
           </div>
-          <time class="text-[11px] text-gray-400" datetime="{{ course.created_at|date:'c' }}">
-            {{ course.created_at|naturaltime }}
-          </time>
+          {% endif %}
+          <span class="text-xs font-medium text-gray-600">{% if course.instructor == request.user %} You {% else %} {{ course.instructor.full_name }} {% endif %}</span>
         </div>
+        <time class="text-[11px] text-gray-400" datetime="{{ course.created_at|date:'c' }}">
+          {{ course.created_at|naturaltime }}
+        </time>
       </div>
+    </div>
 
-    </article>
-  </a>
-  {% endfor %}
+  </article>
+</a>
+{% endfor %}
 </div>
 
 {% else %}
 <!-- Empty State -->
 <div class="flex flex-col items-center justify-center py-24 text-center">
-  <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4 ring-1 ring-gray-100">
-    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-    </svg>
-  </div>
-  <h3 class="text-base font-semibold text-gray-900 mb-1">No courses found</h3>
-  <p class="text-sm text-gray-500">
-    Try adjusting your search terms.
-  </p>
+<div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4 ring-1 ring-gray-100">
+<svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+</svg>
+</div>
+<h3 class="text-base font-semibold text-gray-900 mb-1">No courses found</h3>
+<p class="text-sm text-gray-500">
+Try adjusting your search terms.
+</p>
 </div>
 {% endif %}

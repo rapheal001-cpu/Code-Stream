@@ -54,7 +54,7 @@
     <!-- Instructor & Date -->
     <div class="flex items-center justify-between gap-3">
       <div class="flex items-center gap-2.5 min-w-0">
-        <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+        <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
           {% if course.instructor.avatar %}
           <img src="{{ course.instructor.avatar.url }}" alt="{{ course.instructor.username }}" class="w-full h-full object-cover">
           {% else %}
@@ -63,7 +63,18 @@
           </div>
           {% endif %}
         </div>
-        <span class="text-sm font-semibold text-gray-700 truncate">{{ course.instructor.full_name }}</span>
+        <div class="flex flex-col justify-start items-start">
+          <span class="text-sm font-semibold text-gray-700 truncate">
+            {% if course.instructor.first_name %}
+            {{ course.instructor.full_name }}
+            {% else %}
+            {{ course.instructor.username|title }}
+            {% endif %}
+          </span>
+          <span class="text-sm font-semibold text-gray-500 truncate">
+            {{ course.instructor.role|title }}
+          </span>
+        </div>
       </div>
       <span class="text-xs text-gray-400 whitespace-nowrap flex-shrink-0">{{ course.created_at|date:"M d, Y" }}</span>
     </div>

@@ -8,19 +8,15 @@ My Courses | Code Stream
 
 {% block content %}
 
+{% include 'core/base/header.html' %}
+
+
 <div class="bg-gray-50 min-h-screen pb-20">
 
   <!-- ═══ Header ═══ -->
   <header class="sticky top-0 z-50 bg-gray-50/95 backdrop-blur-sm border-b border-gray-200">
 
     <div class="flex items-center justify-between gap-3 p-3 max-w-2xl mx-auto">
-      <!-- Back Button -->
-      <a href="{{ request.user.get_absolute_url }}" class="flex-shrink-0 bg-indigo-800 text-white rounded p-2 active:scale-95 transition-all duration-200 shadow-md">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
-        </svg>
-      </a>
-
       <!-- Search Input -->
       <div class="relative flex-1">
         <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -46,4 +42,8 @@ My Courses | Code Stream
 
 </div>
 
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'core/base/javascript/header.js' %}" type="text/javascript" charset="utf-8"></script>
 {% endblock %}

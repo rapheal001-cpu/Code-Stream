@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Course, CourseVideo, Enrollment, FreeCourseVideo
+from .models import Course, CourseVideo, Enrollment, PublicVideo
 
 
 @admin.register(Course)
@@ -9,4 +9,4 @@ class CustomCourse(admin.ModelAdmin):
 
 admin.site.register(CourseVideo)
 admin.site.register(Enrollment)
-admin.site.register(FreeCourseVideo)
+admin.site.register(PublicVideo)

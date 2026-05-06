@@ -3,7 +3,7 @@
 {% load static humanize django_htmx %}
 
 {% block title %}
-{{ course.name }} | Code Stream
+Course Info - {{ course.name }} | Code Stream
 {% endblock %}
 
 {% block content %}
@@ -65,9 +65,11 @@
               </p>
             </div>
             <div class="flex-shrink-0">
+              {% if request.user not in course.students.all %}
               <span class="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-50 text-indigo-700 font-bold text-lg">
                 ${{ course.price }}
               </span>
+              {% endif %}
             </div>
           </div>
 
@@ -83,7 +85,11 @@
             {% endif %}
             <div>
               <p class="text-sm font-medium text-gray-900">
+                {% if course.instructor.first_name %}
                 {{ course.instructor.full_name|title }}
+                {% else %}
+                {{ course.instructor.username|title }}
+                {% endif %}
               </p>
               <p class="text-xs text-gray-500">
                 {{ course.instructor.role|title }}
@@ -114,22 +120,29 @@
 
         <!-- CTA -->
         <div class="flex flex-wrap gap-3">
-          {% if request.user in course.students.all %}
+          {% if request.user in course.students.all or request.user == course.instructor %}
           <a href="{{ course.get_absolute_url }}" class="inline-flex items-center justify-center px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
+            {% if request.user in course.students.all %}
             Continue Learning
+            {% elif request.user == course.instructor %}
+            View Your Course
+            {% endif %}
           </a>
           {% else %}
-          <div class="inline-flex items-center justify-center px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
+          {% if request.user.role != 'instructor' %}
+          <a href="{% url 'payment:course' course_id=course.id %}" class="inline-flex items-center justify-center px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
             </svg>
             Buy Now
-          </div>
+          </a>
           {% endif %}
+          {% endif %}
+
           <div class="inline-flex items-center justify-center px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-sm gap-1 cursor-pointer" onclick="toggleStudentList()">
             <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -187,7 +200,13 @@
           </div>
           <div class="flex items-center justify-between text-sm">
             <span class="text-gray-500">Instructor</span>
-            <span class="text-gray-900 font-medium">{{ course.instructor.full_name|title }}</span>
+            <span class="text-gray-900 font-medium">
+              {% if course.instructor.first_name %}
+              {{ course.instructor.full_name|title }}
+              {% else %}
+              {{ course.instructor.username|title }}
+              {% endif %}
+            </span>
           </div>
           <div class="border-t border-gray-100 pt-4 mt-4">
             <div class="flex items-center justify-between">
@@ -267,37 +286,5 @@ hx-swap="innerHTML"
 {% endblock %}
 
 {% block javascript %}
-<script>
-function toggleStudentList() {
-const modal = document.getElementById('student-list');
-const panel = document.getElementById('student-list-panel');
-
-if (modal.classList.contains('hidden')) {
-// Open
-modal.classList.remove('hidden');
-// Small delay to allow display:block to apply before transition
-setTimeout(() => {
-panel.classList.remove('scale-95', 'opacity-0');
-panel.classList.add('scale-100', 'opacity-100');
-}, 10);
-} else {
-// Close
-panel.classList.remove('scale-100', 'opacity-100');
-panel.classList.add('scale-95', 'opacity-0');
-setTimeout(() => {
-modal.classList.add('hidden');
-}, 200);
-}
-}
-
-// Close on Escape key
-document.addEventListener('keydown', function(e) {
-if (e.key === 'Escape') {
-const modal = document.getElementById('student-list');
-if (!modal.classList.contains('hidden')) {
-toggleStudentList();
-}
-}
-});
-</script>
+<script src="{% static 'course/javascript/course_info.js' %}" type="text/javascript"></script>
 {% endblock %}

@@ -11,7 +11,7 @@ Update Course | Code Stream
 
     <h1 class="text-3xl font-bold mb-8 text-center text-white tracking-tight">Update Course</h1>
 
-    <form action="{% url 'course:update-course' slug=object.slug %}" method="POST" enctype="multipart/form-data" class="space-y-6">
+    <form action="{% url 'course:update-course' pk=object.pk %}" method="POST" enctype="multipart/form-data" class="space-y-6">
       {% csrf_token %}
 
       <!-- Non-field errors -->

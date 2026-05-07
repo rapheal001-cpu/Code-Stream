@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from decimal import Decimal
 from django.urls import reverse
-from CodeStream.utils import USER_ROLE
+from CodeStream.utils import USER_ROLE, PAYMENT_TYPE
 # Create your models here.
 
 
@@ -53,6 +53,10 @@ class User(AbstractUser):
     def instructor_activated(self):
         return self.instructoractivation.activated
 
+    @property
+    def payment_history_list(self):
+        return self.user_payment_history
+
     class Meta:
         ordering = ["-date_joined"]
         verbose_name = "User"
@@ -98,3 +102,20 @@ class Wallet(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - ${self.balance} - ({self.user.role})"
+
+
+class PaymentHistory(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="user_payment_history"
+    )
+    payment_type = models.CharField(max_length=10, choices=PAYMENT_TYPE)
+    message = models.CharField(max_length=300)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} --> ({self.payment_type})"
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Payment History"
+        verbose_name_plural = "Payment Histories"

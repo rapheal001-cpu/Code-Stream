@@ -3,6 +3,11 @@ USER_ROLE = [
     ("student", "Student"),
     ("instructor", "Instructor"),
 ]
+PAYMENT_TYPE = [
+    ("", "--Select Payment--"),
+    ("withdraw", "Withdraw"),
+    ("income", "Income"),
+]
 role_selection = ["student", "instructor"]
 index_view = "core:index-view"
 about_view = "core:about-view"

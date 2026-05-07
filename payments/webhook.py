@@ -10,26 +10,24 @@ from django.shortcuts import get_object_or_404
 stripe_webhook_key = settings.STRIPE_WEBHOOK_SECRET_KEY
 
 
-# Using Django
+# WebHook
 @csrf_exempt
-def my_webhook_view(request):
+def webhook_view(request):
+    event = None
     payload = request.body
     sig_header = request.META.get("HTTP_STRIPE_SIGNATURE")
-    event = None
 
     try:
         event = stripe.Webhook.construct_event(payload, sig_header, stripe_webhook_key)
-    except ValueError as e:
+    except ValueError:
         # Invalid payload
-        print(f"Error parsing payload: {str(e)}")
         return HttpResponse(status=400)
-    except stripe.error.SignatureVerificationError as e:
+    except stripe.error.SignatureVerificationError:
         # Invalid signature
-        print(f"Error verifying webhook signature: {str(e)}")
         return HttpResponse(status=400)
 
     # Handle the event
-    if event.type == "checkout.session.completed":
+    if event["type"] == "checkout.session.completed":
         payment_intent = event["data"]["object"]
 
         course_id = payment_intent["metadata"]["course_id"]
@@ -57,27 +55,27 @@ def my_webhook_view(request):
                 ),
             )
         # Enroll The User to the course
-        Enrollment.objects.get_or_create(
-            user=user,
-            course=course,
-            amount_paid=course.price,
-            is_paid=True,
-        )
-
-        # Send Notification to the user
-        Notification.objects.create(
-    user=user,
-    title="Course Purchase Successful 🎉",
-    message=(
-        f"Congratulations {user.username},\n\n"
-        f"You have successfully purchased a course.\n\n"
-        f"Course Details:\n"
-        f"• Course: {course.name}\n"
-        f"• Instructor: @{course.instructor.username}\n"
-        f"• Amount Paid: {course.price}\n\n"
-        f"Thank you for learning with us!"
-    ),
-)
+        if user is not None:
+            Enrollment.objects.get_or_create(
+                user=user,
+                course=course,
+                amount_paid=course.price,
+                is_paid=True,
+            )
+            # Send Notification to the user
+            Notification.objects.create(
+                user=user,
+                title="Course Purchase Successful 🎉",
+                message=(
+                    f"Congratulations {user.username},\n\n"
+                    f"You have successfully purchased a course.\n\n"
+                    f"Course Details:\n"
+                    f"• Course: {course.name}\n"
+                    f"• Instructor: @{course.instructor.username}\n"
+                    f"• Amount Paid: {course.price}\n\n"
+                    f"Thank you for learning with us!"
+                ),
+            )
 
     else:
         print(f"Unhandled event type: {event.type}")

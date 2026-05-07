@@ -1,0 +1,109 @@
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+
+{% block title %}
+{{ course.name }} | checkout cancel | CodeStream
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-neutral-950 text-white flex items-center justify-center px-4 py-12">
+  <div class="max-w-2xl w-full">
+
+    <!-- Cancel Card -->
+    <div class="bg-neutral-900 border border-neutral-800 relative overflow-hidden">
+      <!-- Top accent line -->
+      <div class="h-1 bg-amber-500 w-full"></div>
+
+      <div class="p-8 md:p-12 text-center">
+
+        <!-- Cancel Icon -->
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-amber-500/10 border border-amber-500/30 mb-6">
+          <svg class="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </div>
+
+        <!-- Heading -->
+        <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-white mb-3">
+          Checkout Cancelled
+        </h1>
+
+        <p class="text-neutral-400 text-lg mb-8 max-w-md mx-auto">
+          Your purchase for <span class="text-white font-medium">{{ course.name }}</span> was not completed. No charges were made.
+        </p>
+
+        <!-- Course Details Card -->
+        <div class="bg-neutral-950 border border-neutral-800 p-6 mb-8 text-left">
+          <div class="flex items-start gap-4">
+            {% if course.thumbnail %}
+            <img src="{{ course.thumbnail.url }}" alt="{{ course.name }}" class="w-20 h-20 object-cover border border-neutral-800 flex-shrink-0">
+            {% else %}
+            <div class="w-20 h-20 bg-neutral-800 border border-neutral-700 flex items-center justify-center flex-shrink-0">
+              <svg class="w-8 h-8 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            {% endif %}
+
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-white text-lg leading-tight mb-1">{{ course.name }}</h3>
+              <p class="text-neutral-500 text-sm mb-2">
+                Instructor: {{ course.instructor.get_full_name|default:course.instructor.username }}
+              </p>
+              <div class="flex items-center gap-3 text-sm">
+                <span class="text-amber-400 font-medium">Not purchased</span>
+                <span class="text-neutral-700">|</span>
+                <span class="text-neutral-400">${{ course.price }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="{% url 'payment:checkout-course' course_id=course.id %}"
+            class="inline-flex items-center justify-center px-6 py-3 bg-white text-neutral-950 font-semibold hover:bg-neutral-200 transition-colors duration-200">
+            Try Again
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+          </a>
+
+          <a href="{{ course.get_absolute_url }}"
+            class="inline-flex items-center justify-center px-6 py-3 border border-neutral-700 text-white font-medium hover:bg-neutral-800 transition-colors duration-200">
+            Back to Course
+          </a>
+        </div>
+
+        <!-- Help Text -->
+        <p class="mt-6 text-sm text-neutral-500">
+          Changed your mind?
+          <a href="{% url 'course:course-index' %}" class="text-neutral-300 hover:text-white underline underline-offset-4 transition-colors">Browse more courses</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Common Questions -->
+    <div class="mt-8 bg-neutral-900 border border-neutral-800 p-6">
+      <h3 class="text-sm font-semibold text-neutral-300 uppercase tracking-wider mb-4">Why did this happen?</h3>
+      <div class="space-y-3 text-sm text-neutral-400">
+        <div class="flex gap-3">
+          <span class="text-neutral-600 font-mono">01</span>
+          <span>You closed the payment window before completing the transaction.</span>
+        </div>
+        <div class="flex gap-3">
+          <span class="text-neutral-600 font-mono">02</span>
+          <span>Your payment method was declined or expired.</span>
+        </div>
+        <div class="flex gap-3">
+          <span class="text-neutral-600 font-mono">03</span>
+          <span>The session timed out due to inactivity.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

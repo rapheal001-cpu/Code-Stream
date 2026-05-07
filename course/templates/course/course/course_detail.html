@@ -224,7 +224,7 @@
       </div>
       {% else %}
       <div class="p-8">
-        <a href="{% url 'payment:course' course_id=course.id %}"
+        <a href="{% url 'payment:checkout-course' course_id=course.id %}"
           class="max-w-md h-36 mx-auto rounded-xl bg-gradient-to-t from-indigo-900 via-indigo-600 to-indigo-900 text-white text-xl font-semibold flex justify-center items-center shadow-lg hover:from-indigo-800 hover:to-indigo-950 transition-all">
           Buy Now
         </a>

@@ -20,7 +20,7 @@ SECRET_KEY = config("SECRET_KEY", cast=str)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool)
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["127.0.0.1", "5356-102-88-114-50.ngrok-free.app"]
 # config("ALLOWED_HOSTS", cast=str).split(",")
 
 CSRF_TRUSTED_ORIGINS = [
@@ -167,7 +167,7 @@ STATICFILES_DIRS = [
 
 # Media
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles")
+MEDIA_ROOT = os.path.join(BASE_DIR / "mediafiles")
 
 
 # Login System

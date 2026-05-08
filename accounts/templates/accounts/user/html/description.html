@@ -9,24 +9,15 @@ Update Description | Code Stream
 
 {% block content %}
 
-<div class="min-h-screen bg-gray-50 flex flex-col">
+<div class="min-h-screen bg-linear-to-tr from-indigo-900 via-purple-800 to-indigo-800  py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center">
+  <div class="max-w-md mx-auto backdrop-blur-lg shadow-lg shadow-white rounded-xl">
 
-  <!-- Header -->
-  <div class="bg-white border-b border-gray-200 sticky top-0 z-10">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <a href="{% url 'settings' %}" class="p-2 -ml-2 rounded-full text-gray-500 hover:bg-gray-100 transition-all duration-200">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path d="M15 19l-7-7 7-7"></path>
-          </svg>
-        </a>
-        <h1 class="text-lg font-semibold text-gray-900">Edit Description</h1>
-      </div>
-      <button type="submit" form="description-form" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-all duration-200 shadow-sm hover:shadow active:scale-95">
-        Save
-      </button>
+
+    <!-- Header -->
+    <div class="mb-3 text-center bg-white/10 text-white rounded-t-lg p-2.5">
+      <h1 class="text-3xl font-bold tracking-tight">Edit Description</h1>
     </div>
-  </div>
+
 
   <!-- Main Content -->
   <div class="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 py-6">
@@ -36,42 +27,42 @@ Update Description | Code Stream
 
       <!-- Character Count -->
       <div class="flex items-center justify-between mb-3">
-        <label for="id_description" class="text-sm font-medium text-gray-700">
+        <label for="id_description" class="text-sm font-medium text-white">
           About You
         </label>
-        <span id="char-count" class="text-xs text-gray-500 font-medium">
+        <span id="char-count" class="text-xs text-white font-medium">
           0 / 500
         </span>
       </div>
 
       <!-- Textarea -->
       <div class="flex-1">
-        {{ form.description|add_class:'w-full h-64 sm:h-96 p-4 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent resize-none transition-all duration-200'|attr:'placeholder:Tell us about yourself... What are you learning? What are your goals? Share your journey with the community.'|attr:'maxlength:500' }}
+        {{ form.description|add_class:'w-full h-64 sm:h-96 p-4 bg-white/10 border border-gray-200 rounded-xl text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent resize-none transition-all duration-200'|attr:'placeholder:Tell us about yourself... What are you learning? What are your goals? Share your journey with the community.'|attr:'maxlength:500' }}
       </div>
     </form>
 
     <!-- Preview Section -->
-    <div class="mt-8 pt-8 border-t border-gray-200">
-      <h2 class="text-sm font-medium text-gray-700 mb-4">Preview</h2>
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+    <div class="mt-8 pt-8 border-t border-white/50">
+      <h2 class="text-sm font-medium text-white mb-4">Preview</h2>
+      <div class="bg-white/10 rounded-2xl p-6 shadow-sm border border-white">
         <div class="flex items-center gap-3 mb-4">
           {% if user.avatar %}
           <img src="{{ user.avatar.url }}" alt="{{ user.username }}" class="w-10 h-10 rounded-full object-cover">
           {% else %}
-          <div class="w-10 h-10 rounded-full font-extrabold bg-indigo-800 text-white text-2xl flex justify-center items-center">
+          <div class="w-10 h-10 rounded-full font-extrabold bg-white/20 text-white text-2xl flex justify-center items-center">
             {{ request.user.username|first|upper }}
           </div>
           {% endif %}
           <div>
-            <p class="font-semibold text-gray-900">
-              {{ user.get_full_name|default:user.username }}
+            <p class="font-semibold text-white">
+              {{ user.full_name|default:user.username }}
             </p>
-            <p class="text-xs text-gray-500">
+            <p class="text-xs text-white">
               @{{ user.username }}
             </p>
           </div>
         </div>
-        <p id="preview-text" class="text-gray-600 text-sm leading-relaxed">
+        <p id="preview-text" class="text-white text-sm leading-relaxed">
           {{ user.description|default:"No description yet. Write something about yourself!" }}
         </p>
       </div>
@@ -80,17 +71,18 @@ Update Description | Code Stream
   </div>
 
   <!-- Mobile Bottom Bar -->
-  <div class="lg:hidden bg-white border-t border-gray-200 p-4 sticky bottom-0 z-10">
+  <div class="lg:hidden bg-white/10 p-4">
     <div class="flex gap-3">
-      <a href="{% url 'settings' %}" class="flex-1 px-4 py-3 text-gray-700 font-medium bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors text-center">
+      <a href="{% url 'settings' %}" class="flex-1 px-4 py-3 text-white font-medium bg-transparent border-2 border-white shadow-white shadow-md hover:shadow-lg rounded-xl transition-colors text-center">
         Cancel
       </a>
-      <button type="submit" form="description-form" class="flex-1 px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors shadow-lg shadow-indigo-200">
+      <button type="submit" form="description-form" class="flex-1 px-4 py-3 bg-transparent hover:bg-indigo-800 text-white font-medium rounded-xl transition-colors border shadow-md shadow-white hover:shadow-lg hover:shadow-indigo-800">
         Save Changes
       </button>
     </div>
   </div>
 
+  </div>
 </div>
 
 {% endblock %}

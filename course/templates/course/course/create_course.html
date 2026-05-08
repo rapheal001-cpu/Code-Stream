@@ -6,12 +6,12 @@ Create Course | Code Stream
 {% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-900 flex justify-center items-center p-4">
-  <div class="w-full max-w-2xl rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl p-8 relative overflow-hidden">
+<div class="min-h-screen bg-gradient-to-br from-indigo-900 to-indigo-900 flex justify-center items-center p-4">
+  <div class="w-full max-w-3xl rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl p-8 relative overflow-hidden">
 
-    <h1 class="text-3xl font-bold mb-8 text-center text-white tracking-tight">Create New Course</h1>
+    <h1 class="text-3xl font-bold mb-10 text-center text-white tracking-tight">Create New Course</h1>
 
-    <form action="{% url 'course:create-course' %}" method="POST" enctype="multipart/form-data" class="space-y-6">
+    <form action="{% url 'course:create-course' %}" method="POST" enctype="multipart/form-data" class="space-y-8">
       {% csrf_token %}
 
       <!-- Non-field errors -->

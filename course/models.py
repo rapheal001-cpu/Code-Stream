@@ -13,7 +13,7 @@ class Course(models.Model):
     slug = models.SlugField(unique=True)
     description = models.TextField(blank=True, null=True)
     thumbnail = models.ImageField(
-        upload_to="course/thumbnails/", default="course/thumbnails/default/default.png"
+        upload_to="course/thumbnails/"
     )
     price = models.DecimalField(
         max_digits=15, decimal_places=2, default=Decimal("0.00")

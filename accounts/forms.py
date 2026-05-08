@@ -83,9 +83,6 @@ class UpdateProfileForm(forms.ModelForm):
         if avatar:
             if avatar.size > 2 * 1024 * 1024:
                 raise forms.ValidationError("Image must be less than 2MB.")
-
-            if not avatar.content_type.startswith("image"):
-                raise forms.ValidationError("File must be an image.")
         return avatar
 
 

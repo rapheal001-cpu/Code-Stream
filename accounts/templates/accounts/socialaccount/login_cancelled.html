@@ -7,24 +7,24 @@ Login Cancelled | Code Stream
 {% block content %}
 
 <main class="flex justify-center items-center min-h-screen bg-gray-100 px-4">
-  <div class="w-full max-w-sm bg-white shadow-lg rounded-xl p-8 text-center">
+  <div class="w-full max-w-3xl bg-white border-2 border-indigo-400 shadow-lg rounded-xl p-8 text-center">
     <!-- Cancel Icon -->
-    <div class="flex justify-center mb-6">
-      <svg class="w-16 h-16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16ZM4.29289 5.70711L6.58579 8L4.29289 10.2929L5.70711 11.7071L8 9.41421L10.2929 11.7071L11.7071 10.2929L9.41421 8L11.7071 5.70711L10.2929 4.29289L8 6.58579L5.70711 4.29289L4.29289 5.70711Z" fill="#ff0000"></path> </g></svg>
+    <div class="flex justify-center mb-5">
+      <svg class="w-15 h-15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16ZM4.29289 5.70711L6.58579 8L4.29289 10.2929L5.70711 11.7071L8 9.41421L10.2929 11.7071L11.7071 10.2929L9.41421 8L11.7071 5.70711L10.2929 4.29289L8 6.58579L5.70711 4.29289L4.29289 5.70711Z" fill="#ff0000"></path> </g></svg>
     </div>
 
     <!-- Heading -->
-    <h3 class="text-2xl font-semibold text-gray-800 mb-2">
+    <h3 class="text-2xl font-bold text-gray-800 mb-2">
       Login Cancelled
     </h3>
 
     <!-- Description -->
-    <p class="text-gray-600 mb-6">
+    <p class="text-gray-700 mb-6 font-semibold">
       You decided to cancel logging in to our site using one of your existing accounts. If this was a mistake, please proceed to sign in.
     </p>
 
     <!-- Button -->
-    <a href="{% url 'account_login' %}" class="w-full inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-lg transition duration-200">
+    <a href="{% url 'account_login' %}" class="w-full max-w-md inline-block bg-indigo-800 hover:bg-indigo-900 text-white hover:font-semibold font-medium py-4 rounded-lg transition duration-200">
       Back To Login
     </a>
     

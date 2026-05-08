@@ -13,8 +13,8 @@ Settings | Code Stream
   <!-- Header -->
   <div class="bg-white border-b border-gray-200 sticky top-0 z-10">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-3">
-      <a href="{{ user.get_absolute_url }}" class="p-2 -ml-2 rounded-full text-gray-500 hover:bg-gray-100 transition-all duration-200">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <a href="{{ user.get_absolute_url }}" class="group p-2 -ml-2 rounded-full text-gray-500 hover:bg-indigo-800 transition-all duration-200">
+        <svg class="w-5 h-5 group-hover:text-white group-hover:animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path d="M15 19l-7-7 7-7"></path>
         </svg>
       </a>
@@ -27,11 +27,11 @@ Settings | Code Stream
     
     <!-- Profile Section -->
     <div class="mb-8">
-      <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4 px-2">Account</h2>
+      <h2 class="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-4 px-2">Account</h2>
       <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
         
         <!-- Edit Profile -->
-        <a href="{% url 'update-profile' %}" class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors border-b border-gray-100">
+        <a href="{% url 'update-profile' %}" class="group flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors border-b border-gray-100">
           <div class="flex items-center gap-4">
             <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
               <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -43,13 +43,13 @@ Settings | Code Stream
               <p class="text-sm text-gray-500">Update your name, avatar, and bio</p>
             </div>
           </div>
-          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 text-gray-400 group-hover:text-indigo-800" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path d="M9 5l7 7-7 7"></path>
           </svg>
         </a>
 
         <!-- Change Email -->
-        <a href="{% url 'account_email' %}" class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors border-b border-gray-100">
+        <a href="{% url 'account_email' %}" class="group flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors border-b border-gray-100">
           <div class="flex items-center gap-4">
             <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
               <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -62,13 +62,13 @@ Settings | Code Stream
               <p class="text-sm text-gray-500">{{ user.email|default:"No email set" }}</p>
             </div>
           </div>
-          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 text-gray-400 group-hover:text-indigo-800" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path d="M9 5l7 7-7 7"></path>
           </svg>
         </a>
 
         <!-- Change Password -->
-        <a href="{% url 'account_change_password' %}" class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
+        <a href="{% url 'account_change_password' %}" class="group flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
           <div class="flex items-center gap-4">
             <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
               <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -81,7 +81,7 @@ Settings | Code Stream
               <p class="text-sm text-gray-500">Update your security credentials</p>
             </div>
           </div>
-          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 text-gray-400 group-hover:text-indigo-800" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path d="M9 5l7 7-7 7"></path>
           </svg>
         </a>
@@ -91,10 +91,10 @@ Settings | Code Stream
 
     <!-- Connected Accounts Section -->
     <div class="mb-8">
-      <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4 px-2">Connections</h2>
+      <h2 class="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-4 px-2">Connections</h2>
       <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
         
-        <a href="{% url 'socialaccount_connections' %}" class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
+        <a href="{% url 'socialaccount_connections' %}" class="group flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
           <div class="flex items-center gap-4">
             <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
               <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -106,7 +106,7 @@ Settings | Code Stream
               <p class="text-sm text-gray-500">Manage Google and other social logins</p>
             </div>
           </div>
-          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 text-gray-400 group-hover:text-indigo-800" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path d="M9 5l7 7-7 7"></path>
           </svg>
         </a>
@@ -116,11 +116,11 @@ Settings | Code Stream
 
     <!-- Preferences Section -->
     <div class="mb-8">
-      <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4 px-2">Preferences</h2>
+      <h2 class="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-4 px-2">Preferences</h2>
       <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
         
         <!-- Notifications -->
-        <a href="{% url 'notification' %}" class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors border-b border-gray-100">
+        <a href="{% url 'notification' %}" class="group flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors border-b border-gray-100">
           <div class="flex items-center gap-4">
             <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
               <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -132,13 +132,13 @@ Settings | Code Stream
               <p class="text-sm text-gray-500">View and manage your notifications</p>
             </div>
           </div>
-          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 text-gray-400 group-hover:text-indigo-800" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path d="M9 5l7 7-7 7"></path>
           </svg>
         </a>
 
         <!-- Description -->
-        <a href="{% url 'description' %}" class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
+        <a href="{% url 'description' %}" class="group flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
           <div class="flex items-center gap-4">
             <div class="w-10 h-10 bg-pink-100 rounded-xl flex items-center justify-center">
               <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -150,7 +150,7 @@ Settings | Code Stream
               <p class="text-sm text-gray-500">Edit your profile description</p>
             </div>
           </div>
-          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 text-gray-400 group-hover:text-indigo-800" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path d="M9 5l7 7-7 7"></path>
           </svg>
         </a>
@@ -160,7 +160,7 @@ Settings | Code Stream
 
     <!-- Danger Zone -->
     <div class="mb-8">
-      <h2 class="text-sm font-semibold text-red-500 uppercase tracking-wider mb-4 px-2">Danger Zone</h2>
+      <h2 class="text-sm font-semibold text-red-600 uppercase tracking-wider mb-4 px-2">Danger Zone</h2>
       <div class="bg-white rounded-2xl shadow-sm border border-red-200 overflow-hidden">
         
         <a href="{% url 'account_logout' %}" class="flex items-center justify-between px-6 py-4 hover:bg-red-50 transition-colors">

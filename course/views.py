@@ -80,7 +80,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        if user.role != "instructor" or not user.role or not user.instructor_activated:
+        if user.role != "instructor" or not user.role:
             return redirect(course_view)
         return super().get(request, *args, **kwargs)
 
@@ -104,12 +104,7 @@ class CreateCourseDoneView(LoginRequiredMixin, DetailView):
     def get(self, request, *args, **kwargs):
         obj = self.get_object()
         user = request.user
-        if (
-            user.role != "instructor"
-            or not user.role
-            or user != obj.instructor
-            or not user.instructor_activated
-        ):
+        if user.role != "instructor" or not user.role or user != obj.instructor:
             return redirect(create_course_view)
         return super().get(request, *args, **kwargs)
 
@@ -126,7 +121,6 @@ class UpdateCourseView(LoginRequiredMixin, UpdateView):
             user.role != "instructor"
             or not user.role
             or user != obj.instructor
-            or not user.instructor_activated
         ):
             return redirect(course_view)
         return super().get(request, *args, **kwargs)

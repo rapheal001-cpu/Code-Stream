@@ -6,14 +6,14 @@ Confirm Email | Code Stream
 
 {% block content %}
 
-<main class="flex justify-center items-center min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 px-4">
-  <div class="w-full max-w-md bg-white/80 backdrop-blur-xl shadow-2xl rounded-2xl p-8 md:p-10 text-center border border-white/50 transform transition-all duration-500 hover:shadow-indigo-500/10">
+<main class="min-h-screen bg-linear-to-tr from-indigo-900 via-purple-800 to-indigo-800 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="w-full max-w-md backdrop-blur-lg bg-white/10 shadow-lg shadow-white rounded-lg p-8 md:p-10 text-center">
 
     <!-- Animated Success Icon -->
     <div class="flex justify-center mb-8">
       <div class="relative">
-        <div class="absolute inset-0 bg-green-400/20 rounded-full blur-xl animate-pulse"></div>
-        <div class="relative bg-gradient-to-br from-green-400 to-emerald-500 rounded-full p-4 shadow-lg shadow-green-500/30">
+        <div class="absolute inset-0 bg-white/50 rounded-full blur-lg animate-pulse"></div>
+        <div class="relative bg-white/30 rounded-full p-4">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
           </svg>
@@ -22,32 +22,32 @@ Confirm Email | Code Stream
     </div>
 
     <!-- Heading -->
-    <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-900 to-purple-900 mb-3 tracking-tight">
+    <h1 class="text-3xl font-bold bg-clip-text text-white mb-3 tracking-tight">
       Confirm Your Email
     </h1>
 
     <!-- Description -->
     <div class="mb-8">
       {% if confirmation.email_address %}
-      <p class="text-gray-600 text-lg leading-relaxed mb-2">
+      <p class="text-white text-lg leading-relaxed mb-2">
         Please verify that this email belongs to you
       </p>
-      <div class="bg-indigo-50/50 border border-indigo-100 rounded-xl p-4 mt-4 space-y-2">
-        <div class="flex items-center justify-center gap-2 text-indigo-900 font-semibold">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div class="bg-white/20 rounded-lg p-4 mt-4 space-y-2">
+        <div class="flex items-center justify-center gap-2 text-white font-semibold">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
           <span>{{ confirmation.email_address.email }}</span>
         </div>
-        <div class="flex items-center justify-center gap-2 text-gray-600 text-sm">
+        <div class="flex items-center justify-center gap-2 text-white text-sm">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
-          <span>User: <strong class="text-gray-800">{{ confirmation.email_address.user.username }}</strong></span>
+          <span>User: <strong class="text-white">{{ confirmation.email_address.user.username }}</strong></span>
         </div>
       </div>
       {% else %}
-      <p class="text-gray-600 text-lg leading-relaxed">
+      <p class="text-white text-lg leading-relaxed">
         Confirm your email address to complete your registration and unlock full access to your account.
       </p>
       {% endif %}
@@ -59,7 +59,7 @@ Confirm Email | Code Stream
       <button
         type="submit"
         name="confirm_email"
-        class="group relative w-full inline-flex items-center justify-center bg-indigo-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 overflow-hidden"
+        class="group relative w-full inline-flex items-center justify-center bg-transparent text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 shadow-md shadow-white hover:shadow-lg hover:-translate-y-0.5 overflow-hidden border-2 border-white/20"
         >
         <span class="relative z-10 flex items-center gap-2">
           Confirm Email Address
@@ -71,7 +71,7 @@ Confirm Email | Code Stream
     </form>
 
     <!-- Security Note -->
-    <p class="mt-6 text-xs text-gray-400 flex items-center justify-center gap-1">
+    <p class="mt-6 text-xs text-white flex items-center justify-center gap-1">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
       </svg>

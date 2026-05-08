@@ -193,7 +193,7 @@ class CustomLoginCancelledView(LoginCancelledView):
 class CustomLoginErrorView(LoginErrorView):
     """Social login error handler"""
 
-    template_name = "accounts/socialaccount/login_error.html"
+    template_name = "accounts/socialaccount/authentication_error.html"
 
 
 class CustomConnectionsView(LoginRequiredMixin, ConnectionsView):

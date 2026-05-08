@@ -20,7 +20,9 @@ SECRET_KEY = config("SECRET_KEY", cast=str)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool)
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=str).split(",")
+ALLOWED_HOSTS = ['127.0.0.1','7e4e-102-223-1-130.ngrok-free.app']
+
+#config("ALLOWED_HOSTS", cast=str).split(",")
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.ngrok-free.app",
@@ -214,7 +216,7 @@ ACCOUNT_ADAPTER = "accounts.adapter.CustomAdapter"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = config("EMAIL_HOST", cast=str)
 EMAIL_PORT = config("EMAIL_PORT", cast=int)
-# EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
 EMAIL_HOST_USER = config("EMAIL_HOST_USER", cast=str)
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", cast=str)
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", cast=str)
@@ -223,6 +225,6 @@ DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", cast=str)
 
 
 # Stripe Secret Key
-STRIPE_PUBLISHABLE_KEY= config('STRIPE_PUBLISHABLE_KEY', cast=str)
+STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY", cast=str)
 STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY", cast=str)
 STRIPE_WEBHOOK_SECRET_KEY = config("STRIPE_WEBHOOK_SECRET_KEY", cast=str)

@@ -8,17 +8,16 @@ Logout | Code Stream
 
 {% block content %}
 
-<main class="min-h-screen bg-linear-to-tr from-indigo-900 via-purple-800 to-indigo-800  py-12 px-4 sm:px-6 lg:px-8">
-
-  <div class="w-full max-w-md">
-
+<main class="min-h-screen bg-linear-to-tr from-indigo-900 via-purple-800 to-indigo-800  py-12 px-4 sm:px-6 lg:px-8 flex justify-center items-center">
+  <div class="w-full max-w-md mx-auto">
     <!-- Card -->
-    <div class="backdrop-blur-lg bg-white/10 rounded-3xl shadow-xl shadow-gray-200/50 overflow-hidden">
+    <div class="backdrop-blur-lg bg-white/10 rounded-3xl shadow-lg shadow-white overflow-hidden"
+      >
 
       <div class="p-8 sm:p-10 text-center">
 
         <!-- Icon -->
-        <div class="mx-auto w-20 h-20 bg-white/30 rounded-2xl flex items-center justify-center mb-6">
+        <div class="mx-auto w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mb-6">
           <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path>
             <polyline points="16 17 21 12 16 7"></polyline>
@@ -39,26 +38,24 @@ Logout | Code Stream
         <form method="POST" action="{% url 'account_logout' %}" class="space-y-3">
           {% csrf_token %}
 
-          <button
-            type="submit"
-            name="account_logout"
-            class="w-full flex items-center justify-center gap-2 bg-transparent text-white font-semibold py-3.5 rounded-xl transition-all duration-200 shadow-md shadow-white hover:shadow-lg active:scale-[0.98]"
-            >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"></path>
-            </svg>
-            Yes, Sign Out
-          </button>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
-          <a
-            href="{% url 'core:index-view' %}"
-            class="w-full flex items-center justify-center gap-2 bg-transparent shadow-md hover:shadow-lg shadow-white border-white/50 text-white font-semibold py-3.5 rounded-xl transition-all duration-200 active:scale-[0.98]"
-            >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-            </svg>
-            Stay Signed In
-          </a>
+            <button type="submit" name="account_logout" class="w-full flex items-center justify-center gap-2 bg-transparent text-white font-semibold py-3.5 rounded-xl transition-all duration-200 shadow-md shadow-white hover:shadow-lg active:scale-[0.98]"
+              >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"></path>
+              </svg>
+              Yes, Sign Out
+            </button>
+
+            <a href="{% url 'core:index-view' %}" class="w-full flex items-center justify-center gap-2 bg-transparent shadow-md hover:shadow-lg shadow-white border-white/50 text-white font-semibold py-3.5 rounded-xl transition-all duration-200 active:scale-[0.98]"
+              >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+              </svg>
+              Stay Signed In
+            </a>
+          </div>
         </form>
 
         <!-- Session Info -->

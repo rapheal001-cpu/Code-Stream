@@ -6,48 +6,29 @@ Update Course | Code Stream
 {% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gradient-to-br from-indigo-900 to-indigo-900 flex justify-center items-center p-4">
-  <div class="w-full max-w-2xl rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl p-8 relative overflow-hidden">
+<div class="min-h-screen bg-gradient-to-tr from-indigo-900 via-purple-800 to-indigo-900 flex justify-center items-center p-4">
+  <div class="w-full max-w-md rounded-2xl bg-white/10 backdrop-blur-lg shadow-lg shadow-white p-8 relative overflow-hidden">
 
     <h1 class="text-3xl font-bold mb-8 text-center text-white tracking-tight">Update Course</h1>
 
     <form action="{% url 'course:update-course' pk=object.pk %}" method="POST" enctype="multipart/form-data" class="space-y-6">
       {% csrf_token %}
 
-      <!-- Non-field errors -->
-      {% if form.non_field_errors %}
-      <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
-        <div class="flex items-start gap-3">
-          <svg class="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <div class="flex-1">
-            <h3 class="text-red-300 font-semibold text-sm mb-1">Please correct the following errors:</h3>
-            <ul class="text-red-300 text-sm space-y-1 list-disc list-inside">
-              {% for error in form.non_field_errors %}
-              <li>{{ error }}</li>
-              {% endfor %}
-            </ul>
-          </div>
-        </div>
-      </div>
-      {% endif %}
-
       <!-- Course Name -->
       <div>
         <label for="id_name" class="block text-sm font-medium mb-2 text-white">
-          Course Name <span class="text-red-400">*</span>
+          Course Name <span class="text-white">*</span>
         </label>
         <input
-          type="text"
-          name="name"
-          id="id_name"
-          class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:border-white/40 focus:ring-2 focus:ring-white/20 transition-all"
-          placeholder="Enter course name..."
-          value="{{ form.name.value|default_if_none:'' }}"
+        type="text"
+        name="name"
+        id="id_name"
+        class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/20 text-white placeholder-white focus:outline-none focus:border-white focus:ring-2 focus:ring-white transition-all"
+        placeholder="Enter course name..."
+        value="{{ form.name.value|default_if_none:'' }}"
         >
         {% if form.name.errors %}
-        <p class="mt-2 flex items-center gap-2 text-red-400 text-sm">
+        <p class="mt-2 flex items-center gap-2 text-white text-sm">
           <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01" />
           </svg>
@@ -59,17 +40,17 @@ Update Course | Code Stream
       <!-- Description -->
       <div>
         <label for="id_description" class="block text-sm font-medium mb-2 text-white">
-          Description <span class="text-red-400">*</span>
+          Description <span class="text-white">*</span>
         </label>
         <textarea
           name="description"
           id="id_description"
           rows="4"
-          class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:border-white/40 focus:ring-2 focus:ring-white/20 transition-all resize-none"
+          class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/20 text-white placeholder-white focus:outline-none focus:border-white/40 focus:ring-2 focus:ring-white transition-all resize-none"
           placeholder="Describe what students will learn..."
-        >{{ form.description.value|default_if_none:'' }}</textarea>
+          >{{ form.description.value|default_if_none:'' }}</textarea>
         {% if form.description.errors %}
-        <p class="mt-2 flex items-center gap-2 text-red-400 text-sm">
+        <p class="mt-2 flex items-center gap-2 text-white text-sm">
           <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01" />
           </svg>
@@ -83,25 +64,29 @@ Update Course | Code Stream
         <label for="id_thumbnail" class="block text-sm font-medium mb-2 text-white">
           Thumbnail
         </label>
-        
+
         <!-- Current thumbnail preview -->
         {% if object.thumbnail %}
         <div class="mb-3">
-          <p class="text-gray-400 text-xs mb-2">Current thumbnail:</p>
+          <p class="text-white text-xs mb-2">
+            Current thumbnail:
+          </p>
           <img src="{{ object.thumbnail.url }}" alt="Current thumbnail" class="w-32 h-20 object-cover rounded-lg border border-white/20">
         </div>
         {% endif %}
-        
+
         <input
-          type="file"
-          name="thumbnail"
-          id="id_thumbnail"
-          accept="image/*"
-          class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/20 text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-white/10 file:text-white hover:file:bg-white/20 transition-all cursor-pointer"
+        type="file"
+        name="thumbnail"
+        id="id_thumbnail"
+        accept="image/*"
+        class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/20 text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-white/10 file:text-white hover:file:bg-white/20 transition-all cursor-pointer"
         >
-        <p class="mt-2 text-gray-400 text-xs">Leave empty to keep the current thumbnail.</p>
+        <p class="mt-2 text-white text-xs">
+          Leave empty to keep the current thumbnail.
+        </p>
         {% if form.thumbnail.errors %}
-        <p class="mt-2 flex items-center gap-2 text-red-400 text-sm">
+        <p class="mt-2 flex items-center gap-2 text-white text-sm">
           <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01" />
           </svg>
@@ -112,7 +97,7 @@ Update Course | Code Stream
 
       <!-- Submit -->
       <div class="pt-2">
-        <button type="submit" class="w-full bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3.5 rounded-lg shadow-lg shadow-white/5 hover:shadow-white/10 transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-2">
+        <button type="submit" class="w-full bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3.5 rounded-lg shadow-md shadow-white hover:shadow-lg border border-white/50 transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
           </svg>
@@ -123,8 +108,8 @@ Update Course | Code Stream
 
     <!-- Back Link -->
     <div class="mt-6 text-center">
-      <a href="{% url 'course:course-index' %}" class="text-gray-400 hover:text-white text-sm font-medium transition-colors">
-        ← Back to Courses
+      <a href="{{ course.get_absolute_url }}" class="text-white hover:text-white text-sm font-medium transition-colors">
+        ← Back to Course
       </a>
     </div>
 

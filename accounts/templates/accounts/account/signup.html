@@ -11,25 +11,20 @@ Sign Up | Code Stream
 
 {% include 'core/base/header.html' %}
 
-<div class="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8"
-  >
-  <div class="w-full max-w-md">
+<div class="min-h-screen bg-linear-to-tr from-indigo-900 via-purple-800 to-indigo-800  py-12 px-4 sm:px-6 lg:px-8 flex justify-center items-center">
+  <div class="w-full max-w-md mx-auto">
     <!-- Card -->
-    <div
-      class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 overflow-hidden"
+    <div class="backdrop-blur-lg bg-white/10 rounded-3xl shadow-lg shadow-white overflow-hidden"
       >
-      <!-- Top Accent -->
-      <div class="h-1.5 lg:h-2 bg-indigo-900"
-        ></div>
 
       <div class="px-8 py-10 sm:px-10">
         <!-- Header -->
         <div class="text-center mb-8">
           <div
-            class="mx-auto w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mb-4"
+            class="mx-auto w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4"
             >
             <svg
-              class="w-6 h-6 text-indigo-600"
+              class="w-6 h-6 text-white"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
@@ -41,18 +36,18 @@ Sign Up | Code Stream
             </svg>
           </div>
           <h1
-            class="text-2xl font-bold tracking-tight text-gray-900"
+            class="text-2xl font-bold tracking-tight text-white"
             >
             Create your account
           </h1>
-          <p class="text-gray-500 mt-2 text-sm">
+          <p class="text-white mt-2 text-sm">
             Join thousands of learners building their future
           </p>
         </div>
 
         <!-- Social Signup Google -->
         <a href="{% provider_login_url 'google' %}"
-          class="flex items-center justify-center gap-3 w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 mb-6 group"
+          class="flex items-center justify-center gap-3 w-full px-4 py-3 bg-white/30 rounded-xl text-white font-medium hover:bg-white/20 transition-all duration-200 mb-6 group"
           >
           <svg class="w-5 h-5" viewBox="0 0 24 24">
             <path
@@ -78,10 +73,10 @@ Sign Up | Code Stream
         <!-- Divider -->
         <div class="relative mb-6">
           <div class="absolute inset-0 flex items-center">
-            <div class="w-full border-t border-gray-200"></div>
+            <div class="w-full border-t border-white/50"></div>
           </div>
           <div class="relative flex justify-center text-sm">
-            <span class="px-4 bg-white text-gray-500"
+            <span class="px-4 bg-white text-indigo-900 rounded-full"
               >Or sign up with github</span
             >
           </div>
@@ -89,7 +84,7 @@ Sign Up | Code Stream
 
         <!-- Social Signup GitHub -->
         <a href="{% provider_login_url 'github' %}"
-          class="flex items-center justify-center gap-3 w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 mb-6 group"
+          class="flex items-center justify-center gap-3 w-full px-4 py-3 bg-white/30 rounded-xl text-white font-medium hover:bg-white/20 transition-all duration-200 mb-6 group"
           >
           <svg class="w-5 h-5" viewBox="0 0 24 24">
             <path fill="currentColor" d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
@@ -100,10 +95,10 @@ Sign Up | Code Stream
         <!-- Divider -->
         <div class="relative mb-6">
           <div class="absolute inset-0 flex items-center">
-            <div class="w-full border-t border-gray-200"></div>
+            <div class="w-full border-t border-white/50"></div>
           </div>
           <div class="relative flex justify-center text-sm">
-            <span class="px-4 bg-white text-gray-500"
+            <span class="px-4 bg-white text-indigo-900 rounded-full"
               >Or sign up with email</span
             >
           </div>
@@ -117,36 +112,13 @@ Sign Up | Code Stream
           >
           {% csrf_token %}
 
-          <!-- Non-field Errors -->
-          {% if form.non_field_errors %}
-          <div class="rounded-xl bg-red-50 p-4 border border-red-100">
-            <div class="flex">
-              <svg
-                class="w-5 h-5 text-red-400 mr-3"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                >
-                <path
-                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  ></path>
-              </svg>
-              <div class="text-sm text-red-700">
-                {% for error in form.non_field_errors %} {{
-                error }} {% endfor %}
-              </div>
-            </div>
-          </div>
-          {% endif %}
-
           <!-- Name Row -->
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <!-- First Name -->
             <div>
               <label
                 for="{{ form.first_name.id_for_label }}"
-                class="block text-sm font-semibold text-gray-700 mb-2"
+                class="block text-sm font-semibold text-white mb-2"
                 >
                 First Name
               </label>
@@ -155,12 +127,12 @@ Sign Up | Code Stream
               name="first_name"
               id="{{ form.first_name.id_for_label }}"
               value="{{ form.first_name.value|default_if_none:'' }}"
-              class="block w-full px-4 py-3 border {% if form.first_name.errors %}border-red-300 focus:ring-red-500 focus:border-red-500{% else %}border-gray-200 focus:ring-indigo-500 focus:border-indigo-500{% endif %} rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-200"
+              class="block w-full px-4 py-3 border {% if form.first_name.errors %}border-red-300 focus:ring-red-500 focus:border-red-500{% else %}border-white/30 focus:ring-white focus:border-white{% endif %} rounded-xl text-white placeholder-white focus:outline-none focus:ring-2 transition-all duration-200"
               placeholder="John"
               />
             {% for error in form.first_name.errors %}
             <p
-              class="mt-1.5 text-sm text-red-600 flex items-center gap-1"
+              class="mt-1.5 text-sm text-white flex items-center gap-1"
               >
               <svg
                 class="w-4 h-4"
@@ -187,7 +159,7 @@ Sign Up | Code Stream
           <div>
             <label
               for="{{ form.last_name.id_for_label }}"
-              class="block text-sm font-semibold text-gray-700 mb-2"
+              class="block text-sm font-semibold text-white mb-2"
               >
               Last Name
             </label>
@@ -196,12 +168,12 @@ Sign Up | Code Stream
             name="last_name"
             id="{{ form.last_name.id_for_label }}"
             value="{{ form.last_name.value|default_if_none:'' }}"
-            class="block w-full px-4 py-3 border {% if form.last_name.errors %}border-red-300 focus:ring-red-500 focus:border-red-500{% else %}border-gray-200 focus:ring-indigo-500 focus:border-indigo-500{% endif %} rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-200"
+            class="block w-full px-4 py-3 border {% if form.last_name.errors %}border-red-300 focus:ring-red-500 focus:border-red-500{% else %}border-white/30 focus:ring-white focus:border-white{% endif %} rounded-xl text-white placeholder-white focus:outline-none focus:ring-2 transition-all duration-200"
             placeholder="Doe"
             />
           {% for error in form.last_name.errors %}
           <p
-            class="mt-1.5 text-sm text-red-600 flex items-center gap-1"
+            class="mt-1.5 text-sm text-white flex items-center gap-1"
             >
             <svg
               class="w-4 h-4"
@@ -229,7 +201,7 @@ Sign Up | Code Stream
       <div>
         <label
           for="{{ form.username.id_for_label }}"
-          class="block text-sm font-semibold text-gray-700 mb-2"
+          class="block text-sm font-semibold text-white mb-2"
           >
           Username
         </label>
@@ -237,20 +209,20 @@ Sign Up | Code Stream
           <div
             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
             >
-            <span class="text-gray-400 font-medium">@</span>
+            <span class="text-white font-medium">@</span>
           </div>
           <input
           type="text"
           name="username"
           id="{{ form.username.id_for_label }}"
           value="{{ form.username.value|default_if_none:'' }}"
-          class="block w-full pl-8 pr-4 py-3 border {% if form.username.errors %}border-red-300 focus:ring-red-500 focus:border-red-500{% else %}border-gray-200 focus:ring-indigo-500 focus:border-indigo-500{% endif %} rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-200"
+          class="block w-full pl-8 pr-4 py-3 border {% if form.username.errors %}border-red-300 focus:ring-red-500 focus:border-red-500{% else %}border-white/30 focus:ring-white focus:border-white{% endif %} rounded-xl text-white placeholder-white focus:outline-none focus:ring-2 transition-all duration-200"
           placeholder="johndoe"
           />
       </div>
       {% for error in form.username.errors %}
       <p
-        class="mt-1.5 text-sm text-red-600 flex items-center gap-1"
+        class="mt-1.5 text-sm text-white flex items-center gap-1"
         >
         <svg
           class="w-4 h-4"
@@ -272,7 +244,7 @@ Sign Up | Code Stream
     <div>
       <label
         for="{{ form.email.id_for_label }}"
-        class="block text-sm font-semibold text-gray-700 mb-2"
+        class="block text-sm font-semibold text-white mb-2"
         >
         Email Address
       </label>
@@ -281,7 +253,7 @@ Sign Up | Code Stream
           class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
           >
           <svg
-            class="h-5 w-5 text-gray-400"
+            class="h-5 w-5 text-white"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
@@ -297,13 +269,13 @@ Sign Up | Code Stream
         name="email"
         id="{{ form.email.id_for_label }}"
         value="{{ form.email.value|default_if_none:'' }}"
-        class="block w-full pl-10 pr-4 py-3 border {% if form.email.errors %}border-red-300 focus:ring-red-500 focus:border-red-500{% else %}border-gray-200 focus:ring-indigo-500 focus:border-indigo-500{% endif %} rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-200"
+        class="block w-full pl-10 pr-4 py-3 border {% if form.email.errors %}border-red-300 focus:ring-red-500 focus:border-red-500{% else %}border-white/30 focus:ring-white focus:border-white{% endif %} rounded-xl text-white placeholder-white focus:outline-none focus:ring-2 transition-all duration-200"
         placeholder="john@example.com"
         />
     </div>
     {% for error in form.email.errors %}
     <p
-      class="mt-1.5 text-sm text-red-600 flex items-center gap-1"
+      class="mt-1.5 text-sm text-white flex items-center gap-1"
       >
       <svg
         class="w-4 h-4"
@@ -325,7 +297,7 @@ Sign Up | Code Stream
   <div>
     <label
       for="{{ form.password1.id_for_label }}"
-      class="block text-sm font-semibold text-gray-700 mb-2"
+      class="block text-sm font-semibold text-white mb-2"
       >
       Password
     </label>
@@ -334,7 +306,7 @@ Sign Up | Code Stream
         class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
         >
         <svg
-          class="h-5 w-5 text-gray-400"
+          class="h-5 w-5 text-white"
           fill="none"
           stroke="currentColor"
           stroke-width="2"
@@ -349,13 +321,13 @@ Sign Up | Code Stream
       type="password"
       name="password1"
       id="{{ form.password1.id_for_label }}"
-      class="block w-full pl-10 pr-4 py-3 border {% if form.password1.errors %}border-red-300 focus:ring-red-500 focus:border-red-500{% else %}border-gray-200 focus:ring-indigo-500 focus:border-indigo-500{% endif %} rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-200"
+      class="block w-full pl-10 pr-4 py-3 border {% if form.password1.errors %}border-red-300 focus:ring-red-500 focus:border-red-500{% else %}border-white/30 focus:ring-white focus:border-white{% endif %} rounded-xl text-white placeholder-white focus:outline-none focus:ring-2 transition-all duration-200"
       placeholder="Create a strong password"
       />
   </div>
   {% for error in form.password1.errors %}
   <p
-    class="mt-1.5 text-sm text-red-600 flex items-center gap-1"
+    class="mt-1.5 text-sm text-white flex items-center gap-1"
     >
     <svg
       class="w-4 h-4"
@@ -377,7 +349,7 @@ Sign Up | Code Stream
 <div>
   <label
     for="{{ form.password2.id_for_label }}"
-    class="block text-sm font-semibold text-gray-700 mb-2"
+    class="block text-sm font-semibold text-white mb-2"
     >
     Confirm Password
   </label>
@@ -386,7 +358,7 @@ Sign Up | Code Stream
       class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
       >
       <svg
-        class="h-5 w-5 text-gray-400"
+        class="h-5 w-5 text-white"
         fill="none"
         stroke="currentColor"
         stroke-width="2"
@@ -401,13 +373,13 @@ Sign Up | Code Stream
     type="password"
     name="password2"
     id="{{ form.password2.id_for_label }}"
-    class="block w-full pl-10 pr-4 py-3 border {% if form.password2.errors %}border-red-300 focus:ring-red-500 focus:border-red-500{% else %}border-gray-200 focus:ring-indigo-500 focus:border-indigo-500{% endif %} rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-200"
+    class="block w-full pl-10 pr-4 py-3 border {% if form.password2.errors %}border-red-300 focus:ring-red-500 focus:border-red-500{% else %}border-white/30 focus:ring-white focus:border-white{% endif %} rounded-xl text-white placeholder-white focus:outline-none focus:ring-2 transition-all duration-200"
     placeholder="Confirm your password"
     />
 </div>
 {% for error in form.password2.errors %}
 <p
-  class="mt-1.5 text-sm text-red-600 flex items-center gap-1"
+  class="mt-1.5 text-sm text-white flex items-center gap-1"
   >
   <svg
     class="w-4 h-4"
@@ -425,41 +397,10 @@ Sign Up | Code Stream
 {% endfor %}
 </div>
 
-<!-- Terms -->
-<div class="flex items-start">
-<div class="flex items-center h-5">
-<input
-id="terms"
-name="terms"
-type="checkbox"
-class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded transition-colors accent-indigo-600"
-/>
-</div>
-<div class="ml-3 text-sm">
-<label
-for="terms"
-class="font-medium text-gray-700"
->
-I agree to the
-<a
-href="#"
-class="text-indigo-600 hover:text-indigo-500"
->Terms of Service</a
->
-and
-<a
-href="#"
-class="text-indigo-600 hover:text-indigo-500"
->Privacy Policy</a
->
-</label>
-</div>
-</div>
-
 <!-- Submit -->
 <button
 type="submit"
-class="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-300 active:scale-[0.98]"
+class="w-full flex items-center justify-center gap-2 bg-transparent text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-sm shadow-white hover:shadow-lg border border-white/30 hover:border-2 hover:border-white active:scale-[0.98]"
 >
 <svg
 class="w-5 h-5"
@@ -477,11 +418,11 @@ Create Account
 </form>
 
 <!-- Login Link -->
-<p class="mt-8 text-center text-sm text-gray-500">
+<p class="mt-8 text-center text-sm text-white">
 Already have an account?
 <a
 href="{% url 'account_login' %}"
-class="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors"
+class="font-semibold text-white hover:underline transition-colors"
 >
 Sign in instead
 </a>
@@ -490,7 +431,7 @@ Sign in instead
 </div>
 
 <!-- Trust Badges -->
-<div class="mt-8 flex items-center justify-center gap-6 text-gray-400">
+<div class="mt-8 flex items-center justify-center gap-6 text-white">
 <div class="flex items-center gap-2 text-xs">
 <svg
 class="w-4 h-4"

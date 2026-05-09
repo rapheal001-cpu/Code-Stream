@@ -33,7 +33,7 @@
         <source src="{{ active_video.video.url }}" type="video/mp4">
       </video>
       {% else %}
-      <div class="aspect-video max-h-[80vh] flex items-center justify-center bg-gradient-to-t from-indigo-900 via-indigo-600 to-indigo-900">
+      <div class="aspect-video max-h-[80vh] flex items-center justify-center bg-gradient-to-tr from-indigo-900 via-purple-900 to-indigo-900">
         <div class="text-center">
           <svg class="w-16 h-16 text-white mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M8 5v14l11-7z" />
@@ -45,7 +45,7 @@
       </div>
       {% endif %}
       {% else %}
-      <div class="aspect-video max-h-[80vh] flex items-center justify-center bg-gradient-to-t from-indigo-900 via-indigo-600 to-indigo-900">
+      <div class="aspect-video max-h-[80vh] flex items-center justify-center bg-gradient-to-tr from-indigo-900 via-purple-900 to-indigo-900">
         <div class="text-center">
           <svg class="w-16 h-16 text-white mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M8 5v14l11-7z" />
@@ -92,7 +92,7 @@
     {% endif %}
     {% else %}
     <!-- Non-student Course Banner -->
-    <div class="bg-gradient-to-t from-indigo-900 via-indigo-600 to-indigo-900 rounded-2xl shadow-lg p-8 mb-8 flex flex-col items-center justify-center text-center text-white max-w-5xl mx-auto">
+    <div class="bg-gradient-to-tr from-indigo-900 via-purple-900 to-indigo-900 rounded-2xl shadow-lg p-8 mb-8 flex flex-col items-center justify-center text-center text-white max-w-5xl mx-auto">
       <h2 class="text-2xl font-bold mb-2">
         {{ course.name }}
       </h2>
@@ -225,7 +225,7 @@
       {% else %}
       <div class="p-8">
         <a href="{% url 'payment:checkout-course' course_id=course.id %}"
-          class="max-w-md h-36 mx-auto rounded-xl bg-gradient-to-t from-indigo-900 via-indigo-600 to-indigo-900 text-white text-xl font-semibold flex justify-center items-center shadow-lg hover:from-indigo-800 hover:to-indigo-950 transition-all">
+          class="max-w-md h-36 mx-auto rounded-xl bg-gradient-to-tr from-indigo-900 via-purple-900 to-indigo-900 text-white text-xl font-semibold flex justify-center items-center shadow-lg hover:from-indigo-800 hover:to-indigo-950 transition-all">
           Buy Now
         </a>
       </div>

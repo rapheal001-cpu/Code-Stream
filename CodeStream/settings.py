@@ -20,9 +20,9 @@ SECRET_KEY = config("SECRET_KEY", cast=str)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool)
 
-ALLOWED_HOSTS = ['127.0.0.1','7e4e-102-223-1-130.ngrok-free.app']
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "af2e-102-223-1-130.ngrok-free.app"]
 
-#config("ALLOWED_HOSTS", cast=str).split(",")
+# config("ALLOWED_HOSTS", cast=str).split(",")
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.ngrok-free.app",
@@ -173,7 +173,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR / "mediafiles")
 
 # Login System
 LOGIN_REDIRECT_URL = index_view
-LOGOUT_REDIRECT_URL = login_view
+LOGOUT_REDIRECT_URL = index_view
 LOGOUT_URL = login_view
 
 
@@ -209,6 +209,9 @@ SOCIALACCOUNT_PROVIDERS = {
     "google": {"EMAIL_AUTHENTICATION": True, "FETCH_USERINFO": True},
     "github": {"VERIFIED_EMAIL": True},
 }
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# Account Adapter
 ACCOUNT_ADAPTER = "accounts.adapter.CustomAdapter"
 
 

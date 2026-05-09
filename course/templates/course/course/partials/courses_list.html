@@ -9,7 +9,7 @@
       Manage and track your course content
     </p>
   </div>
-  <span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-sm font-medium text-gray-600">
+  <span class="inline-flex items-center px-3 py-1 rounded-full bg-indigo-900 text-sm font-medium text-white">
     {{ courses.count }} {{ courses.count|pluralize:'course,courses' }}
   </span>
 </div>
@@ -65,7 +65,7 @@
             {% if course.instructor.avatar %}
             <img src="{{ course.instructor.avatar.url }}" alt="{{ course.instructor.username }}" class="w-10 h-10 rounded-full object-cover border border-gray-200" />
           {% else %}
-          <div class="w-10 h-10 rounded-full font-extrabold bg-indigo-800 text-white text-2xl flex justify-center items-center">
+          <div class="w-10 h-10 rounded-full font-extrabold bg-indigo-900 text-white text-2xl flex justify-center items-center">
             {{ course.instructor.username|first|upper }}
           </div>
           {% endif %}

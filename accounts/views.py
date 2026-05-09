@@ -59,17 +59,26 @@ class CustomSignupView(SignupView):
     template_name = "accounts/account/signup.html"
 
 
+signup_view = CustomSignupView.as_view()
+
+
 class CustomLoginView(LoginView):
     """User login view"""
 
     template_name = "accounts/account/login.html"
 
 
+login_view = CustomLoginView.as_view()
+
+
 class CustomLogoutView(LoginRequiredMixin, LogoutView):
     """User logout view"""
 
     template_name = "accounts/account/logout.html"
-    next_page = reverse_lazy("account_login")
+    next_page = reverse_lazy(index_view)
+
+
+logout_view = CustomLogoutView.as_view()
 
 
 # ===========
@@ -81,10 +90,16 @@ class CustomEmailVerificationSentView(EmailVerificationSentView):
     template_name = "accounts/account/email_verification_sent.html"
 
 
+email_verification_sent_view = CustomEmailVerificationSentView.as_view()
+
+
 class CustomConfirmEmailView(ConfirmEmailView):
     """Email confirmation handler"""
 
     template_name = "accounts/account/confirm_email.html"
+
+
+confirm_email_view = CustomConfirmEmailView.as_view()
 
 
 class CustomEmailView(LoginRequiredMixin, EmailView):
@@ -107,6 +122,9 @@ class CustomEmailView(LoginRequiredMixin, EmailView):
         return super().get(request, *args, **kwargs)
 
 
+email_view = CustomEmailView.as_view()
+
+
 # ==============
 # PASSWORD VIEWS
 # ==============
@@ -122,6 +140,9 @@ class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
         return super().get(request, *args, **kwargs)
 
 
+password_change_view = CustomPasswordChangeView.as_view()
+
+
 class CustomPasswordChangeDoneView(LoginRequiredMixin, TemplateView):
     """Password change success view"""
 
@@ -131,6 +152,9 @@ class CustomPasswordChangeDoneView(LoginRequiredMixin, TemplateView):
         if not request.user.role:
             return redirect(index_view)
         return super().get(request, *args, **kwargs)
+
+
+password_change_done_view = CustomPasswordChangeDoneView.as_view()
 
 
 class CustomPasswordSetView(LoginRequiredMixin, PasswordSetView):
@@ -145,6 +169,9 @@ class CustomPasswordSetView(LoginRequiredMixin, PasswordSetView):
         return super().get(request, *args, **kwargs)
 
 
+password_set_view = CustomPasswordSetView.as_view()
+
+
 class CustomPasswordSetDoneView(LoginRequiredMixin, TemplateView):
     """Password set success view"""
 
@@ -154,6 +181,9 @@ class CustomPasswordSetDoneView(LoginRequiredMixin, TemplateView):
         if not request.user.role:
             return redirect(index_view)
         return super().get(request, *args, **kwargs)
+
+
+password_set_done_view = CustomPasswordSetDoneView.as_view()
 
 
 class CustomPasswordResetView(PasswordResetView):
@@ -223,7 +253,7 @@ class ProfileView(LoginRequiredMixin, DetailView):
     model = User
     pk_field = "pk"
     pk_url_kwarg = "pk"
-    template_name = "accounts/user/html/profile.html"
+    template_name = "accounts/user/main/profile.html"
 
     def get(self, request, *args, **kwargs):
         profile = self.get_object()
@@ -249,7 +279,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
 
     model = User
     form_class = UpdateProfileForm
-    template_name = "accounts/user/html/update_profile.html"
+    template_name = "accounts/user/main/update_profile.html"
     success_url = reverse_lazy("settings")
 
     def get_object(self):
@@ -266,7 +296,7 @@ class DescriptionView(LoginRequiredMixin, UpdateView):
 
     model = User
     form_class = ProfileDescriptionForm
-    template_name = "accounts/user/html/description.html"
+    template_name = "accounts/user/main/description.html"
     success_url = reverse_lazy("settings")
 
     def get_object(self):
@@ -283,7 +313,7 @@ class SettingsView(LoginRequiredMixin, DetailView):
 
     model = User
     context_object_name = "user"
-    template_name = "accounts/user/html/settings.html"
+    template_name = "accounts/user/main/settings.html"
 
     def get_object(self):
         return self.request.user
@@ -325,7 +355,7 @@ class NotificationView(LoginRequiredMixin, ListView):
     model = Notification
     fields = "__all__"
     context_object_name = "notifications"
-    template_name = "accounts/user/html/notification.html"
+    template_name = "accounts/user/main/notification.html"
 
     def get_queryset(self):
         user = self.request.user
@@ -373,7 +403,7 @@ class NotificationDetailView(LoginRequiredMixin, DetailView):
 class FindFriendView(LoginRequiredMixin, TemplateView):
     """Search and follow/unfollow users"""
 
-    template_name = "accounts/user/html/find_friend.html"
+    template_name = "accounts/user/main/find_friend.html"
 
     def get(self, request, *args, **kwargs):
         if not request.user.role:
@@ -410,7 +440,7 @@ class InstructorWalletView(LoginRequiredMixin, DetailView):
     pk_field = "pk"
     pk_url_kwarg = "pk"
     context_object_name = "wallet"
-    template_name = "accounts/user/html/wallet.html"
+    template_name = "accounts/user/main/wallet.html"
 
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -425,7 +455,7 @@ class InstructorWalletView(LoginRequiredMixin, DetailView):
 # INSTRUCTOR Courses VIEWS
 # ========================
 class InstructorCoursesView(LoginRequiredMixin, TemplateView):
-    template_name = "accounts/user/html/instructor_courses.html"
+    template_name = "accounts/user/main/instructor_courses.html"
 
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -478,4 +508,4 @@ class FollowersAndFollowingView(LoginRequiredMixin, DetailView):
     model = User
     pk_field = "pk"
     pk_url_kwarg = "pk"
-    template_name = "accounts/user/html/followers.html"
+    template_name = "accounts/user/main/followers.html"

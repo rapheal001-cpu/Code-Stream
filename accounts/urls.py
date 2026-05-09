@@ -32,9 +32,17 @@ from .views import (
     FindFriendView,
     InstructorWalletView,
     InstructorCoursesView,
+    FollowView,
+    FollowersAndFollowingView,
 )
 
 urlpatterns = [
+    path(
+        "followers/<int:pk>/",
+        FollowersAndFollowingView.as_view(),
+        name="followers-view",
+    ),
+    path("follow/<int:pk>/", FollowView.as_view(), name="follow-view"),
     path("my-course/", InstructorCoursesView.as_view(), name="instructor-courses"),
     path("wallet/<int:pk>/", InstructorWalletView.as_view(), name="wallet"),
     path("find-friends/", FindFriendView.as_view(), name="find-friends"),

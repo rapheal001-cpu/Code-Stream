@@ -43,7 +43,7 @@ Notifications | Code Stream
           <div class="flex items-start gap-4">
             <!-- Icon/Avatar -->
             <div class="flex-shrink-0">
-              {% if notification.sender %}
+              {% if notification.sender.avatar %}
               <img
               src="{{ notification.sender.avatar.url }}"
               alt="{{ notification.sender.username }}"

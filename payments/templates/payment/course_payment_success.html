@@ -3,11 +3,102 @@
 {% load static %}
 
 {% block title %}
-{{ course.name }} | checkout success | CodeStream
+{{ course.name }} | Checkout Success | CodeStream
 {% endblock %}
 
 {% block content %}
-{{ course.name }}
-<br/>
-{{ course.get_absolute_url }}
+<div class="min-h-screen bg-gradient-to-tr from-indigo-900 via-purple-900 to-indigo-900 text-white flex items-center justify-center px-4 py-12">
+  <div class="max-w-md mx-auto w-full">
+
+    <!-- Success Card -->
+    <div class="bg-transparent backdrop-blur-lg shadow-lg shadow-white relative overflow-hidden rounded-xl">
+
+      <div class="p-8 md:p-12 text-center">
+
+        <!-- Success Icon -->
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-white/10 mb-6 rounded-full">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+
+        <!-- Heading -->
+        <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-white mb-3">
+          Checkout Successful!
+        </h1>
+
+        <p class="text-white/80 text-lg mb-8 max-w-md mx-auto">
+          Your purchase for <span class="text-white font-medium">{{ course.name }}</span> was completed successfully.
+        </p>
+
+        <!-- Course Details Card -->
+        <div class="bg-white/20 p-6 mb-8 text-left rounded-xl">
+          <div class="flex items-start gap-4">
+            {% if course.thumbnail %}
+            <img src="{{ course.thumbnail.url }}" alt="{{ course.name }}" class="w-20 h-20 object-cover flex-shrink-0 rounded-lg">
+            {% else %}
+            <div class="w-20 h-20 bg-white/20 border border-white/30 flex items-center justify-center flex-shrink-0 rounded-lg">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            {% endif %}
+
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-white text-lg leading-tight mb-1">{{ course.name }}</h3>
+              <p class="text-white/70 text-sm mb-2">
+                Instructor: {{ course.instructor.full_name|default:course.instructor.username }}
+              </p>
+              <div class="flex items-center gap-3 text-sm">
+                <span class="text-emerald-400 hover:text-emerald-600 hover:font-bold font-medium">Purchased</span>
+                <span class="text-white/50">|</span>
+                <span class="text-white">${{ course.price }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="{{ course.get_absolute_url }}"
+            class="inline-flex items-center justify-center px-6 py-3 bg-transparent border border-white shadow-md shadow-white text-white font-semibold hover:shadow-lg transition-colors duration-200 rounded-xl">
+            Start Learning
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </a>
+
+          <a href="{% url 'course:course-index' %}"
+            class="inline-flex items-center justify-center px-6 py-3 bg-transparent border border-white shadow-md shadow-white text-white font-semibold hover:shadow-lg transition-colors duration-200 rounded-xl">
+            Browse More Courses
+          </a>
+        </div>
+
+        <!-- Help Text -->
+        <p class="mt-6 text-sm text-white/60">
+          A receipt has been sent to your email.
+          <a href="" class="text-white underline underline-offset-4 transition-colors hover:text-emerald-300">View order history</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- What's Next Section -->
+    <div class="mt-8 bg-transparent bg-white/10 backdrop-blur-lg p-6 rounded-xl shadow-md shadow-white/10">
+      <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">What's Next?</h3>
+      <div class="space-y-3 text-sm text-white/80">
+        <div class="flex gap-3">
+          <span class="text-white font-mono">01</span>
+          <span>Access your course materials from the course page.</span>
+        </div>
+        <div class="flex gap-3">
+          <span class="text-white font-mono">03</span>
+          <span>Join the community discussion forums for support.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 {% endblock %}

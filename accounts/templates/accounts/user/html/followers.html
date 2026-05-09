@@ -1,0 +1,118 @@
+{% extends 'core/base/base.html' %}
+
+{% load static widget_tweaks django_htmx %}
+
+{% block title %}
+Followers | Code Stream
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-tr from-indigo-900 via-purple-800 to-indigo-800 py-12 px-4 sm:px-6 lg:px-8 flex justify-center items-center">
+
+  <div class="w-full max-w-md mx-auto">
+
+    <!-- Main Card -->
+    <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl shadow-2xl shadow-black/20 overflow-hidden h-[70vh] flex flex-col">
+
+      <!-- Tab Navigation -->
+      <div class="flex border-b border-white/10">
+        <button
+          class="flex-1 py-4 text-center font-semibold text-white text-base transition-all duration-200 hover:bg-white/5 border-b-2 border-white"
+          hx-get="#"
+          hx-target="#user-list"
+          hx-push-url="true"
+          >
+          Followers
+        </button>
+        <button
+          class="flex-1 py-4 text-center font-semibold text-white/60 text-base transition-all duration-200 hover:bg-white/5 border-b-2 border-transparent hover:text-white"
+          hx-get="#"
+          hx-target="#user-list"
+          hx-push-url="true"
+          >
+          Following
+        </button>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="p-4 border-b border-white/10">
+        <div class="relative">
+          <input
+          type="text"
+          placeholder="Search users..."
+          class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pl-10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-transparent transition-all"
+          hx-get="#"
+          hx-target="#user-list"
+          hx-trigger="keyup changed delay:300ms"
+          name="q"
+          >
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- User List Container -->
+      <div id="user-list" class="flex-1 overflow-y-auto p-4 space-y-3">
+        {% for user in followers %}
+        <!-- User Card -->
+        <div class="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all duration-200 group">
+
+          <!-- Avatar -->
+          <div class="relative">
+            <img
+            src="{{ user.profile.avatar.url|default:'/static/images/default-avatar.png' }}"
+            alt="{{ user.username }}"
+            class="w-12 h-12 rounded-full object-cover ring-2 ring-white/10 group-hover:ring-purple-400/50 transition-all"
+            >
+            {% if user.is_online %}
+            <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-indigo-900"></span>
+            {% endif %}
+          </div>
+
+          <!-- User Info -->
+          <div class="flex-1 min-w-0">
+            <h3 class="text-white font-medium truncate">{{ user.get_full_name|default:user.username }}</h3>
+            <p class="text-white/50 text-sm truncate">
+              @{{ user.username }}
+            </p>
+          </div>
+
+          <!-- Follow Button -->
+          <button
+            class="px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 {% if user.is_following_back %}bg-white/10 text-white hover:bg-white/20{% else %}bg-purple-500 text-white hover:bg-purple-600 shadow-lg shadow-purple-500/25{% endif %}"
+            hx-post="{% url 'toggle_follow' user.username %}"
+            hx-swap="outerHTML"
+            hx-target="this"
+            >
+            {% if user.is_following_back %}
+            Following
+            {% else %}
+            Follow Back
+            {% endif %}
+          </button>
+        </div>
+        {% empty %}
+        <div class="flex flex-col items-center justify-center h-full text-white/40 py-12">
+          <svg class="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <p class="text-lg font-medium">
+            No followers yet
+          </p>
+          <p class="text-sm mt-1">
+            When someone follows you, they'll appear here.
+          </p>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Loading State -->
+      <div class="htmx-indicator absolute inset-0 bg-indigo-900/50 backdrop-blur-sm flex items-center justify-center z-10">
+        <div class="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

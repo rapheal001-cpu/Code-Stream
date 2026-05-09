@@ -22,6 +22,7 @@ class User(AbstractUser):
     profile_views = models.ManyToManyField(
         "self", symmetrical=False, blank=True, related_name="viewed_by"
     )
+    last_seen = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.username} ({self.role})"
@@ -68,6 +69,7 @@ class Notification(models.Model):
         User, on_delete=models.CASCADE, related_name="user_notification"
     )
     title = models.CharField(max_length=255)
+    sender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="sender")
     message = models.TextField()
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -119,3 +121,7 @@ class PaymentHistory(models.Model):
         ordering = ["-created_at"]
         verbose_name = "Payment History"
         verbose_name_plural = "Payment Histories"
+
+class OrderHistory(models.Model):
+  
+  pass

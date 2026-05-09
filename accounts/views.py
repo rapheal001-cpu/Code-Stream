@@ -11,6 +11,7 @@ from django.views.generic import (
     ListView,
     TemplateView,
 )
+from django.views import View
 from django.db.models import Q
 from allauth.account.views import (
     LoginView,
@@ -45,7 +46,6 @@ from course.models import Course
 from CodeStream.utils import (
     index_view,
     notification_view,
-    find_friend_view,
     course_view,
 )
 
@@ -400,19 +400,6 @@ class FindFriendView(LoginRequiredMixin, TemplateView):
 
         return render(request, self.template_name, context)
 
-    def post(self, request, *args, **kwargs):
-        friend_username = request.POST.get("friend_username").strip()
-        user = request.user
-
-        friend = get_object_or_404(User, username=friend_username)
-
-        if user in friend.followers.all():
-            friend.followers.remove(user)
-        else:
-            friend.followers.add(user)
-
-        return redirect(find_friend_view)
-
 
 # =======================
 # INSTRUCTOR WALLET VIEWS
@@ -462,3 +449,33 @@ class InstructorCoursesView(LoginRequiredMixin, TemplateView):
             return render(request, "course/course/partials/courses_list.html", context)
 
         return render(request, self.template_name, context)
+
+
+# ========================
+# Follow and Unfollow VIEWS
+# ========================
+class FollowView(LoginRequiredMixin, View):
+    def post(self, request, pk=None, *args, **kwargs):
+        user = get_object_or_404(User, pk=pk)
+        current_user = request.user
+        if current_user in user.followers.all():
+            user.followers.remove(current_user)
+        else:
+            user.followers.add(current_user)
+            Notification.objects.create(
+                user=user,
+                title="New Follower",
+                sender=current_user,
+                message=f"@{current_user.username} started following you.",
+            )
+        return redirect(request.META.get("HTTP_REFERER"))
+
+
+# ========================
+# Followers and Following VIEWS
+# ========================
+class FollowersAndFollowingView(LoginRequiredMixin, DetailView):
+    model = User
+    pk_field = "pk"
+    pk_url_kwarg = "pk"
+    template_name = "accounts/user/html/followers.html"

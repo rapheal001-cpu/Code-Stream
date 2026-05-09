@@ -28,10 +28,10 @@ def webhook_view(request):
 
     # Handle the event
     if event["type"] == "checkout.session.completed":
-        payment_intent = event["data"]["object"]
+        session = event["data"]["object"]
 
-        course_id = payment_intent["metadata"]["course_id"]
-        user_id = payment_intent["metadata"]["user_id"]
+        course_id = session["metadata"]["course_id"]
+        user_id = session["metadata"]["user_id"]
 
         course = get_object_or_404(Course, pk=course_id)
         user = get_object_or_404(User, pk=user_id)
@@ -62,7 +62,7 @@ def webhook_view(request):
                 amount_paid=course.price,
                 is_paid=True,
             )
-            # Send Notification to the user
+            # Send Notification to the user(Student)
             Notification.objects.create(
                 user=user,
                 title="Course Purchase Successful 🎉",

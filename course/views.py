@@ -9,6 +9,7 @@ from .forms import CreateCourseForm, UpdateCourseForm, CourseVideoForm
 from django.urls import reverse_lazy
 from CodeStream.utils import index_view, course_view, create_course_view
 
+
 class CourseView(LoginRequiredMixin, TemplateView):
     """Main course landing page."""
 
@@ -47,14 +48,16 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
         videos = course.videos.all()
 
         context["videos"] = videos
-        context["active_video"] = videos.first() if videos.exists() else None
+        context["active_video"] = videos.last() if videos.exists() else None
         context["form"] = kwargs.get("form", CourseVideoForm())
         return context
 
     def get(self, request, *args, **kwargs):
-        if not request.user.role:
-            return redirect(index_view)
-        return super().get(request, *args, **kwargs)
+      if not request.user.role:
+        return redirect(index_view)
+      delete = request.GET.get('course_id')
+      print(delete)
+      return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -117,11 +120,7 @@ class UpdateCourseView(LoginRequiredMixin, UpdateView):
     def get(self, request, *args, **kwargs):
         user = request.user
         obj = self.get_object()
-        if (
-            user.role != "instructor"
-            or not user.role
-            or user != obj.instructor
-        ):
+        if user.role != "instructor" or not user.role or user != obj.instructor:
             return redirect(course_view)
         return super().get(request, *args, **kwargs)
 

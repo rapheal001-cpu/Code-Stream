@@ -1,65 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>Email Confirmation</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Email Address</title>
 </head>
-<body style="margin:0; padding:0; background:#f4f4f4; font-family: Arial, sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" border="0" style="padding:30px 0;">
+<body style="margin: 0; padding: 0; min-height: 100vh; background-color: white; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; justify-content: center; align-items: center;">
+    
+    <!-- Main Container Table -->
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+        <tr>
+            <td align="center" valign="middle" style="padding: 40px 5px;">
+                
+                <!-- Card Table -->
+                <table role="presentation" width="480" cellspacing="0" cellpadding="0" border="0" style="max-width: 480px; width: 100%; background: linear-gradient(135deg, #312e81 0%, #581c87 50%, #312e81 100%); border-radius: 24px; overflow: hidden;">
+                    <tr>
+                        <td style="padding: 48px 32px; text-align: center;">
+                      
+                            <!-- Heading -->
+                            <h1 style="color: #ffffff; font-size: 1.75rem; font-weight: 700; margin: 0 0 8px; letter-spacing: -0.02em; line-height: 1.2;">
+                                Confirm Your Email Address
+                            </h1>
 
-<tr>
-<td align="center">
-<!-- CARD -->
-<table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff; border:2px solid #312e81; border-radius:10px; overflow:hidden;">
+                            <!-- Email Display -->
+                            <p style="color: white; font-size: 1rem; line-height: 1.6; margin: 0 0 24px;">
+                                {{ user.email }}
+                            </p>
 
-<!-- HEADER -->
-<tr>
-<td style="background:#312e81; color:#ffffff; text-align:center; padding:20px; font-size:20px; font-weight:bold;">
-Confirm Your Email Address
-</td>
-</tr>
+                            <!-- Message -->
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: 0 auto 32px;">
+                                <tr>
+                                    <td style="color: #e0e7ff; font-size: 0.9375rem; line-height: 1.6; text-align: center; max-width: 360px;">
+                                        Thank you for registering. Please click the button below to verify your email address.
+                                    </td>
+                                </tr>
+                            </table>
 
-<!-- BODY -->
-<tr>
-<td style="padding:25px; color:#333333; font-size:16px; line-height:1.5;">
+                            <!-- Button Table -->
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: 0 auto;">
+                                <tr>
+                                    <td style="border-radius: 12px; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); box-shadow: 0 4px 14px rgba(99,102,241,0.4);">
+                                        <a href="{{ activate_url }}" style="display: inline-block; padding: 14px 32px; color: #ffffff; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 1rem; text-align: center; border: none;">
+                                            Confirm Your Email
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
 
-<p style="margin-bottom:15px;">
-Hello <strong>{{ user.full_name }}</strong>,
-</p>
-
-<p style="margin-bottom:15px;">
-Thank you for registering. Please click the button below to verify your email address.
-</p>
-
-<!-- BUTTON -->
-<table cellpadding="0" cellspacing="0" border="0" align="center" style="margin:20px auto;">
-<tr>
-<td bgcolor="#312e81" style="border-radius:6px;">
-<a href="{{ activate_url }}"
-style="display:inline-block; padding:12px 25px; color:#ffffff; text-decoration:none; font-weight:bold;">
-Verify Email
-</a>
-</td>
-</tr>
-</table>
-
-<p style="margin-top:20px; color:#555555;">
-If you didn't create this account, you can ignore this email.
-</p>
-
-<p style="margin-top:25px; font-weight:bold;">
-Thank you for using <b>Code Stream</b>
-</p>
-
-</td>
-</tr>
-
-</table>
-<!-- END CARD -->
-
-</td>
-</tr>
-
-</table>
+                            <!-- Footer Brand -->
+                            <p style="color: #ffffff; font-size: 0.875rem; margin: 32px 0 0;">
+                                Code Stream
+                            </p>
+                            
+                        </td>
+                    </tr>
+                </table>
+                
+            </td>
+        </tr>
+    </table>
+    
 </body>
 </html>

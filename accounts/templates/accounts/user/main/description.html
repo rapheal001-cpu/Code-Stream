@@ -4,13 +4,13 @@
 {% load widget_tweaks %}
 
 {% block title %}
-Update Description | Code Stream
+Edit Description | Code Stream
 {% endblock %}
 
 {% block content %}
 
 <div class="min-h-screen bg-linear-to-tr from-indigo-900 via-purple-800 to-indigo-800  py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center">
-  <div class="max-w-md mx-auto backdrop-blur-lg shadow-lg shadow-white rounded-xl">
+  <div class="max-w-7xl mx-auto backdrop-blur-lg shadow-lg shadow-white rounded-xl">
 
 
     <!-- Header -->
@@ -20,7 +20,7 @@ Update Description | Code Stream
 
 
   <!-- Main Content -->
-  <div class="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 py-6">
+  <div class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6">
 
     <form id="description-form" action="{% url 'description' %}" method="POST" class="h-full flex flex-col">
       {% csrf_token %}

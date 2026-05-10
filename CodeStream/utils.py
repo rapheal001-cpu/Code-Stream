@@ -8,6 +8,15 @@ PAYMENT_TYPE = [
     ("withdraw", "Withdraw"),
     ("income", "Income"),
 ]
+
+STATUS_TYPE = [
+    ("", "--Select Status--"),
+    ('success', 'Success'),
+    ('failed', 'Failed'),
+    ('canceled', 'Canceled'),
+]
+
+
 role_selection = ["student", "instructor"]
 index_view = "core:index-view"
 about_view = "core:about-view"

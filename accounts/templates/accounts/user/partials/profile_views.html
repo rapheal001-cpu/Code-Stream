@@ -9,7 +9,7 @@
 {% block content %}
 
 <div class="min-h-screen bg-linear-to-tr from-indigo-900 via-purple-800 to-indigo-800  py-12 px-4 sm:px-6 lg:px-8">
-  <div class="w-full max-w-md mx-auto backdrop-blur-lg bg-white/10 shadow-lg shadow-white rounded-xl p-4">
+  <div class="w-full max-w-6xl mx-auto backdrop-blur-lg bg-white/10 shadow-lg shadow-white rounded-xl p-4">
     <!-- Floating Back Button -->
     <a href="{{ user.get_absolute_url }}" class="self-start mb-8 group flex items-center gap-2 text-white font-medium hover:-translate-x-1">
       <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/30 shadow-md group-hover:shadow-lg transition-all duration-300">
@@ -35,7 +35,7 @@
       </h1>
 
       {% if viewer %}
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md shadow-md shadow-white">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 backdrop-blur-md shadow-md shadow-white">
         <span class="relative flex h-2 w-2">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white/50 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
@@ -54,8 +54,8 @@
     {% if viewer %}
 
     <!-- Main List Container -->
-    <div class="w-full max-w-xl">
-      <div class="bg-white/20 backdrop-blur-lg rounded-2xl overflow-hidden">
+    <div class="w-full max-w-5xl mx-auto">
+      <div class="bg-white/10 backdrop-blur-lg rounded-2xl overflow-hidden">
         <ul class="divide-y divide-slate-100">
           {% for v in viewer %}
           <li class="relative">
@@ -152,7 +152,7 @@
   <!-- Modern Empty State -->
   <div class="relative w-full max-w-md">
     <!-- Decorative Background Elements -->
-    <div class="relative bg-white/30 backdrop-blur-lg rounded-3xl p-12 text-center overflow-hidden">
+    <div class="relative bg-white/5 backdrop-blur-lg rounded-3xl p-12 text-center overflow-hidden">
       <!-- Animated Eye Icon -->
       <div class="relative mb-6 inline-block">
         <div class="relative text-6xl filter transform transition-transform hover:scale-110 duration-500 cursor-default">

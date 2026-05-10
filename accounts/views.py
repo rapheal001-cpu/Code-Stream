@@ -192,10 +192,16 @@ class CustomPasswordResetView(PasswordResetView):
     template_name = "accounts/account/password_reset.html"
 
 
+password_reset_view = CustomPasswordResetView.as_view()
+
+
 class CustomPasswordResetDoneView(PasswordResetDoneView):
     """Password reset email sent view"""
 
     template_name = "accounts/account/password_reset_done.html"
+
+
+password_reset_done_view = CustomPasswordResetDoneView.as_view()
 
 
 class CustomPasswordResetFromKeyView(PasswordResetFromKeyView):
@@ -205,11 +211,16 @@ class CustomPasswordResetFromKeyView(PasswordResetFromKeyView):
     success_url = reverse_lazy("account_reset_password_from_key_done")
 
 
+password_reset_from_key_view = CustomPasswordResetFromKeyView.as_view()
+
+
 class CustomPasswordResetFromKeyDoneView(PasswordResetFromKeyDoneView):
     """Password reset completion view"""
 
     template_name = "accounts/account/password_reset_from_key_done.html"
 
+
+password_reset_from_key_done_view = CustomPasswordResetFromKeyDoneView.as_view()
 
 # =================
 # SOCIAL AUTH VIEWS
@@ -220,13 +231,19 @@ class CustomLoginCancelledView(LoginCancelledView):
     template_name = "accounts/socialaccount/login_cancelled.html"
 
 
+login_cancelled_view = CustomLoginCancelledView.as_view()
+
+
 class CustomLoginErrorView(LoginErrorView):
     """Social login error handler"""
 
     template_name = "accounts/socialaccount/authentication_error.html"
 
 
-class CustomConnectionsView(LoginRequiredMixin, ConnectionsView):
+login_error_view = CustomLoginErrorView.as_view()
+
+
+class CustomSocialConnectionsView(LoginRequiredMixin, ConnectionsView):
     """Social account management"""
 
     template_name = "accounts/socialaccount/social_account_connections.html"
@@ -243,6 +260,8 @@ class CustomConnectionsView(LoginRequiredMixin, ConnectionsView):
             return redirect("core:index-view")
         return super().get(request, *args, **kwargs)
 
+
+social_connections_view = CustomSocialConnectionsView.as_view()
 
 # ==================
 # USER PROFILE VIEWS
@@ -274,6 +293,9 @@ class ProfileView(LoginRequiredMixin, DetailView):
         return super().get(request, *args, **kwargs)
 
 
+profile_view = ProfileView.as_view()
+
+
 class UpdateProfileView(LoginRequiredMixin, UpdateView):
     """Profile updating view"""
 
@@ -289,6 +311,9 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
         if not request.user.role:
             return redirect(index_view)
         return super().get(request, *args, **kwargs)
+
+
+update_profile_view = UpdateProfileView.as_view()
 
 
 class DescriptionView(LoginRequiredMixin, UpdateView):
@@ -308,6 +333,9 @@ class DescriptionView(LoginRequiredMixin, UpdateView):
         return super().get(request, *args, **kwargs)
 
 
+description_view = DescriptionView.as_view()
+
+
 class SettingsView(LoginRequiredMixin, DetailView):
     """User settings page"""
 
@@ -322,6 +350,9 @@ class SettingsView(LoginRequiredMixin, DetailView):
         if not request.user.role:
             return redirect(index_view)
         return super().get(request, *args, **kwargs)
+
+
+settings_view = SettingsView.as_view()
 
 
 class ProfileViewsList(LoginRequiredMixin, DetailView):
@@ -344,6 +375,9 @@ class ProfileViewsList(LoginRequiredMixin, DetailView):
         if not request.user.role:
             return redirect(index_view)
         return super().get(request, *args, **kwargs)
+
+
+profile_views_list = ProfileViewsList.as_view()
 
 
 # ==================
@@ -376,6 +410,9 @@ class NotificationView(LoginRequiredMixin, ListView):
         return redirect(notification_view)
 
 
+notification_view = NotificationView.as_view()
+
+
 class NotificationDetailView(LoginRequiredMixin, DetailView):
     """Single notification detail"""
 
@@ -395,6 +432,9 @@ class NotificationDetailView(LoginRequiredMixin, DetailView):
             notification.is_read = True
             notification.save(update_fields=["is_read"])
         return super().get(request, *args, **kwargs)
+
+
+notification_detail_view = NotificationDetailView.as_view()
 
 
 # ===================
@@ -431,6 +471,9 @@ class FindFriendView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
+find_friend_view = FindFriendView.as_view()
+
+
 # =======================
 # INSTRUCTOR WALLET VIEWS
 # =======================
@@ -449,6 +492,9 @@ class InstructorWalletView(LoginRequiredMixin, DetailView):
         if not user.role or wallet.user.pk != user.pk:
             return redirect(index_view)
         return super().get(request, *args, **kwargs)
+
+
+instructor_wallet_view = InstructorWalletView.as_view()
 
 
 # ========================
@@ -481,24 +527,41 @@ class InstructorCoursesView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
+instructor_course_view = InstructorCoursesView.as_view()
+
+
 # ========================
 # Follow and Unfollow VIEWS
 # ========================
 class FollowView(LoginRequiredMixin, View):
     def post(self, request, pk=None, *args, **kwargs):
-        user = get_object_or_404(User, pk=pk)
+        user_to_follow = get_object_or_404(User, pk=pk)
         current_user = request.user
-        if current_user in user.followers.all():
-            user.followers.remove(current_user)
+
+        # Prevent self-follow
+        if current_user == user_to_follow:
+            return redirect(request.META.get("HTTP_REFERER", "/"))
+
+        # Unfollow
+        if current_user in user_to_follow.followers.all():
+            user_to_follow.followers.remove(current_user)
+
+        # Follow
         else:
-            user.followers.add(current_user)
+            user_to_follow.followers.add(current_user)
+
+            # Prevent duplicate notifications
             Notification.objects.create(
-                user=user,
+                user=user_to_follow,
                 title="New Follower",
                 sender=current_user,
                 message=f"@{current_user.username} started following you.",
             )
-        return redirect(request.META.get("HTTP_REFERER"))
+
+        return redirect(request.META.get("HTTP_REFERER", "/"))
+
+
+follow_view = FollowView.as_view()
 
 
 # ========================
@@ -508,4 +571,33 @@ class FollowersAndFollowingView(LoginRequiredMixin, DetailView):
     model = User
     pk_field = "pk"
     pk_url_kwarg = "pk"
-    template_name = "accounts/user/main/followers.html"
+    context_object_name = "user"
+    template_name = "accounts/user/main/followers_and_following.html"
+
+followers_and_following_view = FollowersAndFollowingView.as_view()
+
+
+class FollowersView(LoginRequiredMixin, View):
+    def get(self, request, pk=None, *args, **kwargs):
+        user = get_object_or_404(User, pk=pk)
+        followers = user.followers.all()
+        context = {"followers": followers}
+        if request.htmx:
+            return render(request, 'accounts/user/partials/followers.html', context)
+        return render(request, 'accounts/user/main/followers_and_following.html', context)
+
+
+followers_view = FollowersView.as_view()
+
+
+class FollowingView(LoginRequiredMixin, View):
+    def get(self, request, pk=None, *args, **kwargs):
+        user = get_object_or_404(User, pk=pk)
+        following = user.following.all()
+        context = {"following": following}
+        if request.htmx:
+            return render(request, 'accounts/user/partials/following.html', context)
+        return render(request, 'accounts/user/main/followers_and_following.html', context)
+
+
+following_view = FollowingView.as_view()

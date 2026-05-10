@@ -20,13 +20,13 @@ SECRET_KEY = config("SECRET_KEY", cast=str)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool)
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "af2e-102-223-1-130.ngrok-free.app"]
+ALLOWED_HOSTS = ["127.0.0.1", 'localhost']
 
 # config("ALLOWED_HOSTS", cast=str).split(",")
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://*.ngrok-free.app",
-]
+# CSRF_TRUSTED_ORIGINS = [
+#     "https://*.ngrok-free.app",
+# ]
 
 
 AUTH_USER_MODEL = "accounts.User"

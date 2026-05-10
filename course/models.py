@@ -6,21 +6,13 @@ from django.urls import reverse
 
 
 class Course(models.Model):
-    instructor = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="course_instructor"
-    )
+    instructor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="course_instructor")
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True)
     description = models.TextField(blank=True, null=True)
-    thumbnail = models.ImageField(
-        upload_to="course/thumbnails/"
-    )
-    price = models.DecimalField(
-        max_digits=15, decimal_places=2, default=Decimal("0.00")
-    )
-    students = models.ManyToManyField(
-        User, through="Enrollment", related_name="enrolled_courses", blank=True
-    )
+    thumbnail = models.ImageField(upload_to="course/thumbnails/")
+    price = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal("0.00"))
+    students = models.ManyToManyField(User, through="Enrollment", related_name="enrolled_courses", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -57,10 +49,7 @@ class CourseVideo(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     video = models.FileField(upload_to="course/videos/upload/")
-    thumbnail = models.ImageField(
-        upload_to="course/video_thumbs/",
-        default="course/video_thumbs/default.png",
-    )
+    thumbnail = models.ImageField(upload_to="course/video_thumbs/")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -73,15 +62,9 @@ class CourseVideo(models.Model):
 
 
 class Enrollment(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="user_enrollment"
-    )
-    course = models.ForeignKey(
-        Course, on_delete=models.CASCADE, related_name="course_enrollment"
-    )
-    amount_paid = models.DecimalField(
-        max_digits=15, decimal_places=2, default=Decimal("0.00")
-    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_enrollment")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="course_enrollment")
+    amount_paid = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal("0.00"))
     is_paid = models.BooleanField(default=False)
     enrolled_at = models.DateTimeField(auto_now_add=True)
 
@@ -96,16 +79,11 @@ class Enrollment(models.Model):
 
 
 class PublicVideo(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="public_video"
-    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="public_video")
     title = models.CharField(max_length=225)
     description = models.TextField(blank=True, null=True)
     video = models.FileField(upload_to="course/public_video/upload/")
-    thumbnail = models.ImageField(
-        upload_to="course/public_video/thumbnail/",
-        default="course/public_video/default/default.png",
-    )
+    thumbnail = models.ImageField(upload_to="course/public_video/thumbnail/")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def get_absolute_url(self):

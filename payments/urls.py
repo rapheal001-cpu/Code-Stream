@@ -1,28 +1,28 @@
 from django.urls import path
 from .views import (
-    CoursePaymentCheckoutSession,
-    CourseCheckoutSuccessView,
-    CourseCheckoutCancelView,
+    course_payment_checkout_session,
+    course_checkout_success_view,
+    course_checkout_cancel_view,
 )
-from .webhook import webhook_view
+from .webhook import course_webhook
 
 app_name = "payment"
 
 urlpatterns = [
     path(
         "checkout-course/<int:course_id>/",
-        CoursePaymentCheckoutSession.as_view(),
+        course_payment_checkout_session,
         name="checkout-course",
     ),
     path(
         "checkout-course-success/<int:pk>/",
-        CourseCheckoutSuccessView.as_view(),
+        course_checkout_success_view,
         name="checkout-course-success",
     ),
     path(
         "checkout-course-cancel/<int:pk>/",
-        CourseCheckoutCancelView.as_view(),
+        course_checkout_cancel_view,
         name="checkout-course-cancel",
     ),
-    path("stripe/webhook/", webhook_view, name="webhook"),
+    path("stripe/webhook/", course_webhook, name="webhook"),
 ]

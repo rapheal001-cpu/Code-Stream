@@ -44,9 +44,9 @@ from .forms import (
 )
 from course.models import Course
 from CodeStream.utils import (
-    index_view,
-    notification_view,
-    course_view,
+    index_view_url,
+    notification_view_url,
+    course_view_url,
 )
 
 
@@ -75,7 +75,7 @@ class CustomLogoutView(LoginRequiredMixin, LogoutView):
     """User logout view"""
 
     template_name = "accounts/account/logout.html"
-    next_page = reverse_lazy(index_view)
+    next_page = reverse_lazy(index_view_url)
 
 
 logout_view = CustomLogoutView.as_view()
@@ -118,7 +118,7 @@ class CustomEmailView(LoginRequiredMixin, EmailView):
 
     def get(self, request, *args, **kwargs):
         if not request.user.role:
-            return redirect(index_view)
+            return redirect(index_view_url)
         return super().get(request, *args, **kwargs)
 
 
@@ -136,7 +136,7 @@ class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
 
     def get(self, request, *args, **kwargs):
         if not request.user.role:
-            return redirect(index_view)
+            return redirect(index_view_url)
         return super().get(request, *args, **kwargs)
 
 
@@ -150,7 +150,7 @@ class CustomPasswordChangeDoneView(LoginRequiredMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         if not request.user.role:
-            return redirect(index_view)
+            return redirect(index_view_url)
         return super().get(request, *args, **kwargs)
 
 
@@ -165,7 +165,7 @@ class CustomPasswordSetView(LoginRequiredMixin, PasswordSetView):
 
     def get(self, request, *args, **kwargs):
         if not request.user.role:
-            return redirect(index_view)
+            return redirect(index_view_url)
         return super().get(request, *args, **kwargs)
 
 
@@ -179,7 +179,7 @@ class CustomPasswordSetDoneView(LoginRequiredMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         if not request.user.role:
-            return redirect(index_view)
+            return redirect(index_view_url)
         return super().get(request, *args, **kwargs)
 
 
@@ -279,7 +279,7 @@ class ProfileView(LoginRequiredMixin, DetailView):
         viewer = request.user
 
         if not request.user.role:
-            return redirect(index_view)
+            return redirect(index_view_url)
 
         if viewer != profile:
             if not profile.profile_views.filter(pk=viewer.pk).exists():
@@ -309,7 +309,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
 
     def get(self, request, *args, **kwargs):
         if not request.user.role:
-            return redirect(index_view)
+            return redirect(index_view_url)
         return super().get(request, *args, **kwargs)
 
 
@@ -329,7 +329,7 @@ class DescriptionView(LoginRequiredMixin, UpdateView):
 
     def get(self, request, *args, **kwargs):
         if not request.user.role:
-            return redirect(index_view)
+            return redirect(index_view_url)
         return super().get(request, *args, **kwargs)
 
 
@@ -348,7 +348,7 @@ class SettingsView(LoginRequiredMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         if not request.user.role:
-            return redirect(index_view)
+            return redirect(index_view_url)
         return super().get(request, *args, **kwargs)
 
 
@@ -373,7 +373,7 @@ class ProfileViewsList(LoginRequiredMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         if not request.user.role:
-            return redirect(index_view)
+            return redirect(index_view_url)
         return super().get(request, *args, **kwargs)
 
 
@@ -397,7 +397,7 @@ class NotificationView(LoginRequiredMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         if not request.user.role:
-            return redirect(index_view)
+            return redirect(index_view_url)
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -407,10 +407,10 @@ class NotificationView(LoginRequiredMixin, ListView):
             Notification, pk=delete_notification, user=user
         )
         notification.delete()
-        return redirect(notification_view)
+        return redirect(notification_view_url)
 
 
-notification_view = NotificationView.as_view()
+notification_view_url = NotificationView.as_view()
 
 
 class NotificationDetailView(LoginRequiredMixin, DetailView):
@@ -447,7 +447,7 @@ class FindFriendView(LoginRequiredMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         if not request.user.role:
-            return redirect(index_view)
+            return redirect(index_view_url)
 
         search = request.GET.get("search")
         user = self.request.user
@@ -490,7 +490,7 @@ class InstructorWalletView(LoginRequiredMixin, DetailView):
         self.object = self.get_object()
         wallet = self.object
         if not user.role or wallet.user.pk != user.pk:
-            return redirect(index_view)
+            return redirect(index_view_url)
         return super().get(request, *args, **kwargs)
 
 
@@ -507,7 +507,7 @@ class InstructorCoursesView(LoginRequiredMixin, TemplateView):
         user = request.user
         search = request.GET.get("search")
         if user != user:
-            return redirect(course_view)
+            return redirect(course_view_url)
 
         if search:
             courses = Course.objects.filter(

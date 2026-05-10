@@ -7,7 +7,7 @@ from .models import (
 )
 from .forms import CreateCourseForm, UpdateCourseForm, CourseVideoForm
 from django.urls import reverse_lazy
-from CodeStream.utils import index_view, course_view, create_course_view
+from CodeStream.utils import index_view_url, course_view_url, create_course_view_url
 
 
 class CourseView(LoginRequiredMixin, TemplateView):
@@ -34,6 +34,9 @@ class CourseView(LoginRequiredMixin, TemplateView):
             return render(request, "course/course/partials/courses_list.html", context)
 
         return render(request, self.template_name, context)
+
+
+course_view = CourseView.as_view()
 
 
 class CourseDetailView(LoginRequiredMixin, DetailView):
@@ -76,6 +79,9 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
         return render(request, self.template_name, context)
 
 
+course_detail_view = CourseDetailView.as_view()
+
+
 class CreateCourseView(LoginRequiredMixin, CreateView):
     model = Course
     form_class = CreateCourseForm
@@ -84,7 +90,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
     def get(self, request, *args, **kwargs):
         user = request.user
         if user.role != "instructor" or not user.role:
-            return redirect(course_view)
+            return redirect(course_view_url)
         return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -95,6 +101,9 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy("course:create-course-done", kwargs={"pk": self.object.pk})
+
+
+create_course_view = CreateCourseView.as_view()
 
 
 class CreateCourseDoneView(LoginRequiredMixin, DetailView):
@@ -108,8 +117,11 @@ class CreateCourseDoneView(LoginRequiredMixin, DetailView):
         obj = self.get_object()
         user = request.user
         if user.role != "instructor" or not user.role or user != obj.instructor:
-            return redirect(create_course_view)
+            return redirect(create_course_view_url)
         return super().get(request, *args, **kwargs)
+
+
+create_course_done_view = CreateCourseDoneView.as_view()
 
 
 class UpdateCourseView(LoginRequiredMixin, UpdateView):
@@ -121,11 +133,14 @@ class UpdateCourseView(LoginRequiredMixin, UpdateView):
         user = request.user
         obj = self.get_object()
         if user.role != "instructor" or not user.role or user != obj.instructor:
-            return redirect(course_view)
+            return redirect(course_view_url)
         return super().get(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy("course:create-course-done", kwargs={"pk": self.object.pk})
+
+
+update_course_view_url = UpdateCourseView.as_view()
 
 
 class CourseInfoView(LoginRequiredMixin, DetailView):
@@ -137,7 +152,7 @@ class CourseInfoView(LoginRequiredMixin, DetailView):
     def get(self, request, *args, **kwargs):
         user = request.user
         if not user.role:
-            return redirect(course_view)
+            return redirect(course_view_url)
 
         self.object = self.get_object()
         course = self.object
@@ -165,3 +180,6 @@ class CourseInfoView(LoginRequiredMixin, DetailView):
             )
 
         return render(request, self.template_name, context)
+
+
+course_info_view = CourseInfoView.as_view()

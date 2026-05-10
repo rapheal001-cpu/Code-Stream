@@ -6,7 +6,7 @@ from .models import Report
 from .forms import UserRoleForm
 from course.models import Course
 import time
-from CodeStream.utils import about_view
+from CodeStream.utils import about_view_url
 # Create your views here.
 
 
@@ -20,7 +20,7 @@ class IndexView(TemplateView):
         search = request.GET.get("search")
 
         if search:
-            time.sleep(1.5)
+            time.sleep(1.2)
             courses = Course.objects.filter(Q(name__icontains=search)).order_by(
                 "-created_at"
             )
@@ -51,6 +51,8 @@ class IndexView(TemplateView):
         return render(request, self.template_name, context)
 
 
+index_view = IndexView.as_view()
+
 # About View
 class AboutView(TemplateView):
     template_name = "core/html/about.html"
@@ -77,4 +79,7 @@ class AboutView(TemplateView):
             if user:
                 Notification.objects.create(user=user, title=topic, message=body)
 
-        return redirect(about_view)
+        return redirect(about_view_url)
+
+
+about_view = AboutView.as_view()

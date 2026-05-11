@@ -17,7 +17,7 @@ class CourseView(LoginRequiredMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         if not request.user.role:
-            return redirect(index_view)
+            return redirect(index_view_url)
         search = request.GET.get("search", "").strip()
         if search:
             courses = Course.objects.filter(
@@ -56,11 +56,11 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
         return context
 
     def get(self, request, *args, **kwargs):
-      if not request.user.role:
-        return redirect(index_view)
-      delete = request.GET.get('course_id')
-      print(delete)
-      return super().get(request, *args, **kwargs)
+        if not request.user.role:
+            return redirect(index_view_url)
+        delete = request.GET.get("course_id")
+        print(delete)
+        return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -140,7 +140,7 @@ class UpdateCourseView(LoginRequiredMixin, UpdateView):
         return reverse_lazy("course:create-course-done", kwargs={"pk": self.object.pk})
 
 
-update_course_view_url = UpdateCourseView.as_view()
+update_course_view = UpdateCourseView.as_view()
 
 
 class CourseInfoView(LoginRequiredMixin, DetailView):

@@ -7,8 +7,8 @@ import os
 from decouple import config
 from pathlib import Path
 from .utils import (
-    index_view,
-    login_view,
+    index_view_url,
+    login_view_url,
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,7 +20,7 @@ SECRET_KEY = config("SECRET_KEY", cast=str)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool)
 
-ALLOWED_HOSTS = ["127.0.0.1", 'localhost']
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 # config("ALLOWED_HOSTS", cast=str).split(",")
 
@@ -158,7 +158,7 @@ STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_DIRS = [
     # Accounts Static
-    os.path.join(BASE_DIR / "accounts" / "static"),
+    BASE_DIR / "accounts" / "static",
     # Core Static
     os.path.join(BASE_DIR / "core" / "static"),
     # Course Static
@@ -172,9 +172,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR / "mediafiles")
 
 
 # Login System
-LOGIN_REDIRECT_URL = index_view
-LOGOUT_REDIRECT_URL = index_view
-LOGOUT_URL = login_view
+LOGIN_REDIRECT_URL = index_view_url
+LOGOUT_REDIRECT_URL = index_view_url
+LOGOUT_URL = login_view_url
 
 
 # Allauth Permissions

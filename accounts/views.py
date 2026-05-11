@@ -410,7 +410,7 @@ class NotificationView(LoginRequiredMixin, ListView):
         return redirect(notification_view_url)
 
 
-notification_view_url = NotificationView.as_view()
+notification_view = NotificationView.as_view()
 
 
 class NotificationDetailView(LoginRequiredMixin, DetailView):

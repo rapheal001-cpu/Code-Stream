@@ -108,7 +108,7 @@ Sign Up | Code Stream
         <form
           action="{% url 'account_signup' %}"
           method="POST"
-          class="space-y-5"
+          class="space-y-5" onsubmit="SignupForm(event)"
           >
           {% csrf_token %}
 
@@ -400,6 +400,7 @@ Sign Up | Code Stream
 <!-- Submit -->
 <button
 type="submit"
+id="submitBtn"
 class="w-full flex items-center justify-center gap-2 bg-transparent text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-sm shadow-white hover:shadow-lg border border-white/30 hover:border-2 hover:border-white active:scale-[0.98]"
 >
 <svg
@@ -413,7 +414,9 @@ viewBox="0 0 24 24"
 d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
 ></path>
 </svg>
+<span id="submitText">
 Create Account
+</span>
 </button>
 </form>
 
@@ -467,6 +470,7 @@ Free forever
 {% endblock %}
 
 {% block javascript %}
+<script src="{% static 'accounts/javascript/signup.js' %}" type="text/javascript" charset="utf-8"></script>
 <script src="{% static 'core/base/javascript/header.js' %}" type="text/javascript" charset="utf-8"
 ></script>
 {% endblock %}

@@ -23,7 +23,7 @@ SECRET_KEY = config("SECRET_KEY", cast=str)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool, default=(ENVIRONMENT == "development"))
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=str)
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=str).split(",")
 
 
 AUTH_USER_MODEL = "accounts.User"
@@ -72,6 +72,8 @@ ACCOUNT_FORMS = {
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    # white Noise
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -157,15 +159,23 @@ USE_TZ = True
 
 # Static
 STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_DIRS = [
-    # Accounts Static
-    BASE_DIR / "accounts" / "static",
-    # Core Static
-    os.path.join(BASE_DIR / "core" / "static"),
-    # Course Static
-    os.path.join(BASE_DIR / "course" / "static"),
-]
+if ENVIRONMENT == 'production':
+    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+    STORAGES = {
+        # ...
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+else:
+    STATICFILES_DIRS = [
+        # Accounts Static
+        BASE_DIR / "accounts" / "static",
+        # Core Static
+        os.path.join(BASE_DIR / "core" / "static"),
+        # Course Static
+        os.path.join(BASE_DIR / "course" / "static"),
+    ]
 
 
 # Media

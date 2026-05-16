@@ -23,7 +23,7 @@ SECRET_KEY = config("SECRET_KEY", cast=str)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool, default=(ENVIRONMENT == "development"))
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=str)
 
 
 AUTH_USER_MODEL = "accounts.User"

@@ -159,24 +159,21 @@ USE_TZ = True
 
 # Static
 STATIC_URL = "static/"
-if ENVIRONMENT == 'production':
-    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-    STORAGES = {
-        # ...
-        "staticfiles": {
-            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-        },
-    }
-else:
-    STATICFILES_DIRS = [
-        # Accounts Static
-        BASE_DIR / "accounts" / "static",
-        # Core Static
-        os.path.join(BASE_DIR / "core" / "static"),
-        # Course Static
-        os.path.join(BASE_DIR / "course" / "static"),
-    ]
-
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STORAGES = {
+    # ...
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+STATICFILES_DIRS = [
+    # Accounts Static
+    BASE_DIR / "accounts" / "static",
+    # Core Static
+    os.path.join(BASE_DIR / "core" / "static"),
+    # Course Static
+    os.path.join(BASE_DIR / "course" / "static"),
+]
 
 # Media
 MEDIA_URL = "/media/"

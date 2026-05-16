@@ -52,6 +52,9 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.github",
     "widget_tweaks",
     "django_htmx",
+    'cloudinary',
+    'cloudinary_storage',
+
 ]
 
 SITE_ID = 1
@@ -160,18 +163,29 @@ USE_TZ = True
 # Static
 STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_DIRS = [
-    # Accounts Static
-    BASE_DIR / "accounts" / "static",
-    # Core Static
-    os.path.join(BASE_DIR / "core" / "static"),
-    # Course Static
-    os.path.join(BASE_DIR / "course" / "static"),
-]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+# STATICFILES_DIRS = [
+#     # Accounts Static
+#     BASE_DIR / "accounts" / "static",
+#     # Core Static
+#     os.path.join(BASE_DIR / "core" / "static"),
+#     # Course Static
+#     os.path.join(BASE_DIR / "course" / "static"),
+# ]
 
 # Media
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR / "media")
+if ENVIRONMENT == "production":
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
+        'API_KEY': config('CLOUDINARY_API_KEY'),
+        'API_SECRET': config('CLOUDINARY_API_SECRET'),
+    }
+else:
+    # Local development - store media locally
+    MEDIA_ROOT = os.path.join(BASE_DIR / 'media')
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 
 # Login System

@@ -1,10 +1,10 @@
 # Environment
-# .env
-# **/.env
+.env
+**/.env
 
 # Virtual env
-# venv/
-# **/venv/
+venv/
+**/venv/
 
 # Python
 __pycache__/

@@ -21,11 +21,12 @@ It is designed to provide a smooth learning experience with user authentication,
 
 - **Backend:** Django (Python)
 - **Frontend:** HTML, Tailwind CSS, JavaScript, HTMX
-- **Database:** PostgreSQL / SQLite
-- **Media Storage:** Local media storage
-- **Authentication:** Django Auth System
+- **Database:** PostgreSQL
+- **Media Storage:** Cloudinary
+- **Authentication:** Django Auth System & Allauth System
 - **Payment:** Stripe
 
 ---
 
-## 📁 Project Structure
+## 📁 Project Image
+![website Logo](core/static/core/images/logo.png)

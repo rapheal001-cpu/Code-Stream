@@ -7,6 +7,8 @@ import os
 import dj_database_url
 from decouple import config
 from pathlib import Path
+
+from django.views import defaults
 from .utils import (
     index_view_url,
     login_view_url,
@@ -23,7 +25,7 @@ SECRET_KEY = config("SECRET_KEY", cast=str)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool, default=(ENVIRONMENT == "development"))
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=str).split(",")
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=str, default='127.0.0.1').split(",")
 
 
 AUTH_USER_MODEL = "accounts.User"
@@ -236,14 +238,15 @@ ACCOUNT_ADAPTER = "accounts.adapter.CustomAdapter"
 
 
 # Email
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = config("EMAIL_HOST", cast=str)
-EMAIL_PORT = config("EMAIL_PORT", cast=int)
-EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
-EMAIL_HOST_USER = config("EMAIL_HOST_USER", cast=str)
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", cast=str)
-DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", cast=str)
-
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST = config("EMAIL_HOST", cast=str)
+# EMAIL_PORT = config("EMAIL_PORT", cast=int)
+# EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
+# EMAIL_HOST_USER = config("EMAIL_HOST_USER", cast=str)
+# EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", cast=str)
+# DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", cast=str)
+#
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 

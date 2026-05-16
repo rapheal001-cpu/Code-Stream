@@ -4,12 +4,15 @@ Django settings for CodeStream project.
 """
 
 import os
+import dj_database_url
 from decouple import config
 from pathlib import Path
 from .utils import (
     index_view_url,
     login_view_url,
 )
+
+ENVIRONMENT = config("ENVIRONMENT", cast=str)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,15 +21,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("SECRET_KEY", cast=str)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", cast=bool)
+DEBUG = config("DEBUG", cast=bool, default=(ENVIRONMENT == "development"))
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
-
-# config("ALLOWED_HOSTS", cast=str).split(",")
-
-# CSRF_TRUSTED_ORIGINS = [
-#     "https://*.ngrok-free.app",
-# ]
+ALLOWED_HOSTS = ['*']
 
 
 AUTH_USER_MODEL = "accounts.User"
@@ -47,7 +44,7 @@ INSTALLED_APPS = [
     "core.apps.CoreConfig",
     "course.apps.CourseConfig",
     "payments.apps.PaymentsConfig",
-    # Allauth
+    # Packages
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -60,7 +57,7 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
+    # Needed to log in by username in Django admin, regardless of `allauth`
     "django.contrib.auth.backends.ModelBackend",
     # `allauth` specific authentication methods, such as login by email
     "allauth.account.auth_backends.AuthenticationBackend",
@@ -82,7 +79,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     # Allauth Account Middleware
     "allauth.account.middleware.AccountMiddleware",
-    # Django Htmx Middleware
+    # Django htmx Middleware
     "django_htmx.middleware.HtmxMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -110,12 +107,17 @@ WSGI_APPLICATION = "CodeStream.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if ENVIRONMENT == 'development':
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES =  {
+        'default': dj_database_url.parse(config("DATABASE_URL", cast=str)),
+    }
 
 
 # Password validation
@@ -155,7 +157,6 @@ USE_TZ = True
 
 # Static
 STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_DIRS = [
     # Accounts Static
     BASE_DIR / "accounts" / "static",
@@ -168,7 +169,7 @@ STATICFILES_DIRS = [
 
 # Media
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR / "mediafiles")
+MEDIA_ROOT = os.path.join(BASE_DIR / "media")
 
 
 # Login System
@@ -187,6 +188,7 @@ ACCOUNT_SIGNUP_FIELDS = [
     "password2*",
 ]
 ACCOUNT_LOGIN_METHODS = {"username", "email"}
+ACCOUNT_USERNAME_BLACKLIST = [ 'admin', 'super', 'theboss', 'legend', 'root', 'superuser', 'super']
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_EMAIL_SUBJECT_PREFIX = "[CodeStream]"
@@ -231,3 +233,11 @@ DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", cast=str)
 STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY", cast=str)
 STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY", cast=str)
 STRIPE_WEBHOOK_SECRET_KEY = config("STRIPE_WEBHOOK_SECRET_KEY", cast=str)
+
+
+# Security
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_ALLOW_ORIGINS = [
+#
+# ]

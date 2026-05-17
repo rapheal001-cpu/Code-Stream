@@ -1,0 +1,25 @@
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+
+{% block title %}
+{{ user.username }} Profile | Code Stream
+{% endblock %}
+
+{% block content %}
+
+{% include 'core/base/header.html' %}
+
+<nav class="bg-gradient-to-tr from-indigo-900 via-purple-900 to-indigo-900 min-h-screen text-white p-3">
+  <!-- Display  -->
+  {% include 'accounts/user/partials/profile_display.html' %}
+
+</nav>
+
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'accounts/javascript/profile.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'core/base/javascript/header.js' %}" type="text/javascript" charset="utf-8"></script>
+{% endblock %}

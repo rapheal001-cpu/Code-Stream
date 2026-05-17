@@ -1,0 +1,93 @@
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+Edit Description | Code Stream
+{% endblock %}
+
+{% block content %}
+
+<div class="min-h-screen bg-linear-to-tr from-indigo-900 via-purple-800 to-indigo-800  py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center">
+  <div class="max-w-7xl mx-auto backdrop-blur-lg shadow-lg shadow-white rounded-xl">
+
+
+    <!-- Header -->
+    <div class="mb-3 text-center bg-white/10 text-white rounded-t-lg p-2.5">
+      <h1 class="text-3xl font-bold tracking-tight">Edit Description</h1>
+    </div>
+
+
+  <!-- Main Content -->
+  <div class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6">
+
+    <form id="description-form" action="{% url 'description' %}" method="POST" class="h-full flex flex-col">
+      {% csrf_token %}
+
+      <!-- Character Count -->
+      <div class="flex items-center justify-between mb-3">
+        <label for="id_description" class="text-sm font-medium text-white">
+          About You
+        </label>
+        <span id="char-count" class="text-xs text-white font-medium">
+          0 / 500
+        </span>
+      </div>
+
+      <!-- Textarea -->
+      <div class="flex-1">
+        {{ form.description|add_class:'w-full h-64 sm:h-96 p-4 bg-white/10 border border-gray-200 rounded-xl text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent resize-none transition-all duration-200'|attr:'placeholder:Tell us about yourself... What are you learning? What are your goals? Share your journey with the community.'|attr:'maxlength:500' }}
+      </div>
+    </form>
+
+    <!-- Preview Section -->
+    <div class="mt-8 pt-8 border-t border-white/50">
+      <h2 class="text-sm font-medium text-white mb-4">Preview</h2>
+      <div class="bg-white/10 rounded-2xl p-6 shadow-sm border border-white">
+        <div class="flex items-center gap-3 mb-4">
+          {% if user.avatar %}
+          <img src="{{ user.avatar.url }}" alt="{{ user.username }}" class="w-10 h-10 rounded-full object-cover">
+          {% else %}
+          <div class="w-10 h-10 rounded-full font-extrabold bg-white/20 text-white text-2xl flex justify-center items-center">
+            {{ request.user.username|first|upper }}
+          </div>
+          {% endif %}
+          <div>
+            <p class="font-semibold text-white">
+              {{ user.full_name|default:user.username }}
+            </p>
+            <p class="text-xs text-white">
+              @{{ user.username }}
+            </p>
+          </div>
+        </div>
+        <p id="preview-text" class="text-white text-sm leading-relaxed">
+          {{ user.description|default:"No description yet. Write something about yourself!" }}
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Mobile Bottom Bar -->
+  <div class="lg:hidden bg-white/10 p-4">
+    <div class="flex gap-3">
+      <a href="{% url 'settings' %}" class="flex-1 px-4 py-3 text-white font-medium bg-transparent border-2 border-white shadow-white shadow-md hover:shadow-lg rounded-xl transition-colors text-center">
+        Cancel
+      </a>
+      <button type="submit" form="description-form" class="flex-1 px-4 py-3 bg-transparent hover:bg-indigo-800 text-white font-medium rounded-xl transition-colors border shadow-md shadow-white hover:shadow-lg hover:shadow-indigo-800">
+        Save Changes
+      </button>
+    </div>
+  </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+
+{% block javascript %}
+<script src="{% static 'accounts/javascript/description.js' %}" type="text/javascript" charset="utf-8"></script>
+{% endblock %}

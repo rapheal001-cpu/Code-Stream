@@ -12,8 +12,10 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
+    # Fake Admin Login
+    path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
     # Admin
-    path("admin/", admin.site.urls),
+    path("code-stream-admin/", admin.site.urls),
     # Accounts
     path("accounts/", include("accounts.urls")),
     # Course

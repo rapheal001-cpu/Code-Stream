@@ -1,0 +1,27 @@
+{% load static django_htmx %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{% block title %} Base | Code Stream {% endblock %}</title>
+		<!-- Favicon Link -->
+		<link
+			rel="shortcut icon"
+			href="{% static 'core/images/logo.png' %}"
+			type="image/x-icon" />
+		<!-- Custom Css -->
+		{% block css %} {% endblock %}
+		<!-- Tailwind Css -->
+		<link rel="stylesheet" href="{% static 'core/base/css/output.css' %}" />
+		<!-- Htmx -->
+		{% htmx_script %}
+	</head>
+
+	<body>
+		{% block content %} Base Content {% endblock %}
+
+		<!-- Custom Javascript  -->
+		{% block javascript %} {% endblock %}
+	</body>
+</html>

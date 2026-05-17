@@ -13,10 +13,10 @@ def signal_for_new_user(sender, instance, created, **kwargs):
         site_url = f'http://127.0.0.1:8000/'
         context = {"user": instance, 'site_url': site_url}
         subject_txt = render_to_string(
-            "accounts/user/email/subject/welcome_email_subject.txt"
+            "core/user/email/subject/welcome_email_subject.txt"
         )
         body_html = render_to_string(
-            "accounts/user/email/html/welcome_email.html", context
+            "core/user/email/html/welcome_email.html", context
         )
         email = EmailMessage(
             subject=subject_txt,

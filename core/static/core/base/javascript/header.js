@@ -14,7 +14,7 @@
 	}
 
 	// Close dropdown when clicking outside
-	document.addEventListener("click", function (event) {
+	document.addEventListener("click", (event) => {
 		const userMenu = document.getElementById("user-menu");
 		const userButton = event.target.closest('[onclick="toggleUserMenu()"]');
 

@@ -1,9 +1,9 @@
 from django.db.models import Q
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import DetailView, CreateView, TemplateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import (
-    Course,
+    Course, CourseVideo,
 )
 from .forms import CreateCourseForm, UpdateCourseForm, CourseVideoForm
 from django.urls import reverse_lazy
@@ -12,13 +12,12 @@ from CodeStream.utils import index_view_url, course_view_url, create_course_view
 
 class CourseView(LoginRequiredMixin, TemplateView):
     """Main course landing page."""
-
     template_name = "course/course/course_index.html"
 
     def get(self, request, *args, **kwargs):
         if not request.user.role:
             return redirect(index_view_url)
-        search = request.GET.get("search", "").strip()
+        search = request.GET.get("search", "")
         if search:
             courses = Course.objects.filter(
                 Q(name__icontains=search)
@@ -35,7 +34,6 @@ class CourseView(LoginRequiredMixin, TemplateView):
 
         return render(request, self.template_name, context)
 
-
 course_view = CourseView.as_view()
 
 
@@ -48,19 +46,26 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         course = self.object
-        videos = course.videos.all()
+        videos = course.course_videos()
+        course_video_form = CourseVideoForm()
 
         context["videos"] = videos
-        context["active_video"] = videos.last() if videos.exists() else None
-        context["form"] = kwargs.get("form", CourseVideoForm())
+        context["active_video"] = videos.first() if videos.exists() else None
+        context["form"] = kwargs.get("form", course_video_form)
         return context
 
     def get(self, request, *args, **kwargs):
-        if not request.user.role:
+        user = request.user
+        if not user.role:
             return redirect(index_view_url)
-        delete = request.GET.get("course_id")
-        print(delete)
-        return super().get(request, *args, **kwargs)
+        delete_id = request.GET.get("course_id")
+        course_video = get_object_or_404(CourseVideo, pk=delete_id)
+        course = get_object_or_404(Course, pk=course_video.course.pk)
+        print(f'This is the name of the course: {course_video.name}')
+        print(f'This is the Delete Id of this Video: {delete_id}  \nThe Data Type is:{type(delete_id)}')
+        if course.instructor != user:
+            course_video.delete()
+        return redirect(request.META.get("HTTP_REFERER"))
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -71,13 +76,11 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
             video = form.save(commit=False)
             video.course = course
             video.save()
-            # Redirect after successful POST (PRG pattern)
             return redirect(course.get_absolute_url())
 
             # If invalid, re-render with form errors and all context
         context = self.get_context_data(form=form)
         return render(request, self.template_name, context)
-
 
 course_detail_view = CourseDetailView.as_view()
 
@@ -102,7 +105,6 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy("course:create-course-done", kwargs={"pk": self.object.pk})
 
-
 create_course_view = CreateCourseView.as_view()
 
 
@@ -119,7 +121,6 @@ class CreateCourseDoneView(LoginRequiredMixin, DetailView):
         if user.role != "instructor" or not user.role or user != obj.instructor:
             return redirect(create_course_view_url)
         return super().get(request, *args, **kwargs)
-
 
 create_course_done_view = CreateCourseDoneView.as_view()
 
@@ -138,7 +139,6 @@ class UpdateCourseView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy("course:create-course-done", kwargs={"pk": self.object.pk})
-
 
 update_course_view = UpdateCourseView.as_view()
 
@@ -180,6 +180,5 @@ class CourseInfoView(LoginRequiredMixin, DetailView):
             )
 
         return render(request, self.template_name, context)
-
 
 course_info_view = CourseInfoView.as_view()

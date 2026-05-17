@@ -45,7 +45,6 @@ class CoursePaymentCheckoutSession(LoginRequiredMixin, View):
         )
         return redirect(session.url)
 
-
 course_payment_checkout_session = CoursePaymentCheckoutSession.as_view()
 
 
@@ -54,8 +53,7 @@ class CourseCheckoutSuccessView(LoginRequiredMixin, DetailView):
     pk_field = "pk"
     pk_url_kwarg = "pk"
     context_object_name = "course"
-    template_name = "payment/course_payment_success.html"
-
+    template_name = "payments/course_payment_success.html"
 
 course_checkout_success_view = CourseCheckoutSuccessView.as_view()
 
@@ -65,7 +63,6 @@ class CourseCheckoutCancelView(LoginRequiredMixin, DetailView):
     pk_field = "pk"
     pk_url_kwarg = "pk"
     context_object_name = "course"
-    template_name = "payment/course_payment_cancel.html"
-
+    template_name = "payments/course_payment_cancel.html"
 
 course_checkout_cancel_view = CourseCheckoutCancelView.as_view()

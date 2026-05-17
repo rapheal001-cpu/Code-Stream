@@ -1,3 +1,4 @@
+from django.core.validators import validate_email
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from decimal import Decimal
@@ -7,22 +8,21 @@ from CodeStream.utils import USER_ROLE, PAYMENT_TYPE, STATUS_TYPE
 
 
 class User(AbstractUser):
-    avatar = models.ImageField(upload_to="accounts/avatar/upload", blank=True, null=True)
-    first_name = models.CharField(max_length=20)
-    last_name = models.CharField(max_length=20)
-    username = models.CharField(max_length=10, unique=True)
-    email = models.EmailField(max_length=255, unique=True)
-    description = models.TextField(null=True, blank=True)
-    role = models.CharField(max_length=10, choices=USER_ROLE)
-    followers = models.ManyToManyField("self", symmetrical=False, blank=True, related_name="following")
-    profile_views = models.ManyToManyField("self", symmetrical=False, blank=True, related_name="viewed_by")
-    last_seen = models.DateTimeField(null=True, blank=True)
+    avatar = models.ImageField(upload_to="accounts/avatar/", blank=True, null=True, verbose_name="Avatar")
+    first_name = models.CharField(max_length=20, verbose_name="First Name")
+    last_name = models.CharField(max_length=20, verbose_name="Last Name")
+    username = models.CharField(max_length=10, unique=True, verbose_name="Username")
+    email = models.EmailField(validators=[validate_email], max_length=255, unique=True, verbose_name="Email Address")
+    description = models.TextField(null=True, blank=True, verbose_name="Description")
+    role = models.CharField(max_length=10, choices=USER_ROLE, verbose_name="Role")
+    followers = models.ManyToManyField("self", symmetrical=False, blank=True, related_name="following", verbose_name="Followers")
+    views = models.ManyToManyField("self", symmetrical=False, blank=True, verbose_name="Views")
 
     def __str__(self):
         return f"{self.username} ({self.role})"
 
     def get_absolute_url(self):
-        return reverse("profile", kwargs={"pk": self.pk})
+        return reverse("core:profile", kwargs={"pk": self.pk})
 
     @property
     def full_name(self):
@@ -30,7 +30,7 @@ class User(AbstractUser):
 
     @property
     def unread_notification(self):
-        return self.user_notification.filter(is_read=False).count()
+        return self.notifications.filter(is_read=False).count()
 
     @property
     def follower_count(self):
@@ -44,10 +44,6 @@ class User(AbstractUser):
     def wallet_balance(self):
         return self.wallet.balance
 
-    @property
-    def payment_history_list(self):
-        return self.user_payment_history
-
     class Meta:
         ordering = ["-date_joined"]
         verbose_name = "User"
@@ -55,15 +51,15 @@ class User(AbstractUser):
 
 
 class Notification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_notification")
-    title = models.CharField(max_length=255)
-    sender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="sender")
-    message = models.TextField()
-    is_read = models.BooleanField(default=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications", verbose_name="User")
+    name = models.CharField(max_length=255, verbose_name="Name")
+    sender = models.CharField(max_length=30, default="System Notification", verbose_name="Sender")
+    message = models.TextField(verbose_name="Message")
+    is_read = models.BooleanField(default=False, verbose_name="Read")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"To: {self.user}, Message: {self.message[:20]}"
+        return f"From: {self.sender}, To: {self.user}, Message: {self.message[:20]}"
 
     def get_absolute_url(self):
         return reverse("notification-detail", kwargs={"pk": self.pk})
@@ -81,7 +77,7 @@ class Wallet(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def get_absolute_url(self):
-        return reverse("wallet", kwargs={"pk": self.pk})
+        return reverse("core:wallet", kwargs={"pk": self.pk})
 
     class Meta:
         ordering = ["-created_at"]
@@ -89,33 +85,34 @@ class Wallet(models.Model):
         verbose_name_plural = "Wallets"
 
     def __str__(self):
-        return f"{self.user} - ${self.balance}"
+        return f"{self.user}  (${self.balance})"
 
 
 class PaymentHistory(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_payment_history")
-    payment_type = models.CharField(max_length=10, choices=PAYMENT_TYPE)
-    status = models.CharField(max_length=10, choices=STATUS_TYPE)
-    message = models.CharField(max_length=300)
-    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="payment_history", verbose_name="User")
+    payment_type = models.CharField(max_length=10, choices=PAYMENT_TYPE, verbose_name="Payment Type")
+    status = models.CharField(max_length=10, choices=STATUS_TYPE, verbose_name="Payment Status")
+    message = models.CharField(max_length=300, verbose_name="Payment Message")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
 
     def __str__(self):
-        return f"{self.user} --> ({self.payment_type})"
+        return f"{self.user} ({self.payment_type} - {self.status})"
 
     class Meta:
         ordering = ["-created_at"]
         verbose_name = "Payment History"
         verbose_name_plural = "Payment Histories"
 
+
 class OrderHistory(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_order_payment_history")
-    title = models.CharField(max_length=255)
-    message = models.CharField(max_length=300)
-    status = models.CharField(max_length=10, choices=STATUS_TYPE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="order_payment_history", verbose_name="User")
+    name = models.CharField(max_length=255, verbose_name="Name")
+    message = models.CharField(max_length=300, verbose_name="Message")
+    status = models.CharField(max_length=10, choices=STATUS_TYPE, verbose_name="Status")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
 
     def __str__(self):
-        return f"{self.user} --> ({self.title}) --> ({self.status})"
+        return f"{self.user} --> ({self.name} - {self.status})"
 
     class Meta:
         ordering = ["-created_at"]

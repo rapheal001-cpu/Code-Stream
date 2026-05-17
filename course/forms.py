@@ -75,13 +75,13 @@ class UpdateCourseForm(forms.ModelForm):
 class CourseVideoForm(forms.ModelForm):
     class Meta:
         model = CourseVideo
-        fields = ["title", "description", "video", "thumbnail"]
+        fields = ["name", "description", "video", "thumbnail"]
 
-        def clean_title(self):
-            title = self.cleaned_data.get("title").strip().title()
-            if not title:
+        def clean_name(self):
+            name = self.cleaned_data.get("name").strip().title()
+            if not name:
                 raise forms.ValidationError("This field is required.")
-            return title
+            return name
 
         def clean_description(self):
             description = self.cleaned_data.get("description").strip()
@@ -95,11 +95,11 @@ class CourseVideoForm(forms.ModelForm):
                     "A video is required. Please upload your content."
                 )
 
-            if video.size > 2 * 1024 * 1024:
-                raise forms.ValidationError('Your video is too large. Please upload a file smaller than 2MB.')
+            if video.size > 300 * 1024 * 1024:
+                raise forms.ValidationError('Your video is too large.')
 
-            if not video.endwith(".mp4"):
-                raise forms.ValidationError('Invalid file type. Please upload a video (MP4).')
+            if not video.endwith((".mp4", '.avi', '.mov')):
+                raise forms.ValidationError('Invalid file type. Please upload a video file.')
 
             return video
 
@@ -112,3 +112,4 @@ class CourseVideoForm(forms.ModelForm):
                 raise forms.ValidationError('Your image is too large. Please upload a file smaller than 2MB.')
             if not thumbnail.endwith((".jpg", ".jpeg", 'png')):
                 raise forms.ValidationError('Invalid file type. Please upload a file smaller than 2MB.')
+            return thumbnail

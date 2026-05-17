@@ -20,3 +20,9 @@ db.sqlite3
 # Media
 mediafiles/
 media/
+
+
+# Node
+node_modules/
+package-lock.json
+package.json

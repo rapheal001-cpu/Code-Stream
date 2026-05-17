@@ -1,0 +1,92 @@
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+Notification | {{ notification.title }} | Code Stream
+{% endblock %}
+
+{% block content %}
+
+<!-- Modern Top Navigation -->
+<nav class="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+
+    <a href="{% url 'notification' %}"
+      class="group flex items-center gap-2 text-gray-500 hover:text-indigo-600 transition-all duration-200 text-sm font-medium rounded-lg px-3 py-2 hover:bg-gray-50">
+
+      <!-- Animated Back Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5 transform group-hover:-translate-x-0.5 transition-transform duration-200"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      <span>Back to Inbox</span>
+    </a>
+
+    <div class="flex items-center gap-2">
+      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
+        Notification
+      </span>
+    </div>
+  </div>
+</nav>
+
+
+<main class="bg-gray-50/50 min-h-screen py-8 px-4 sm:px-6">
+  <div class="max-w-2xl mx-auto space-y-6">
+
+    <!-- Notification Card with Elevated Design -->
+    <article class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300">
+
+      <!-- Header Section with Gradient Accent -->
+      <div class="relative bg-gradient-to-r from-indigo-50/50 to-purple-50/30 px-6 py-6 sm:px-8">
+        <!-- Decorative Element -->
+        <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-tr from-indigo-900 via-purple-900 to-indigo-900"></div>
+
+        <!-- Title -->
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight tracking-tight">
+          {{ notification.title }}
+        </h1>
+
+        <!-- Meta Info with Icons -->
+        <div class="flex flex-wrap items-center gap-4 mt-4 text-sm text-gray-500">
+          <div class="flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <time datetime="{{ notification.created_at|date:'c' }}" class="font-medium">
+              {{ notification.created_at|naturaltime }}
+            </time>
+          </div>
+
+          <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+
+          <div class="flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            </svg>
+            <span class="font-medium">System</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Section -->
+      <div class="px-6 py-8 sm:px-8">
+        <!-- Message with improved typography -->
+        <div class="prose prose-gray max-w-none">
+          <div class="text-gray-700 text-base leading-relaxed space-y-4 font-normal">
+            {{ notification.message|linebreaks }}
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</main>
+
+{% endblock %}

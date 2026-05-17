@@ -6,14 +6,17 @@ from django.urls import reverse
 
 
 class Course(models.Model):
-    instructor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="course_instructor")
-    name = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True)
-    description = models.TextField(blank=True, null=True)
-    thumbnail = models.ImageField(upload_to="course/thumbnails/")
-    price = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal("0.00"))
-    students = models.ManyToManyField(User, through="Enrollment", related_name="enrolled_courses", blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    instructor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="course_instructor", verbose_name="Course Instructor")
+    name = models.CharField(max_length=255, verbose_name="Course Name")
+    slug = models.SlugField(unique=True, verbose_name="Course Slug")
+    description = models.TextField(blank=True, null=True, verbose_name="Course Description")
+    thumbnail = models.ImageField(upload_to="course/thumbnails/", verbose_name="Course Thumbnail")
+    price = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal("0.00"), verbose_name="Course Price")
+    students = models.ManyToManyField(User, through="Enrollment", related_name="enrolled_courses", blank=True, verbose_name="Course Students")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
+
+    def get_absolute_url(self):
+        return reverse("course:course-detail", kwargs={"slug": self.slug})
 
     class Meta:
         ordering = ["-created_at"]
@@ -26,7 +29,7 @@ class Course(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
+        return f'{self.name} ({self.instructor})'
 
     @property
     def course_videos(self):
@@ -40,17 +43,14 @@ class Course(models.Model):
     def total_students(self):
         return self.students.count()
 
-    def get_absolute_url(self):
-        return reverse("course:course-detail", kwargs={"pk": self.pk})
-
 
 class CourseVideo(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="videos")
-    title = models.CharField(max_length=255)
-    description = models.TextField(blank=True, null=True)
-    video = models.FileField(upload_to="course/videos/upload/")
-    thumbnail = models.ImageField(upload_to="course/video_thumbs/")
-    created_at = models.DateTimeField(auto_now_add=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="videos", verbose_name="Course")
+    name = models.CharField(max_length=255, verbose_name="Video Name")
+    description = models.TextField(blank=True, null=True, verbose_name="Video Description")
+    video = models.FileField(upload_to="course/videos/", verbose_name="Video File")
+    thumbnail = models.ImageField(upload_to="course/video_thumbs/", verbose_name="Video Thumbnail")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
 
     class Meta:
         ordering = ["-created_at"]
@@ -58,15 +58,15 @@ class CourseVideo(models.Model):
         verbose_name_plural = "Course Videos"
 
     def __str__(self):
-        return f"{self.course.name} -> {self.title}"
+        return f"{self.course.name}  ({self.name})"
 
 
 class Enrollment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_enrollment")
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="course_enrollment")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_enrollment", verbose_name="Enrolled User")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="course_enrollment", verbose_name="Course")
     amount_paid = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal("0.00"))
-    is_paid = models.BooleanField(default=False)
-    enrolled_at = models.DateTimeField(auto_now_add=True)
+    is_paid = models.BooleanField(default=False, verbose_name="Is Paid")
+    enrolled_at = models.DateTimeField(auto_now_add=True, verbose_name="Enrolled At")
 
     class Meta:
         ordering = ["-enrolled_at"]
@@ -75,19 +75,25 @@ class Enrollment(models.Model):
         unique_together = ("user", "course")
 
     def __str__(self):
-        return f"{self.user.username} → {self.course.name}"
+        return f"{self.user} ({self.course.name})"
 
 
 class PublicVideo(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="public_video")
-    title = models.CharField(max_length=225)
-    description = models.TextField(blank=True, null=True)
-    video = models.FileField(upload_to="course/public_video/upload/")
-    thumbnail = models.ImageField(upload_to="course/public_video/thumbnail/")
-    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="public_video", verbose_name="User")
+    name = models.CharField(max_length=225, verbose_name="Video Name")
+    slug = models.SlugField(unique=True, verbose_name="Video Slug")
+    description = models.TextField(blank=True, null=True, verbose_name="Video Description")
+    video = models.FileField(upload_to="course/public_video/", verbose_name="Video File")
+    thumbnail = models.ImageField(upload_to="course/public_video/thumbnail/", verbose_name="Video Thumbnail")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
 
     def get_absolute_url(self):
         return reverse("video-detail", kwargs={"pk": self.pk})
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
     class Meta:
         ordering = ["-created_at"]
@@ -95,4 +101,4 @@ class PublicVideo(models.Model):
         verbose_name_plural = "Public Videos"
 
     def __str__(self):
-        return f"{self.course.name} -> {self.title}"
+        return f"{self.user} ({self.name})"

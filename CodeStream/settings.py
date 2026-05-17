@@ -5,7 +5,7 @@ Django settings for CodeStream project.
 
 import os
 import dj_database_url
-from decouple import config
+from decouple import config, Csv
 from pathlib import Path
 
 from django.views import defaults
@@ -16,6 +16,7 @@ from .utils import (
 
 ENVIRONMENT = config("ENVIRONMENT", cast=str)
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,12 +24,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("SECRET_KEY", cast=str)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", cast=bool, default=(ENVIRONMENT == "development"))
+DEBUG = config("DEBUG", cast=bool, default=(ENVIRONMENT == 'development'))
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=str, default='127.0.0.1').split(",")
+
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=str).split(",")
 
 
 AUTH_USER_MODEL = "accounts.User"
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+    "localhost",
+]
 
 
 # Application definition
@@ -42,6 +49,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.humanize",
     'django.contrib.sites',
+    # Fake Admin
+    'admin_honeypot',
     # Apps
     "accounts.apps.AccountsConfig",
     "core.apps.CoreConfig",
@@ -78,7 +87,7 @@ ACCOUNT_FORMS = {
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    # white Noise
+    # white Noise Middleware
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -97,7 +106,7 @@ ROOT_URLCONF = "CodeStream.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "DIRS": [os.path.join(BASE_DIR / "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -119,7 +128,7 @@ if ENVIRONMENT == 'development':
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
+            "NAME": os.path.join(BASE_DIR / "db.sqlite3"),
         }
     }
 else:
@@ -165,19 +174,20 @@ USE_TZ = True
 
 # Static
 STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-# STATICFILES_DIRS = [
-#     # Accounts Static
-#     BASE_DIR / "accounts" / "static",
-#     # Core Static
-#     os.path.join(BASE_DIR / "core" / "static"),
-#     # Course Static
-#     os.path.join(BASE_DIR / "course" / "static"),
-# ]
+STATIC_ROOT = os.path.join(BASE_DIR / "staticfiles")
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+STATICFILES_DIRS = [
+    # Accounts Static
+    os.path.join(BASE_DIR / "accounts" / "static"),
+    # Core Static
+    os.path.join(BASE_DIR / "core" / "static"),
+    # Course Static
+    os.path.join(BASE_DIR / "course" / "static"),
+]
 
 # Media
 MEDIA_URL = "/media/"
+
 if ENVIRONMENT == "production":
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
     CLOUDINARY_STORAGE = {
@@ -210,7 +220,6 @@ ACCOUNT_LOGIN_METHODS = {"username", "email"}
 ACCOUNT_USERNAME_BLACKLIST = [ 'admin', 'super', 'theboss', 'legend', 'root', 'superuser', 'super']
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_EMAIL_SUBJECT_PREFIX = "[CodeStream]"
 ACCOUNT_EMAIL_NOTIFICATIONS = True
 ACCOUNT_CHANGE_EMAIL = True
@@ -227,62 +236,43 @@ ACCOUNT_RATE_LIMITS = {
     "confirm_email": "5/5m/key",
 }
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
-SOCIALACCOUNT_PROVIDERS = {
-    "google": {"EMAIL_AUTHENTICATION": True, "FETCH_USERINFO": True},
-    "github": {"VERIFIED_EMAIL": True},
-}
 SOCIALACCOUNT_LOGIN_ON_GET = True
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "FETCH_USERINFO": True,
+        "APPS": [
+            {
+                "client_id": config("GOOGLE_CLIENT_ID"),
+                "client_secret": config("GOOGLE_CLIENT_SECRET"),
+            }
+        ]
+    },
+    "github": {
+        "VERIFIED_EMAIL": True,
+        "APPS": [
+            {
+                "client_id": config("GITHUB_CLIENT_ID"),
+                "client_secret": config("GITHUB_CLIENT_SECRET"),
+            }
+        ]
+    }
+}
 
 # Account Adapter
 ACCOUNT_ADAPTER = "accounts.adapter.CustomAdapter"
 
 
 # Email
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-# EMAIL_HOST = config("EMAIL_HOST", cast=str)
-# EMAIL_PORT = config("EMAIL_PORT", cast=int)
-# EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
-# EMAIL_HOST_USER = config("EMAIL_HOST_USER", cast=str)
-# EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", cast=str)
-# DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", cast=str)
-#
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = config("EMAIL_HOST", cast=str)
+EMAIL_PORT = config("EMAIL_PORT", cast=int)
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", cast=str)
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", cast=str)
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", cast=str)
 
 
 # Stripe Secret Key
 STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY", cast=str)
 STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY", cast=str)
 STRIPE_WEBHOOK_SECRET_KEY = config("STRIPE_WEBHOOK_SECRET_KEY", cast=str)
-
-
-# Security
-
-if ENVIRONMENT == "production":
-    # HTTPS
-    SECURE_SSL_REDIRECT = True
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-    # HSTS
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-
-    # Cookies
-    SESSION_COOKIE_SECURE = True
-    SESSION_COOKIE_HTTPONLY = True
-    SESSION_COOKIE_SAMESITE = 'Strict'
-
-    CSRF_COOKIE_SECURE = True
-    CSRF_COOKIE_SAMESITE = 'Strict'
-    CSRF_TRUSTED_ORIGINS = [
-        'https://codestream-umfu.onrender.com',
-    ]
-
-    # Security headers
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    SECURE_BROWSER_XSS_FILTER = True
-
-    # Referrer policy
-    SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
-    X_FRAME_OPTIONS = 'DENY'

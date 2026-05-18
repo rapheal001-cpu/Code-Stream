@@ -50,9 +50,6 @@ class UpdateProfileForm(forms.ModelForm):
 
   def clean_avatar(self):
     avatar = self.cleaned_data.get("avatar")
-    if not avatar.endswith(('.jpg', '.jpeg', '.png')):
-      raise forms.ValidationError("Avatar must be .jpg or .png format.")
-
     if avatar:
       if avatar.size > 2 * 1024 * 1024:
         raise forms.ValidationError("Image must be less than 2MB.")

@@ -39,8 +39,8 @@ course_view = CourseView.as_view()
 
 class CourseDetailView(LoginRequiredMixin, DetailView):
     model = Course
-    pk_field = "pk"
-    pk_url_kwarg = "pk"
+    slug_field = "slug"
+    slug_url_kwarg = "slug"
     template_name = "course/course/course_detail.html"
 
     def get_context_data(self, **kwargs):
@@ -54,18 +54,6 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
         context["form"] = kwargs.get("form", course_video_form)
         return context
 
-    def get(self, request, *args, **kwargs):
-        user = request.user
-        if not user.role:
-            return redirect(index_view_url)
-        delete_id = request.GET.get("course_id")
-        course_video = get_object_or_404(CourseVideo, pk=delete_id)
-        course = get_object_or_404(Course, pk=course_video.course.pk)
-        print(f'This is the name of the course: {course_video.name}')
-        print(f'This is the Delete Id of this Video: {delete_id}  \nThe Data Type is:{type(delete_id)}')
-        if course.instructor != user:
-            course_video.delete()
-        return redirect(request.META.get("HTTP_REFERER"))
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -103,7 +91,7 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy("course:create-course-done", kwargs={"pk": self.object.pk})
+        return reverse_lazy(create_course_done_view, kwargs={"pk": self.object.pk})
 
 create_course_view = CreateCourseView.as_view()
 
@@ -138,7 +126,7 @@ class UpdateCourseView(LoginRequiredMixin, UpdateView):
         return super().get(request, *args, **kwargs)
 
     def get_success_url(self):
-        return reverse_lazy("course:create-course-done", kwargs={"pk": self.object.pk})
+        return reverse_lazy(create_course_done_view, kwargs={"pk": self.object.pk})
 
 update_course_view = UpdateCourseView.as_view()
 

@@ -205,7 +205,7 @@ class CustomSocialConnectionsView(LoginRequiredMixin, ConnectionsView):
 
     def get(self, request, *args, **kwargs):
         if not request.user.role:
-            return redirect("core:index-view")
+            return redirect(index_view_url)
         return super().get(request, *args, **kwargs)
 
 social_connections_view = CustomSocialConnectionsView.as_view()

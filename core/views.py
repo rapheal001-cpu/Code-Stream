@@ -8,7 +8,7 @@ from django.db.models import Q
 from .models import Report
 from .forms import UserRoleForm, UpdateProfileForm, ProfileDescriptionForm
 from course.models import Course
-from CodeStream.utils import about_view_url, index_view_url, notification_view_url, course_view_url
+from CodeStream.utils import about_view_url, index_view_url, notification_view_url, course_view_url, setting_view_url
 
 
 # Create your views here.
@@ -80,7 +80,7 @@ class AboutView(TemplateView):
                 user_identifier=user_identifier, topic=topic, body=body
             )
             if user:
-                Notification.objects.create(user=user, title=topic, message=body)
+                Notification.objects.create(user=user, name=topic, message=body)
 
         return redirect(about_view_url)
 
@@ -107,7 +107,7 @@ class ProfileView(LoginRequiredMixin, DetailView):
                 profile.views.add(viewer)
                 Notification.objects.create(
                     user=profile,
-                    title="Profile view",
+                    name="Profile view",
                     message=f"@{viewer.username} just viewed your profile.",
                 )
         return super().get(request, *args, **kwargs)
@@ -120,7 +120,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = UpdateProfileForm
     template_name = "core/user/main/update_profile.html"
-    success_url = reverse_lazy("settings")
+    success_url = reverse_lazy(setting_view_url)
 
     def get_object(self):
         return self.request.user
@@ -138,7 +138,7 @@ class DescriptionView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = ProfileDescriptionForm
     template_name = "core/user/main/description.html"
-    success_url = reverse_lazy("settings")
+    success_url = reverse_lazy(setting_view_url)
 
     def get_object(self):
         return self.request.user
@@ -211,10 +211,12 @@ class NotificationView(LoginRequiredMixin, ListView):
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        delete_notification = request.POST.get("delete_id")
+        notification_id = request.POST.get("notification_id")
         user = request.user
-        notification = get_object_or_404(Notification, pk=delete_notification, user=user)
-        notification.delete()
+        if request.htmx:
+            notification = get_object_or_404(Notification, user=user, pk=int(notification_id))
+            notification.delete()
+            return render(request, "core/user/partials/notification_list.html")
         return redirect(notification_view_url)
 
 notification_view = NotificationView.as_view()
@@ -230,7 +232,7 @@ class NotificationDetailView(LoginRequiredMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         if not request.user.role:
-            return redirect("core:index-view")
+            return redirect(index_view_url)
         notification = get_object_or_404(
             Notification, pk=self.kwargs.get(self.pk_url_kwarg), user=self.request.user
         )
@@ -269,8 +271,27 @@ class FindFriendView(LoginRequiredMixin, TemplateView):
 
         if request.htmx:
             return render(
-                request, "accounts/user/partials/find_friend_list.html", context
+                request, "core/user/partials/find_friend_list.html", context
             )
+
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        user_id = int(request.POST.get("user_id"))
+        user = request.user
+        user_to_follow = get_object_or_404(User, pk=user_id)
+        print(user_to_follow)
+        print(user)
+        if user in user_to_follow.followers.all():
+            user_to_follow.followers.remove(user)
+        else:
+            user_to_follow.followers.add(user)
+
+        friends = User.objects.exclude(id=user.id)
+        context = {'friends': friends}
+
+        if request.htmx:
+            return render(request, "core/user/partials/find_friend_list.html", context)
 
         return render(request, self.template_name, context)
 
@@ -308,7 +329,7 @@ class InstructorCoursesView(LoginRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         user = request.user
         search = request.GET.get("search")
-        if user.role and user.role == 'instructor':
+        if not user.role and not user.role == 'instructor':
             return redirect(course_view_url)
 
         if search:

@@ -19,9 +19,9 @@ urlpatterns = [
     # Accounts
     path("accounts/", include("accounts.urls")),
     # Course
-    path("course/", include("course.urls", namespace="course")),
+    path("course/", include("course.urls")),
     # Core
-    path("", include("core.urls", namespace="core")),
+    path("", include("core.urls")),
     # Payments
-    path("payment/", include("payments.urls", namespace="payment")),
+    path("payment/", include("payments.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

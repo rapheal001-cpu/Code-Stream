@@ -22,7 +22,7 @@ class User(AbstractUser):
         return f"{self.username} ({self.role})"
 
     def get_absolute_url(self):
-        return reverse("core:profile", kwargs={"pk": self.pk})
+        return reverse("profile-view", kwargs={"pk": self.pk})
 
     @property
     def full_name(self):
@@ -62,7 +62,7 @@ class Notification(models.Model):
         return f"From: {self.sender}, To: {self.user}, Message: {self.message[:20]}"
 
     def get_absolute_url(self):
-        return reverse("notification-detail", kwargs={"pk": self.pk})
+        return reverse("notification-detail-view", kwargs={"pk": self.pk})
 
     class Meta:
         ordering = ["-created_at"]
@@ -77,7 +77,7 @@ class Wallet(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def get_absolute_url(self):
-        return reverse("core:wallet", kwargs={"pk": self.pk})
+        return reverse("wallet-view", kwargs={"pk": self.pk})
 
     class Meta:
         ordering = ["-created_at"]

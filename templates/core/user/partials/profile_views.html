@@ -8,189 +8,85 @@
 
 {% block content %}
 
-<div class="min-h-screen bg-linear-to-tr from-indigo-900 via-purple-800 to-indigo-800  py-12 px-4 sm:px-6 lg:px-8">
-  <div class="w-full max-w-6xl mx-auto backdrop-blur-lg bg-white/10 shadow-lg shadow-white rounded-xl p-4">
-    <!-- Floating Back Button -->
-    <a href="{{ user.get_absolute_url }}" class="self-start mb-8 group flex items-center gap-2 text-white font-medium hover:-translate-x-1">
-      <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/30 shadow-md group-hover:shadow-lg transition-all duration-300">
-        <svg
-          class="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 19l-7-7 7-7" />
-        </svg>
-      </span>
-      <span class="hidden sm:inline">Back to Profile</span>
+<div class="min-h-screen bg-gradient-to-tr from-indigo-900 via-purple-800 to-indigo-900 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-2xl mx-auto">
+    
+    <!-- Back Link -->
+    <a href="{{ user.get_absolute_url }}" class="inline-flex items-center gap-2 text-white transition mb-8 group">
+      <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+      <span class="text-sm font-medium">Back to Profile</span>
     </a>
 
-    <!-- Header Section -->
-    <div class="text-center mb-8 space-y-2">
-      <h1 class="text-4xl sm:text-5xl font-bold bg-white bg-clip-text text-transparent tracking-tight">
-        Profile Views
-      </h1>
-
-      {% if viewer %}
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 backdrop-blur-md shadow-md shadow-white">
-        <span class="relative flex h-2 w-2">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white/50 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
-        </span>
-        <p class="text-white text-sm font-medium">
-          {% with cv=viewer.count %}
-          {{ cv }} {{ cv|pluralize:"person,people" }} viewed this profile
-          {% endwith %}
-        </p>
-      </div>
-      {% endif %}
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-white mb-2">Profile Views</h1>
+      <p class="text-white text-sm">
+        {% if viewer %}
+          {{ viewer.count }} view{{ viewer.count|pluralize }} total
+        {% else %}
+          Track who discovers your profile
+        {% endif %}
+      </p>
     </div>
-
-
 
     {% if viewer %}
 
-    <!-- Main List Container -->
-    <div class="w-full max-w-5xl mx-auto">
-      <div class="bg-white/10 backdrop-blur-lg rounded-2xl overflow-hidden">
-        <ul class="divide-y divide-slate-100">
-          {% for v in viewer %}
-          <li class="relative">
-            <a href="{{ v.get_absolute_url }}" class="relative flex items-center justify-between px-6 py-5 transition-all duration-300 ease-out hover:pl-7 group-hover:shadow-sm">
-              <div class="flex items-center gap-4">
-                <!-- Avatar with Ring -->
-                <div class="relative">
-                  {% if v.avatar %}
-                  <img
-                  src="{{ v.avatar.url }}"
-                  alt="{{ v.username }}"
-                  class="w-12 h-12 rounded-full object-cover ring-2 ring-white shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-105" />
-                {% else %}
-                <div class="w-12 h-12 rounded-full font-extrabold bg-white/30 text-white text-2xl flex justify-center items-center">
-                  {{ request.user.username|first|upper }}
-                </div>
-                {% endif %}
-              </div>
-
-              <div class="flex flex-col">
-                <p
-                  class="font-semibold text-white">
-                  {{ v.username }}
-                </p>
-                <p
-                  class="text-xs text-white flex items-center gap-1.5">
-                  <svg
-                    class="w-3 h-3 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                  Viewed your profile
-                </p>
-              </div>
+    <!-- Viewers List -->
+    <div class="space-y-3">
+      {% for v in viewer %}
+      <a href="{{ v.get_absolute_url }}" class="flex items-center gap-4 p-4 rounded-xl bg-white/5 backdrop-blur-lg border border-white/50 hover:bg-white/10 transition-all duration-300 group">
+        
+        <!-- Avatar -->
+        <div class="relative flex-shrink-0">
+          {% if v.avatar %}
+            <img src="{{ v.avatar.url }}" alt="{{ v.username }}" class="w-12 h-12 rounded-full object-cover" />
+          {% else %}
+            <div class="w-12 h-12 rounded-full bg-white/20 text-white flex items-center justify-center font-bold text-lg">
+              {{ v.username|first|upper }}
             </div>
-
-            <!-- Time with Arrow -->
-            <div class="flex items-center gap-3">
-              <span
-                class="text-sm font-medium text-white">
-                {{ v.view_at|naturaltime }}
-              </span>
-              <svg
-                class="w-5 h-5 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 5l7 7-7 7" />
-              </svg>
-            </div>
-          </a>
-        </li>
-        {% endfor %}
-      </ul>
-    </div>
-
-    <!-- Bottom Stats -->
-    <div class="mt-6 flex justify-center">
-      <div
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-slate-200/50 text-xs text-white font-medium">
-        <svg
-          class="w-4 h-4 text-white"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        Showing last {{ viewer.count }} views
-      </div>
-    </div>
-  </div>
-
-  {% else %}
-
-  <!-- Modern Empty State -->
-  <div class="relative w-full max-w-md">
-    <!-- Decorative Background Elements -->
-    <div class="relative bg-white/5 backdrop-blur-lg rounded-3xl p-12 text-center overflow-hidden">
-      <!-- Animated Eye Icon -->
-      <div class="relative mb-6 inline-block">
-        <div class="relative text-6xl filter transform transition-transform hover:scale-110 duration-500 cursor-default">
-          👀
+          {% endif %}
         </div>
-      </div>
 
-      <h3 class="text-xl font-bold text-white mb-2">No views yet</h3>
+        <!-- Info -->
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <h3 class="font-semibold text-white truncate hover:cursor-pointer">@{{ v.username }}</h3>
+            {% if is_new %}
+              <span class="shrink-0 text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-green-400 px-2 py-0.5 rounded-full">New</span>
+            {% endif %}
+          </div>
+          <p class="text-white text-sm mt-0.5">Joined at {{ v.date_joined|naturaltime }}</p>
+        </div>
 
-      <p
-        class="text-white text-sm leading-relaxed max-w-xs mx-auto mb-6">
-        Your profile is waiting to be discovered. When visitors check
-        out your profile, they'll appear here in real-time.
-      </p>
-
-      <!-- Action Button -->
-      <a
-        href="{{ user.get_absolute_url }}"
-        class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 text-white font-medium text-sm shadow-md shadow-white hover:shadow-lg hover:scale-105 transition-all duration-300">
-        <svg
-          class="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z" />
+        <!-- Arrow -->
+        <svg class="w-5 h-5 text-white group-hover:translate-x-1 transition-all shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
-        Return to Profile
       </a>
-
+      {% endfor %}
     </div>
-  </div>
 
-  {% endif %}
-</div>
+    {% else %}
+
+    <!-- Empty State -->
+    <div class="text-center py-16 px-4">
+      <div class="w-16 h-16 rounded-2xl bg-white/15 flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>
+      </div>
+      <h3 class="text-lg font-semibold text-white mb-1">No views yet</h3>
+      <p class="text-white text-sm max-w-sm mx-auto mb-6">Your profile hasn't been discovered yet. Share your link to start getting views.</p>
+      <a href="{{ user.get_absolute_url }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white/15 text-white text-sm font-medium">
+        Go to Profile
+      </a>
+    </div>
+
+    {% endif %}
+  </div>
 </div>
 
 {% endblock %}

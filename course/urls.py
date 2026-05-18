@@ -9,14 +9,11 @@ from .views import (
     course_info_view,
 )
 
-app_name = "course"
-
 urlpatterns = [
-    # Index
-    path("info/<int:pk>/", course_info_view, name="course-info"),
-    path("", course_view, name="course-index"),
-    path("<slug:slug>/", course_detail_view, name="course-detail"),
-    path("create-course/", create_course_view, name="create-course"),
-    path( "create-course-done/<int:pk>/", create_course_done_view, name="create-course-done"),
-    path("update-course/<int:pk>/", update_course_view, name="update-course"),
+    path("info/<int:pk>/", course_info_view, name="course-info-view"),
+    path("", course_view, name="course-index-view"),
+    path("create-course/", create_course_view, name="create-course-view"),
+    path("create-course-done/<int:pk>/", create_course_done_view, name="create-course-done-view"),
+    path("update-course/<int:pk>/", update_course_view, name="update-course-view"),
+    path("detail/<slug:slug>/", course_detail_view, name="course-detail-view"),
 ]

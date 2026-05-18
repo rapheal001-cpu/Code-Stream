@@ -16,7 +16,7 @@ class Course(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
 
     def get_absolute_url(self):
-        return reverse("course:course-detail", kwargs={"slug": self.slug})
+        return reverse("course-detail-view", kwargs={"slug": self.slug})
 
     class Meta:
         ordering = ["-created_at"]
@@ -31,9 +31,9 @@ class Course(models.Model):
     def __str__(self):
         return f'{self.name} ({self.instructor})'
 
-    @property
+
     def course_videos(self):
-        return self.videos
+        return self.videos.all()
 
     @property
     def total_videos(self):
@@ -88,7 +88,7 @@ class PublicVideo(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
 
     def get_absolute_url(self):
-        return reverse("video-detail", kwargs={"pk": self.pk})
+        return reverse("video-detail-view", kwargs={"pk": self.pk})
 
     def save(self, *args, **kwargs):
         if not self.slug:

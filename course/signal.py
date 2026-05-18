@@ -9,7 +9,7 @@ def course_created(sender, instance, created, **kwargs):
     if created:
       Notification.objects.create(
     user=instance.instructor,
-    title="Course setup complete",
+    name="Course setup complete",
     message=f"Great news! Your course \"{instance.name}\" is now live on your dashboard.\n\n"
         "Next step: add your content and structure your lessons to create a great learning experience.",
     )

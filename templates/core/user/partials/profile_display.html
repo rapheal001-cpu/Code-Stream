@@ -6,22 +6,22 @@
 <div class="min-h-screen flex items-center justify-center px-4 py-8">
 
   <!-- Main content container -->
-  <div class="w-full max-w-3xl">
+  <div class="w-full max-w-2xl">
 
     {% if request.user == user %}
     <!-- ── Header Bar (Desktop only) ── -->
     <!-- Added z-20 to ensure header (and its dropdown) stays above the profile card -->
-    <div class="hidden lg:flex bg-transparent backdrop-blur-lg rounded-t-2xl py-4 px-6 justify-between items-center text-white z-20 relative">
+    <div class="hidden lg:flex bg-white/10 backdrop-blur-md rounded-xl py-4 px-6 justify-between items-center text-white z-20 relative mb-4">
 
       <!-- Role Badge -->
-      <span class="font-medium text-sm tracking-wide uppercase opacity-90">
+      <span class="font-medium text-sm tracking-wide uppercase">
         Role: {{ user.role }}
       </span>
 
       <!-- Action Icons -->
       <div class="flex items-center gap-4">
         <!-- Find Friends -->
-        <a href="{% url 'core:find-friends' %}" class="p-2 rounded-full hover:bg-white/10 transition-all duration-300 group" aria-label="Find friends">
+        <a href="{% url 'find-friends-view' %}" class="p-2 rounded-full hover:bg-white/10 transition-all duration-300 group" aria-label="Find friends">
           <svg class="w-5 h-5 text-white group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
             <circle cx="9" cy="7" r="4"></circle>
@@ -31,13 +31,13 @@
         </a>
 
         <!-- Notifications -->
-        <a href="{% url 'core:notification' %}" class="p-2 rounded-full hover:bg-white/10 transition-all duration-300 group relative" aria-label="Notifications">
+        <a href="{% url 'notification-view' %}" class="p-2 rounded-full hover:bg-white/10 transition-all duration-300 group relative" aria-label="Notifications">
           <svg class="w-5 h-5 text-white group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
             <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
           </svg>
           {% if request.user == user and user.unread_notification %}
-          <span class="absolute -top-1 -right-1 w-5 h-5 flex justify-center items-center bg-red-600 text-white text-xs font-bold rounded-full animate-pulse">{{ user.unread_notification }}</span>
+          <span class="absolute top-1 right-1 w-2 h-2 flex justify-center items-center bg-red-600 text-white text-xs font-bold rounded-full animate-ping"></span>
           {% endif %}
         </a>
 
@@ -53,13 +53,13 @@
           </button>
 
           <!-- Added z-50 directly to the dropdown menu and removed origin-top-right transform that can cause issues -->
-          <div class="desktop-profile-options hidden absolute right-0 top-full mt-2 w-56 bg-white/95 backdrop-blur-lg rounded-2xl shadow-lg border border-gray-100/50 overflow-hidden z-50">
+          <div class="desktop-profile-options hidden absolute right-0 top-full mt-2 w-56 bg-indigo-100 rounded-2xl shadow-md overflow-hidden z-20">
             <div class="py-2">
-              <a href="{% url 'core:settings' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:text-indigo-900 font-semibold transition-colors">
+              <a href="{% url 'settings-view' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:text-white hover:bg-linear-to-tr hover:from-indigo-900 hover:via-purple-900 hover:to-indigo-900 font-semibold">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l-.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                 Settings
               </a>
-              <a href="{% url 'core:profile-views' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:text-indigo-900 font-semibold transition-colors">
+              <a href="{% url 'profile-list-views' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:text-white hover:bg-linear-to-tr hover:from-indigo-900 hover:via-purple-900 hover:to-indigo-900 font-semibold">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                 Profile Views
               </a>
@@ -86,7 +86,7 @@
           {% if user.avatar %}
           <img class="w-28 h-28 lg:w-32 lg:h-32 rounded-full object-cover shadow-lg border-4 border-white/80" src="{{ user.avatar.url }}" alt="{{ user.username }}" loading="lazy">
           {% else %}
-          <div class="w-28 h-28 rounded-full ring-2 ring-white/50 font-extrabold bg-white/20 text-white flex justify-center items-center text-4xl">
+          <div class="w-28 h-28 rounded-full font-extrabold bg-white/20 text-white flex justify-center items-center text-5xl">
             {{ user.username|first|upper }}
           </div>
           {% endif %}
@@ -108,7 +108,7 @@
             {{ user.role|upper }}
           </span>
           <div class="flex items-center justify-between gap-5">
-            <a href="{% url 'find-friends' %}" class="group p-2 rounded-full bg-white/20 hover:bg-white/30 transition-all duration-300" aria-label="Find friends">
+            <a href="{% url 'find-friends-view' %}" class="group p-2 rounded-full bg-white/20 hover:bg-white/30 transition-all duration-300 hover:scale-110" aria-label="Find friends">
               <svg class="w-5 h-5 group-hover:text-white text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                 <circle cx="9" cy="7" r="4"></circle>
@@ -116,31 +116,31 @@
                 <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
               </svg>
             </a>
-            <a href="{% url 'notification' %}" class="group p-2 rounded-full bg-white/20 hover:bg-white/30 transition-all duration-300 relative" aria-label="Notifications">
+            <a href="{% url 'notification-view' %}" class="relative group p-2 rounded-full bg-white/20 hover:bg-white/30 transition-all duration-300 hover:scale-110" aria-label="Notifications">
               <svg class="w-5 h-5 group-hover:text-white text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
                 <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
               </svg>
               {% if request.user == user and user.unread_notification %}
-              <span class="absolute -top-1 -right-1 w-5 h-5 flex justify-center items-center bg-red-600 text-white text-xs font-bold rounded-full">{{ user.unread_notification }}</span>
+              <span class="absolute -top-1 -right-1 w-3 h-3 flex justify-center items-center bg-red-600 text-white text-xs font-bold rounded-full animate-ping"></span>
               {% endif %}
             </a>
             <!-- Mobile dropdown -->
             <div class="relative">
-              <button class="group mobile-profile p-2 rounded-full bg-white/20 hover:bg-white/30 transition-all duration-300" aria-label="Settings menu">
+              <button class="group p-2 rounded-full bg-white/20 hover:bg-white/30 transition-all duration-300 hover:scale-110 mobile-profile" aria-label="Settings menu">
                 <svg class="w-5 h-5 group-hover:text-white text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="1"></circle>
                   <circle cx="19" cy="12" r="1"></circle>
                   <circle cx="5" cy="12" r="1"></circle>
                 </svg>
               </button>
-              <div class="mobile-profile-options hidden absolute right-0 top-full mt-2 w-48 bg-white/95 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-100/50 overflow-hidden z-50">
+              <div class="mobile-profile-options hidden absolute right-0 top-full mt-2 w-48 bg-indigo-100 backdrop-blur-xl rounded-2xl overflow-hidden z-20">
                 <div class="py-2">
-                  <a href="{% url 'settings' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:text-indigo-900 hover:font-semibold transition-colors">
+                  <a href="{% url 'settings-view' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:text-white hover:bg-linear-to-tr hover:from-indigo-900 hover:via-purple-900 hover:to-indigo-900 font-semibold">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l-.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                     Settings
                   </a>
-                  <a href="{% url 'profile-views' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:text-indigo-900 hover:font-semibold transition-colors">
+                  <a href="{% url 'profile-list-views' %}" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:text-white hover:bg-linear-to-tr hover:from-indigo-900 hover:via-purple-900 hover:to-indigo-900 font-semibold">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                     Profile Views
                   </a>
@@ -152,11 +152,11 @@
         {% endif %}
 
         <!-- Name & Username -->
-        <div class="flex flex-col lg:flex-row lg:items-baseline gap-1 lg:gap-3">
+        <div class="flex flex-col lg:items-baseline gap-1 lg:gap-3">
           <h2 class="text-xl lg:text-2xl font-bold text-white">
             {{ user.full_name }}
           </h2>
-          <span class="text-white font-medium text-sm lg:text-base">
+          <span class="text-white font-medium text-sm lg:text-base hover:cursor-copy">
             @{{ user.username }}
           </span>
         </div>
@@ -164,7 +164,7 @@
         <!-- Description -->
         {% if request.user == user %}
         <div class="mt-3 max-w-lg mx-auto lg:mx-0">
-          <a href="{% url 'description' %}" class="inline-flex items-center gap-2 p-2 text-white hover:bg-white/20 transition-colors rounded-lg hover:pointer group">
+          <a href="{% url 'description-view' %}" class="inline-flex items-center gap-2 p-2 text-white hover:bg-white/10 transition delay-200 rounded-lg hover:pointer group hover:cursor-text">
             <span class="group-hover:text-white">
               {{ user.description|default:"Add your profile description" }}
             </span>
@@ -172,7 +172,7 @@
         </div>
         {% else %}
         <div class="mt-3 max-w-lg mx-auto lg:mx-0">
-          <span class="inline-flex items-center gap-2 text-white">
+          <span class="inline-flex items-center gap-2 text-white hover:cursor-none">
             {{ user.description|default:"No Description" }}
           </span>
         </div>
@@ -181,18 +181,18 @@
         <!-- Status Badge -->
         <div class="mt-4 flex justify-center lg:justify-start">
           {% if user.online %}
-          <span class="inline-flex items-center gap-1.5 lg:gap-2 px-3 py-1.5 rounded-full text-xs lg:text-sm font-medium bg-green-100/80 text-green-700 border border-green-200/50">
-            <span class="w-1.5 h-1.5 lg:w-2 lg:h-2 bg-green-500 rounded-full animate-pulse"></span>
+          <span class="inline-flex items-center gap-1.5 lg:gap-2 px-3 py-1.5 rounded-full text-xs lg:text-sm font-medium bg-green-100 text-green-600">
+            <span class="w-2 h-2 bg-green-600 rounded-full animate-pulse"></span>
             Online
           </span>
           {% elif user.last_seen %}
-          <span class="inline-flex items-center gap-1.5 lg:gap-2 px-3 py-1.5 rounded-full text-xs lg:text-sm font-medium bg-white/20 text-white">
-            <svg class="w-3 h-3 lg:w-4 lg:h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span class="inline-flex items-center gap-1.5 lg:gap-2 px-3 py-2 rounded-full text-xs lg:text-sm font-medium bg-white/10 text-white">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
             last seen {{ user.last_seen|naturaltime }}
           </span>
           {% else %}
-          <span class="inline-flex items-center gap-1.5 lg:gap-2 px-3 py-1.5 rounded-full text-xs lg:text-sm font-medium bg-white/20 text-white">
-            <svg class="w-3 h-3 lg:w-4 lg:h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span class="inline-flex items-center gap-1.5 lg:gap-2 px-3 py-2 rounded-full text-xs lg:text-sm font-medium bg-white/10 text-white">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
             last login {{ user.last_login|naturaltime }}
           </span>
           {% endif %}
@@ -200,11 +200,11 @@
 
         <!-- Action Buttons (Follow + Message) -->
         {% if user != request.user %}
-        <div class="flex items-center justify-center lg:justify-start gap-3 mt-5">
+        <div class="flex items-center justify-center lg:justify-start gap-3 mt-6">
           <!-- Follow Button -->
-          <form action="{% url 'follow-view' pk=user.pk %}" method="POST">
+          <form action="{% url 'follow-toggle-view' pk=user.pk %}" method="POST">
             {% csrf_token %}
-            <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/20 text-white rounded-xl font-medium active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg shadow-white">
+            <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 text-white rounded-full font-medium active:scale-95 hover:-translate-y-1.5 transition-all duration-200 shadow-sm hover:shadow-md shadow-white">
             {% if request.user in user.followers.all %}
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
@@ -228,7 +228,7 @@
 
 
           <!-- Message Button -->
-          <a href="#" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/20 text-white rounded-xl font-medium active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg shadow-white">
+          <a href="#" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 text-white rounded-full font-medium active:scale-95 hover:-translate-y-1.5 transition-all duration-200 shadow-sm hover:shadow-md shadow-white">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
             <span class="">Message</span>
           </a>
@@ -236,7 +236,7 @@
         {% endif %}
 
         <!-- Stats -->
-        <a href="{% url 'followers-and-following-view' pk=user.pk %}" class="flex items-center justify-center lg:justify-start gap-8 mt-5 pt-6 border-t border-gray-100/50 w-full lg:w-auto">
+        <a href="" class="flex items-center justify-center lg:justify-start gap-8 mt-5 pt-6 border-t border-gray-100/50 w-full lg:w-auto">
 
           <div class="group cursor-pointer text-center lg:text-left">
             <div class="flex items-baseline gap-1 justify-center lg:justify-start">
@@ -249,7 +249,7 @@
             </div>
           </div>
 
-          <div class="w-8 h-8 bg-white/20 rounded-lg hover:rounded-full hover:bg-white/30 transition-transform delay-200"></div>
+          <div class="w-8 h-8 bg-white/10 rounded-lg"></div>
 
           <div class="group cursor-pointer text-center lg:text-left">
             <div class="flex items-baseline gap-1 justify-center lg:justify-start">
@@ -266,19 +266,19 @@
 
         <!-- ═══ INSTRUCTOR AND STUDENT ACTIONS: View Courses ═══ -->
         {% if request.user == user and user.role == 'instructor' %}
-        <div class="flex sm:flex-row items-center justify-center lg:justify-start gap-3 mt-6 w-full">
-          <!-- View Courses Button -->
-          <a href="{% url 'instructor-courses' %}" class="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 border-2 border-white/30 rounded-xl font-semibold active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg shadow-white">
+        <div class="flex sm:flex-row items-center justify-center lg:justify-start gap-3 mt-6 w-full border-t border-white/50 pt-5">
+          <!-- View Courses Button (For Instructor) -->
+          <a href="{% url 'instructor-courses-view' %}" class="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 rounded-xl font-semibold active:scale-95 transition-all duration-300 shadow-sm hover:shadow-md shadow-white hover:-translate-y-1.5">
             <svg class="w-5 h-5 text-white group-hover:text-white group-hover:font-semibold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
             </svg>
             <span class="text-white group-hover:text-white group-hover:font-semibold">My Courses</span>
           </a>
         </div>
-        {% elif request.user == user and user.role == 'student' %}
+        {% elif request.user == user and user.role != 'student' %}
         <div class="flex sm:flex-row items-center justify-center lg:justify-start gap-3 mt-6 w-full">
-          <!-- View Courses Button -->
-          <a href="#" class="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 border-2 border-white/30 rounded-xl font-semibold active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg shadow-white">
+          <!-- View Courses Button (For Student) -->
+          <a href="#" class="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 rounded-xl font-semibold active:scale-95 transition-all duration-300 shadow-sm hover:shadow-md shadow-white hover:-translate-y-1.5">          
             <svg class="w-5 h-5 text-white group-hover:text-white group-hover:font-semibold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
             </svg>

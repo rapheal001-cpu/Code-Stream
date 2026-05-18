@@ -1,94 +1,93 @@
 {% if friends %}
-<div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
+<div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
   {% for friend in friends %}
-  <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 overflow-hidden flex flex-col group">
+  <div class="bg-white rounded-xl shadow-sm hover:shadow-md shadow-white duration-300 hover:-translate-y-2 overflow-hidden flex flex-col">
 
-    <!-- Cover/Header Area -->
-    <div class="h-28 sm:h-24 bg-gradient-to-r from-indigo-500 to-purple-600 relative overflow-hidden">
-      <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] opacity-30"></div>
+    <!-- Cover -->
+    <div class="h-24 bg-gradient-to-tr from-indigo-900 via-purple-900 to-indigo-900 relative">
+      <div class="absolute inset-0 bg-black/10"></div>
     </div>
 
     <!-- Avatar -->
-    <div class="relative px-6 -mt-12 flex justify-center">
-      <a href="{{ friend.get_absolute_url }}" class="relative group/avatar">
+    <div class="relative px-4 -mt-10 flex justify-center">
+      <a href="{{ friend.get_absolute_url }}" class="relative">
         {% if friend.avatar %}
-        <img
-        src="{{ friend.avatar.url }}"
-        alt="{{ friend.username }}"
-        class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md group-hover/avatar:scale-105 group-hover/avatar:shadow-lg transition-all duration-300" />
-      {% else %}
-      <div class="w-24 h-24 rounded-full font-extrabold bg-indigo-800 text-white text-2xl flex justify-center items-center">
-        {{ friend.username|first|upper }}
-      </div>
-      {% endif %}
-      {% if friend.online %}
-      <div class="absolute bottom-1 right-1 w-5 h-5 bg-green-400 border-2 border-white rounded-full" title="Online"></div>
-      {% endif %}
-    </a>
-  </div>
-
-  <!-- Info -->
-  <div class="px-5 sm:px-6 pt-4 pb-6 flex-1 flex flex-col items-center text-center">
-    <h2 class="text-lg sm:text-xl font-bold text-slate-900">{% if friend.last_name %} {{ friend.full_name|title }} {% else %} {{ friend.username|title }} {% endif %}</h2>
-    <h3 class="text-sm font-bold text-gray-400">({{ friend.role|title }})</h3>
-    <a href="{{ friend.get_absolute_url }}" class="text-sm text-indigo-600 font-medium hover:text-indigo-800 transition-colors mb-3">@{{ friend.username }}</a>
-
-    <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-4">
-      Joined {{ friend.date_joined|date:"M Y" }}
-    </p>
-
-    <!-- Stats -->
-    <div class="flex items-center justify-center gap-6 w-full border-t border-slate-100 pt-4 mb-5">
-      <div class="text-center">
-        <span class="block text-lg font-bold text-slate-900">{{ friend.followers.count }}</span>
-        <span class="text-xs text-slate-500 font-medium uppercase">Followers</span>
-      </div>
-      <div class="w-px h-8 bg-slate-200"></div>
-      <div class="text-center">
-        <span class="block text-lg font-bold text-slate-900">{{ friend.following.count }}</span>
-        <span class="text-xs text-slate-500 font-medium uppercase">Following</span>
-      </div>
+        <img src="{{ friend.avatar.url }}"
+             alt="{{ friend.username }}"
+             class="w-20 h-20 rounded-full object-cover border-4 border-white shadow-sm hover:scale-105 transition-transform duration-200" />
+        {% else %}
+        <div class="w-20 h-20 rounded-full bg-indigo-900 border-4 border-white text-white text-xl font-bold flex items-center justify-center shadow-sm">
+          {{ friend.username|first|upper }}
+        </div>
+        {% endif %}
+        {% if friend.online %}
+        <span class="absolute bottom-1 right-1 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></span>
+        {% endif %}
+      </a>
     </div>
 
-    <!-- Actions -->
-    <form method="POST" action="{% url 'follow-view' pk=friend.id %}" class="w-full space-y-2.5 mt-auto">
-        {% csrf_token %}
-      <button type="submit" class="{% if request.user in friend.followers.all %}w-full py-2.5 px-4 rounded-xl font-semibold transition-all duration-200 bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 flex items-center justify-center gap-2{% else %}w-full py-2.5 px-4 rounded-xl font-semibold transition-all duration-200 bg-indigo-600 text-white hover:bg-indigo-700 shadow-md hover:shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]{% endif %}">
-        {% if request.user in friend.followers.all %}
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-        </svg>
-        Following
-        {% else %}
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
-        </svg>
-        Follow
-        {% endif %}
-      </button>
-
-      {% if request.user in friend.followers.all %}
-      <a href="" class="block w-full py-2.5 px-4 rounded-xl font-semibold transition-all duration-200 bg-white border-2 border-indigo-100 text-indigo-700 hover:border-indigo-300 hover:bg-indigo-50 text-center active:scale-[0.98]">
-        Message
+    <!-- Info -->
+    <div class="px-4 pt-3 pb-4 flex-1 flex flex-col items-center text-center">
+      <a href="{{ friend.get_absolute_url }}" class="hover:underline">
+        <h2 class="text-base font-semibold text-gray-900">
+          {% if friend.last_name %}
+            {{ friend.full_name|title }}
+          {% else %}
+            {{ friend.username|title }}
+          {% endif %}
+        </h2>
       </a>
-      {% endif %}
-    </form>
+      <p class="text-sm text-gray-500 mb-1">@{{ friend.username }}</p>
+      <p class="text-xs text-gray-400 mb-4">{{ friend.role|title }}</p>
 
+      <!-- Mutual / Stats -->
+      <div class="flex items-center gap-4 text-xs text-gray-500 mb-4">
+        <span>{{ friend.followers.count }} followers</span>
+        <span>·</span>
+        <span>{{ friend.following.count }} following</span>
+      </div>
+
+      <!-- Actions -->
+      <form hx-post="{% url 'find-friends-view' %}"
+            hx-trigger="submit"
+            hx-target="#find-friends-list"
+            hx-swap="innerHTML"
+            class="w-full mt-auto">
+        {% csrf_token %}
+        <input type="hidden" name="user_id" value="{{ friend.id }}">
+
+        {% if request.user in friend.followers.all %}
+          <button type="submit"
+                  class="w-full py-2 px-4 rounded-lg font-medium text-sm bg-purple-900 text-white hover:bg-purple-800 transition-colors flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+            Following
+          </button>
+        {% else %}
+          <button type="submit"
+                  class="w-full py-2 px-4 rounded-lg font-medium text-sm bg-indigo-900 hover:bg-indigo-800 text-white transition-colors flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+            </svg>
+            Follow
+          </button>
+        {% endif %}
+      </form>
+    </div>
   </div>
+  {% endfor %}
 </div>
-{% endfor %}
-</div>
+
 {% else %}
 <!-- Empty State -->
-<div class="max-w-md mx-auto text-center py-16">
-<div class="bg-slate-100 rounded-full h-24 w-24 flex items-center justify-center mx-auto mb-6">
-<svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-</svg>
-</div>
-<h3 class="text-lg font-medium text-slate-900 mb-2">No users found</h3>
-<p class="text-slate-500">
-Try adjusting your search terms or check back later for new members.
-</p>
+<div class="max-w-md mx-auto text-center py-20">
+  <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+    <svg class="w-8 h-8 text-white/40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+    </svg>
+  </div>
+  <h3 class="text-lg font-semibold text-white mb-1">No users found</h3>
+  <p class="text-white/50 text-sm">Try adjusting your search or check back later.</p>
 </div>
 {% endif %}

@@ -5,10 +5,8 @@ Django settings for CodeStream project.
 
 import os
 import dj_database_url
-from decouple import config, Csv
+from decouple import config
 from pathlib import Path
-
-from django.views import defaults
 from .utils import (
     index_view_url,
     login_view_url,
@@ -28,6 +26,10 @@ DEBUG = config("DEBUG", cast=bool, default=(ENVIRONMENT == 'development'))
 
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=str).split(",")
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://ed5d-102-223-1-130.ngrok-free.app'
+]
 
 
 AUTH_USER_MODEL = "accounts.User"
@@ -177,8 +179,6 @@ STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR / "staticfiles")
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 STATICFILES_DIRS = [
-    # Accounts Static
-    os.path.join(BASE_DIR / "accounts" / "static"),
     # Core Static
     os.path.join(BASE_DIR / "core" / "static"),
     # Course Static
@@ -225,6 +225,7 @@ ACCOUNT_EMAIL_NOTIFICATIONS = True
 ACCOUNT_CHANGE_EMAIL = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_UNIQUE_USERNAME = True
+ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_RATE_LIMITS = {
     "change_password": "5/5m/user",
     "manage_email": "5/5m/user",
@@ -237,29 +238,16 @@ ACCOUNT_RATE_LIMITS = {
 }
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
-SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "FETCH_USERINFO": True,
-        "APPS": [
-            {
-                "client_id": config("GOOGLE_CLIENT_ID"),
-                "client_secret": config("GOOGLE_CLIENT_SECRET"),
-            }
-        ]
-    },
-    "github": {
-        "VERIFIED_EMAIL": True,
-        "APPS": [
-            {
-                "client_id": config("GITHUB_CLIENT_ID"),
-                "client_secret": config("GITHUB_CLIENT_SECRET"),
-            }
-        ]
-    }
-}
-
 # Account Adapter
 ACCOUNT_ADAPTER = "accounts.adapter.CustomAdapter"
+SOCIALACCOUNT_PROVIDERS = {
+  'google': {
+      'EMAIL_AUTHENTICATION': True
+  },
+    'github': {
+      'EMAIL_AUTHENTICATION': True
+    }
+}
 
 
 # Email

@@ -9,8 +9,8 @@ Edit Description | Code Stream
 
 {% block content %}
 
-<div class="min-h-screen bg-linear-to-tr from-indigo-900 via-purple-800 to-indigo-800  py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center">
-  <div class="max-w-7xl mx-auto backdrop-blur-lg shadow-lg shadow-white rounded-xl">
+<div class="min-h-screen bg-linear-to-tr from-indigo-900 via-purple-800 to-indigo-800  py-12 px-4 sm:px-6 lg:px-8 flex justify-center items-center">
+  <div class="max-w-3xl w-full mx-auto backdrop-blur-lg shadow-lg shadow-white rounded-lg">
 
 
     <!-- Header -->
@@ -20,9 +20,9 @@ Edit Description | Code Stream
 
 
   <!-- Main Content -->
-  <div class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6">
+  <div class="flex-1 px-4 sm:px-6 py-6">
 
-    <form id="description-form" action="{% url 'description' %}" method="POST" class="h-full flex flex-col">
+    <form id="description-form" action="{% url 'description-view' %}" method="POST" class="h-full flex flex-col">
       {% csrf_token %}
 
       <!-- Character Count -->
@@ -44,7 +44,7 @@ Edit Description | Code Stream
     <!-- Preview Section -->
     <div class="mt-8 pt-8 border-t border-white/50">
       <h2 class="text-sm font-medium text-white mb-4">Preview</h2>
-      <div class="bg-white/10 rounded-2xl p-6 shadow-sm border border-white">
+      <div class="bg-white/5 rounded-2xl p-6 shadow-sm border border-white">
         <div class="flex items-center gap-3 mb-4">
           {% if user.avatar %}
           <img src="{{ user.avatar.url }}" alt="{{ user.username }}" class="w-10 h-10 rounded-full object-cover">
@@ -55,7 +55,7 @@ Edit Description | Code Stream
           {% endif %}
           <div>
             <p class="font-semibold text-white">
-              {{ user.full_name|default:user.username }}
+              {{ user.full_name }}
             </p>
             <p class="text-xs text-white">
               @{{ user.username }}
@@ -71,12 +71,12 @@ Edit Description | Code Stream
   </div>
 
   <!-- Mobile Bottom Bar -->
-  <div class="lg:hidden bg-white/10 p-4">
+  <div class="bg-white/5 p-4">
     <div class="flex gap-3">
-      <a href="{% url 'settings' %}" class="flex-1 px-4 py-3 text-white font-medium bg-transparent border-2 border-white shadow-white shadow-md hover:shadow-lg rounded-xl transition-colors text-center">
+      <a href="{% url 'settings-view' %}" class="w-full flex items-center justify-center gap-2 bg-transparent text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-sm shadow-white hover:shadow-md border border-white/30 hover:border-2 hover:border-white active:scale-[0.98] hover:-translate-y-1.5">
         Cancel
       </a>
-      <button type="submit" form="description-form" class="flex-1 px-4 py-3 bg-transparent hover:bg-indigo-800 text-white font-medium rounded-xl transition-colors border shadow-md shadow-white hover:shadow-lg hover:shadow-indigo-800">
+      <button type="submit" form="description-form" class="w-full flex items-center justify-center gap-2 bg-transparent text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-sm shadow-white hover:shadow-md border border-white/30 hover:border-2 hover:border-white active:scale-[0.98] hover:-translate-y-1.5">
         Save Changes
       </button>
     </div>
@@ -89,5 +89,5 @@ Edit Description | Code Stream
 
 
 {% block javascript %}
-<script src="{% static 'accounts/javascript/description.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'core/javascript/description.js' %}" type="text/javascript" charset="utf-8"></script>
 {% endblock %}

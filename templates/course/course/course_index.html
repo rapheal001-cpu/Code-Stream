@@ -25,21 +25,21 @@ Courses | Code Stream
 
         <!-- Create Course Button -->
         {% if request.user.role == 'instructor' %}
-        <a href="{% url 'course:create-course' %}">
-          <div class="bg-white/20 backdrop-blur-3xl mx-auto max-w-2xl rounded-full p-3 text-white font-semibold mb-8 md:mb-16 lg:mb-16 xl:mb-16 border border-white/30 shadow-lg shadow-white/10 shadow-inner hover:scale[98]">
+        <a href="{% url 'create-course-view' %}">
+          <div class="bg-white/10 backdrop-blur-md mx-auto max-w-md rounded-full p-3 text-white font-semibold mb-8 md:mb-16 lg:mb-16 xl:mb-16 border border-white/30 shadow-white shadow-sm hover:shadow-md hover:-translate-y-1.5 delay-300 transition hover:scale[98]">
             Create Course
           </div>
         </a>
         {% endif %}
 
         <!-- Search Bar -->
-        <div class="relative max-w-2xl mx-auto">
+        <div class="relative max-w-md mx-auto">
           <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none z-20">
             <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
           </div>
-          <input type="text" class="w-full pl-14 pr-4 py-3 rounded-full bg-white/10 backdrop-blur-3xl text-white placeholder-white border border-white focus:border-white/20 focus:outline-none text-base text-white" placeholder="What do you want to learn today?" name="search" hx-get="{% url 'course:course-index' %}" hx-trigger="keyup changed delay:300ms" hx-target="#courses-grid" hx-swap="innerHTML">
+          <input type="text" class="w-full pl-14 pr-4 py-4 rounded-full bg-white/10 backdrop-blur-md placeholder-white text-base text-white outline-none" placeholder="What do you want to learn today {{ request.user.username }} ?" name="search" hx-get="{% url 'course-index-view' %}" hx-trigger="keyup changed delay:300ms" hx-target="#courses-grid" hx-swap="innerHTML">
         </div>
 
       </div>

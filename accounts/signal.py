@@ -10,7 +10,7 @@ from django.conf import settings
 def signal_for_new_user(sender, instance, created, **kwargs):
     if created:
         # Immediately send user an email of a new user
-        site_url = f'http://127.0.0.1:8000/'
+        site_url = f'http://localhost:8000/'
         context = {"user": instance, 'site_url': site_url}
         subject_txt = render_to_string(
             "core/user/email/subject/welcome_email_subject.txt"

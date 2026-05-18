@@ -6,23 +6,21 @@ from .views import (
 )
 from .webhook import course_webhook
 
-app_name = "payment"
-
 urlpatterns = [
     path(
         "checkout-course/<int:course_id>/",
         course_payment_checkout_session,
-        name="checkout-course",
+        name="checkout-course-view",
     ),
     path(
         "checkout-course-success/<int:pk>/",
         course_checkout_success_view,
-        name="checkout-course-success",
+        name="checkout-course-success-view",
     ),
     path(
         "checkout-course-cancel/<int:pk>/",
         course_checkout_cancel_view,
-        name="checkout-course-cancel",
+        name="checkout-course-cancel-view",
     ),
-    path("stripe/webhook/", course_webhook, name="webhook"),
+    path("stripe/webhook/", course_webhook, name="webhook-view"),
 ]

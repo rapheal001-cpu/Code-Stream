@@ -18,10 +18,12 @@ STATUS_TYPE = [
 
 
 role_selection = ["student", "instructor"]
-index_view_url = "core:index-view"
-about_view_url = "core:about-view"
-course_view_url = "course:course-index"
-create_course_view_url = "course:create-course"
-notification_view_url = "notification"
-find_friend_view_url = "find-friends"
+index_view_url = "index-view"
+about_view_url = "about-view"
+course_view_url = "course-index-view"
+create_course_view_url = "create-course-view"
+create_course_done_view_url = "create-course-done-view"
+notification_view_url = "notification-view"
+find_friend_view_url = "find-friends-view"
 login_view_url = "account_login"
+setting_view_url = "settings-view"

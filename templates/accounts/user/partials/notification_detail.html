@@ -13,7 +13,7 @@ Notification | {{ notification.title }} | Code Stream
 <nav class="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
   <div class="max-w-3xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
 
-    <a href="{% url 'notification' %}"
+    <a href="{% url 'core:notification' %}"
       class="group flex items-center gap-2 text-gray-500 hover:text-indigo-600 transition-all duration-200 text-sm font-medium rounded-lg px-3 py-2 hover:bg-gray-50">
 
       <!-- Animated Back Icon -->
@@ -44,9 +44,9 @@ Notification | {{ notification.title }} | Code Stream
     <article class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300">
 
       <!-- Header Section with Gradient Accent -->
-      <div class="relative bg-gradient-to-r from-indigo-50/50 to-purple-50/30 px-6 py-6 sm:px-8">
+      <div class="relative bg-linear-to-r from-indigo-50/50 to-purple-50/30 px-6 py-6 sm:px-8">
         <!-- Decorative Element -->
-        <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-tr from-indigo-900 via-purple-900 to-indigo-900"></div>
+        <div class="absolute top-0 left-0 w-1 h-full bg-linear-to-tr from-indigo-900 via-purple-900 to-indigo-900"></div>
 
         <!-- Title -->
         <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight tracking-tight">

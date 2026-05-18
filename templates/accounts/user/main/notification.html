@@ -42,14 +42,7 @@ Notifications | Code Stream
           >
           <div class="flex items-start gap-4">
             <!-- Icon/Avatar -->
-            <div class="flex-shrink-0">
-              {% if notification.sender.avatar %}
-              <img
-              src="{{ notification.sender.avatar.url }}"
-              alt="{{ notification.sender.username }}"
-              class="w-10 h-10 rounded-full object-cover"
-              />
-            {% else %}
+            <div class="shrink-0">
             <div
               class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"
               >
@@ -65,7 +58,7 @@ Notifications | Code Stream
                   ></path>
               </svg>
             </div>
-            {% endif %} {% if not notification.is_read %}
+            {% if not notification.is_read %}
             <span
               class="absolute -mt-3 ml-7 w-3 h-3 bg-white rounded-full"
               ></span>
@@ -79,7 +72,7 @@ Notifications | Code Stream
               <h2
                 class="text-sm font-semibold text-white mb-1"
                 >
-                {{ notification.title }}
+                {{ notification.name }}
               </h2>
               <p
                 class="text-sm text-white leading-relaxed mb-2 truncate"
@@ -109,7 +102,7 @@ Notifications | Code Stream
 
           <!-- Actions -->
           <div class="flex flex-col items-end gap-2">
-            <form method="POST" action="{% url 'notification' %}" class="inline">
+            <form method="POST" action="{% url 'notification-view' %}" class="inline">
               {% csrf_token %}
               <input type="hidden" name="delete_id" value="{{ notification.id }}" />
             <button type="submit" class="p-1.5 text-white hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">

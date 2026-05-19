@@ -23,16 +23,14 @@ My Courses | Code Stream
           <circle cx="11" cy="11" r="8"></circle>
           <path d="m21 21-4.35-4.35"></path>
         </svg>
-        <input type="text" name='search' class="w-full pl-11 pr-4 py-2 rounded focus:rounded-full border-1 border-indigo-800 bg-white text-gray-900 placeholder-gray-400 font-medium outline-none focus:ring-1 focus:ring-indigo-800 transition-all duration-300" autocomplete="off" placeholder="Search for courses..." hx-get="{% url 'core:instructor-courses' %}" hx-trigger="keyup changed delay:300ms" hx-target='#courses-grid' hx-sawp='innerHTML' />
+        <input type="text" name='search' class="w-full pl-11 pr-4 py-2 rounded focus:rounded-full border-1 border-indigo-800 bg-white text-gray-900 placeholder-gray-400 font-medium outline-none focus:ring-1 focus:ring-indigo-800 transition-all duration-300" autocomplete="off" placeholder="Search for courses..." hx-get="{% url 'instructor-courses-view' %}" hx-trigger="keyup changed delay:300ms" hx-target='#courses-grid' hx-sawp='innerHTML' />
     </div>
   </div>
 </header>
 
-<!-- ═══ Course Grid ═══ -->
-<main class="w-full mx-auto py-4 px-4 md:px-10 lg:px-14">
-
   <!-- Courses Container -->
-  <div id="courses-grid">
+
+  <div class="w-full max-w-7xl mx-auto py-4 px-4 md:px-10 lg:px-14" id="courses-grid">
 
     {% include 'course/course/partials/courses_list.html' %}
 

@@ -11,7 +11,7 @@ Course Info - {{ course.name }} | Code Stream
 <div class="min-h-screen bg-gray-50">
 
   <!-- Back Navigation -->
-  <div class="bg-indigo-900 text-white sticky top-0 z-40">
+  <div class="bg-linear-to-tr from-indigo-900 via-purple-900 to-indigo-900 text-white sticky top-0 z-40">
     <div class="max-w-5xl mx-auto px-4 py-3">
       <a href="{{ course.get_absolute_url }}" class="inline-flex items-center text-sm text-white gap-1">
         <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,16 +57,10 @@ Course Info - {{ course.name }} | Code Stream
               <h1 class="text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
                 {{ course.name }}
               </h1>
-              <p class="text-sm text-gray-500 mt-1.5 flex items-center gap-2">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Created {{ course.created_at|naturaltime }}
-              </p>
             </div>
             <div class="flex-shrink-0">
               {% if request.user not in course.students.all %}
-              <span class="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-50 text-indigo-700 font-bold text-lg">
+              <span class="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-900 text-white font-bold text-lg">
                 ${{ course.price }}
               </span>
               {% endif %}
@@ -79,19 +73,19 @@ Course Info - {{ course.name }} | Code Stream
               {% if course.instructor.avatar %}
               <img src="{{ course.instructor.avatar.url }}" class="w-10 h-10 rounded-full ring-2 ring-white shadow-sm" />
             {% else %}
-            <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-semibold text-sm ring-2 ring-white shadow-sm">
+            <div class="w-10 h-10 rounded-full bg-indigo-900 flex items-center justify-center text-white font-bold text-sm ring-2 ring-white shadow-sm">
               {{ course.instructor.username|first|upper }}
             </div>
             {% endif %}
             <div>
               <p class="text-sm font-medium text-gray-900">
-                {% if course.instructor.first_name %}
+                {% if course.instructor.last_name %}
                 {{ course.instructor.full_name|title }}
                 {% else %}
                 {{ course.instructor.username|title }}
                 {% endif %}
               </p>
-              <p class="text-xs text-gray-500">
+              <p class="text-xs text-gray-600">
                 {{ course.instructor.role|title }}
               </p>
             </div>
@@ -121,7 +115,7 @@ Course Info - {{ course.name }} | Code Stream
         <!-- CTA -->
         <div class="flex flex-wrap gap-3">
           {% if request.user in course.students.all or request.user == course.instructor %}
-          <a href="{{ course.get_absolute_url }}" class="inline-flex items-center justify-center px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
+          <a href="{{ course.get_absolute_url }}" class="inline-flex items-center justify-center px-6 py-2.5 bg-indigo-900 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -133,8 +127,8 @@ Course Info - {{ course.name }} | Code Stream
             {% endif %}
           </a>
           {% else %}
-          {% if request.user.role != 'instructor' %}
-          <a href="{% url 'payment:checkout-course' course_id=course.id %}" class="inline-flex items-center justify-center px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
+          {% if request.user.role != 'instructor' and request.user != course.instructor %}
+          <a href="{% url 'checkout-course-view' course_id=course.id %}" class="inline-flex items-center justify-center px-6 py-2.5 bg-indigo-900 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
             </svg>
@@ -143,7 +137,7 @@ Course Info - {{ course.name }} | Code Stream
           {% endif %}
           {% endif %}
 
-          <div class="inline-flex items-center justify-center px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-sm gap-1 cursor-pointer" onclick="toggleStudentList()">
+          <div class="inline-flex items-center justify-center px-6 py-2.5 bg-indigo-900 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-sm gap-1 cursor-pointer" onclick="toggleStudentList()">
             <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>

@@ -61,9 +61,6 @@ class UpdateCourseForm(forms.ModelForm):
         if thumbnail.size > 2 * 1024 * 1024:
             raise forms.ValidationError('Your image is too large. Please upload a file smaller than 2MB.')
 
-        if not thumbnail.endwith((".jpg", ".jpeg", 'png')):
-            raise forms.ValidationError('Invalid file type. Please upload a valid image (JPG, PNG).')
-
         return thumbnail
 
 

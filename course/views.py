@@ -34,6 +34,34 @@ class CourseView(LoginRequiredMixin, TemplateView):
 
         return render(request, self.template_name, context)
 
+    def post(self, request, *args, **kwargs):
+        course_delete = request.POST.get("course_delete")
+        course_like = request.POST.get("course_like")
+        user = request.user
+        courses = Course.objects.all()
+        context = {
+            'courses': courses,
+        }
+
+        # Action for deleting course
+        if course_delete:
+            course = get_object_or_404(Course, id=int(course_delete))
+            if user == course.instructor:
+                course.delete()
+            if request.htmx:
+                return render(request, "course/course/partials/courses_list.html", context)
+
+        # Action for liking the course
+        if course_like:
+            course = get_object_or_404(Course, id=int(course_like))
+            if user not in course.likes.all():
+                course.likes.add(user)
+            else:
+                course.likes.remove(user)
+            if request.htmx:
+                return render(request, "course/course/partials/courses_list.html", context)
+        return render(request, self.template_name, context)
+
 course_view = CourseView.as_view()
 
 
@@ -49,6 +77,7 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
         videos = course.course_videos()
         course_video_form = CourseVideoForm()
 
+        context['course'] = course
         context["videos"] = videos
         context["active_video"] = videos.first() if videos.exists() else None
         context["form"] = kwargs.get("form", course_video_form)
@@ -58,7 +87,24 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         course = self.object
+        videos = course.course_videos()
+        user = request.user
         form = CourseVideoForm(request.POST, request.FILES)
+        video_id = request.POST.get("video_id")
+
+        context = {
+            'videos': videos,
+            'form': form,
+            'course': course,
+        }
+
+        # Action For Instructor To Delete The Course Video
+        if video_id:
+            video = get_object_or_404(CourseVideo, id=int(video_id))
+            if user == video.course.instructor:
+                video.delete()
+            if request.htmx:
+                return render(request, "course/course/partials/course_videos_list.html", context)
 
         if form.is_valid():
             video = form.save(commit=False)
@@ -66,8 +112,6 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
             video.save()
             return redirect(course.get_absolute_url())
 
-            # If invalid, re-render with form errors and all context
-        context = self.get_context_data(form=form)
         return render(request, self.template_name, context)
 
 course_detail_view = CourseDetailView.as_view()
@@ -116,6 +160,7 @@ create_course_done_view = CreateCourseDoneView.as_view()
 class UpdateCourseView(LoginRequiredMixin, UpdateView):
     model = Course
     form_class = UpdateCourseForm
+    context_object_name = 'course'
     template_name = "course/course/update_course.html"
 
     def get(self, request, *args, **kwargs):
@@ -170,3 +215,17 @@ class CourseInfoView(LoginRequiredMixin, DetailView):
         return render(request, self.template_name, context)
 
 course_info_view = CourseInfoView.as_view()
+
+
+class UpdateCourseVideoView(LoginRequiredMixin, UpdateView):
+    model = CourseVideo
+    form_class = CourseVideoForm
+    pk_url_kwarg = 'pk'
+    pk_field = "pk"
+    template_name = "course/course/update_course_video.html"
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+update_course_video_view = UpdateCourseVideoView.as_view()

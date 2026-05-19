@@ -1,5 +1,7 @@
+from datetime import timedelta
 from django.db import models
 from accounts.models import User
+from django.utils import timezone
 from django.utils.text import slugify
 from decimal import Decimal
 from django.urls import reverse
@@ -13,10 +15,17 @@ class Course(models.Model):
     thumbnail = models.ImageField(upload_to="course/thumbnails/", verbose_name="Course Thumbnail")
     price = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal("0.00"), verbose_name="Course Price")
     students = models.ManyToManyField(User, through="Enrollment", related_name="enrolled_courses", blank=True, verbose_name="Course Students")
+    views = models.ManyToManyField(User, blank=True, verbose_name="Course Views", related_name="course_views")
+    likes = models.ManyToManyField(User, blank=True, verbose_name="Course Likes", related_name="course_likes")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
+    updated_at = models.DateTimeField(null=True, blank=True, verbose_name="Updated at")
 
     def get_absolute_url(self):
         return reverse("course-detail-view", kwargs={"slug": self.slug})
+
+    @property
+    def is_updated(self):
+        return self.updated_at != self.created_at
 
     class Meta:
         ordering = ["-created_at"]
@@ -43,6 +52,18 @@ class Course(models.Model):
     def total_students(self):
         return self.students.count()
 
+    @property
+    def total_views(self):
+        return self.views.count()
+
+    @property
+    def total_likes(self):
+        return self.likes.count()
+
+    @property
+    def is_new(self):
+        return self.created_at  > timezone.now() - timedelta(days=1)
+
 
 class CourseVideo(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="videos", verbose_name="Course")
@@ -51,9 +72,12 @@ class CourseVideo(models.Model):
     video = models.FileField(upload_to="course/videos/", verbose_name="Video File")
     thumbnail = models.ImageField(upload_to="course/video_thumbs/", verbose_name="Video Thumbnail")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated at")
+
+
 
     class Meta:
-        ordering = ["-created_at"]
+        ordering = ["created_at"]
         verbose_name = "Course Video"
         verbose_name_plural = "Course Videos"
 

@@ -18,7 +18,10 @@ Create Course | Code Stream
 
     <!-- Form Card -->
     <div class="bg-white/10 backdrop-blur-lg border border-white/10 rounded-xl p-6 sm:p-8">
-
+      <div class="grid grid-cols-2 text-center mb-5 pb-5 border-b border-b-white/50">
+        <span class="text-white font-bold">Role: {{ request.user.role|title }}</span>
+        <span class="text-white font-bold">Username: <a href="{{ request.user.get_absolute_url }}" class="hover:underline">@{{ request.user.username|lower }}</a></span>
+      </div>
       <form action="{% url 'create-course-view' %}" method="POST" enctype="multipart/form-data" class="space-y-6">
         {% csrf_token %}
 

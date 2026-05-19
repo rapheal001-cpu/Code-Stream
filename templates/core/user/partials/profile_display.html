@@ -202,8 +202,9 @@
         {% if user != request.user %}
         <div class="flex items-center justify-center lg:justify-start gap-3 mt-6">
           <!-- Follow Button -->
-          <form action="{% url 'follow-toggle-view' pk=user.pk %}" method="POST">
+          <form hx-post="{% url 'profile-view' pk=user.pk %}" hx-trigger="submit" hx-target="#profile" hx-swap="innerHTML">
             {% csrf_token %}
+            <input type="hidden" name="user_id" value="{{ user.pk }}">
             <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 text-white rounded-full font-medium active:scale-95 hover:-translate-y-1.5 transition-all duration-200 shadow-sm hover:shadow-md shadow-white">
             {% if request.user in user.followers.all %}
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"

@@ -112,6 +112,23 @@ class ProfileView(LoginRequiredMixin, DetailView):
                 )
         return super().get(request, *args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+        user_id = request.POST.get("user_id")
+        current_user = request.user
+
+        if user_id:
+            user = get_object_or_404(User, pk=int(user_id))
+            if current_user not in user.followers.all() and current_user != user:
+                user.followers.add(current_user)
+            else:
+                user.followers.remove(current_user)
+        context = {
+            'user': user,
+        }
+        if request.htmx:
+            return render(request, "core/user/partials/profile_display.html", context)
+        return render(request, self.template_name, context)
+
 profile_view = ProfileView.as_view()
 
 

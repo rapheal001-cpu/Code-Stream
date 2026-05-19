@@ -20,10 +20,10 @@ Code Stream
 {% include 'core/base/header.html' %}
 <!-- Main App -->
 <main class="p-4 pb-8 bg-gray-50 min-h-screen">
-
+  {% if instructors %}
   <!-- Scrollable instructors row -->
   <div class="flex max-w-6xl mx-auto gap-5 overflow-x-auto pb-3 scrollbar-hide border-b border-gray-400 mb-3">
-    {% for instructor in instructors %}
+      {% for instructor in instructors %}
     <a href="{{ instructor.get_absolute_url }}" class="flex flex-col items-center flex-shrink-0 cursor-pointer group">
       <!-- Avatar with ring -->
       <div class="overflow-hidden">
@@ -38,8 +38,12 @@ Code Stream
       <!-- Username -->
       <span class="text-xs text-gray-700 mt-2 max-w-[4rem] truncate group-hover:text-indigo-700 transition-colors">{{ instructor.username }}</span>
     </a>
-    {% endfor %}
+     {% endfor %}
   </div>
+
+  {% endif %}
+ 
+
 
   <!-- Search Input -->
   <div class="max-w-xl mx-auto mb-8">

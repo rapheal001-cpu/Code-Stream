@@ -61,7 +61,7 @@
 
         <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-3 justify-center">
-          <a href="{% url 'payment:checkout-course' course_id=course.id %}"
+          <a href="{% url 'checkout-course-view' course_id=course.id %}"
             class="inline-flex items-center justify-center px-6 py-3 bg-transparent border border-white shadow-md shadow-white text-white font-semibold hover:shadow-lg transition-colors duration-200 rounded-xl">
             Try Again
             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,7 +78,7 @@
         <!-- Help Text -->
         <p class="mt-6 text-sm text-white">
           Changed your mind?
-          <a href="{% url 'course:course-index' %}" class="text-white underline underline-offset-4 transition-colors">Browse more courses</a>
+          <a href="{% url 'course-index-view' %}" class="text-white underline underline-offset-4 transition-colors">Browse more courses</a>
         </p>
       </div>
     </div>

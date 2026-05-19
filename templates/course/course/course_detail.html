@@ -109,13 +109,13 @@
     {% endif %}
     {% else %}
     <!-- Purchase Banner -->
-    <div class="bg-linear-to-tr from-indigo-900 via-purple-900 to-indigo-900 rounded-xl shadow-lg py-10 text-white flex flex-col justify-center items-center">
-      <h2 class="text-xl font-bold mb-2">{{ course.name }}</h2>
+    <div class="bg-linear-to-tr from-indigo-900 via-purple-900 to-indigo-900 rounded-xl shadow-lg py-10 px-4 text-white flex flex-col justify-center items-center">
+      <h2 class="text-xl font-bold mb-2 text-center">{{ course.name }}</h2>
       <a href="{{ course.instructor.get_absolute_url }}" class="text-white mb-4 hover:underline hover:underline-offset-4 transition delay-300">
         Instructor: {{ course.instructor.full_name|title }}
       </a>
       <a href="{% url 'checkout-course-view' course_id=course.id %}"
-        class="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 bg-white text-indigo-900 font-semibold rounded-lg hover:scale-110 transition delay-300">
+        class="inline-flex items-center justify-center sm:w-auto px-6 py-3 bg-white text-indigo-900 font-semibold rounded-lg hover:scale-110 transition delay-300">
         Buy Now - Unlock Course
       </a>
     </div>

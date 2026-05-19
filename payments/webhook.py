@@ -43,7 +43,7 @@ def course_webhook(request):
             instructor.wallet.save()
             Notification.objects.create(
                 user=instructor,
-                title="New Course Purchase 🎉",
+                name="New Course Purchase 🎉",
                 message=(
                     f"Good news {instructor.full_name},\n\n"
                     f"Your course has just been purchased by @{user.username}.\n\n"
@@ -65,7 +65,7 @@ def course_webhook(request):
             # Send Notification to the user(Student)
             Notification.objects.create(
                 user=user,
-                title="Course Purchase Successful 🎉",
+                name="Course Purchase Successful 🎉",
                 message=(
                     f"Congratulations {user.username},\n\n"
                     f"You have successfully purchased a course.\n\n"

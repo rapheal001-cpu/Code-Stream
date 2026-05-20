@@ -236,18 +236,6 @@
             </p>
           </div>
 
-          <!-- Thumbnail -->
-          <div>
-            <label for="id_thumbnail" class="block text-sm font-medium text-gray-700 mb-1.5">Thumbnail</label>
-            <div class="relative">
-              <input type="file" name="thumbnail" id="id_thumbnail" accept="image/*"
-              class="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 file:cursor-pointer file:transition-colors cursor-pointer border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-            </div>
-            <p class="mt-1 text-xs text-gray-400">
-              Recommended: 1280x720 (16:9)
-            </p>
-          </div>
-
           <!-- Actions -->
           <div class="flex items-center justify-end gap-3 pt-2">
             <button type="button" id="cancelBtn"
@@ -269,44 +257,5 @@
 
 {% block javascript %}
 <script src="{% static 'core/base/javascript/header.js' %}" type="text/javascript" charset="utf-8"></script>
-<script>
-  (function() {
-  const modal = document.getElementById('addVideoModal');
-  const backdrop = document.getElementById('modalBackdrop');
-  const panel = document.getElementById('modalPanel');
-  const openBtn = document.getElementById('addVideoBtn');
-  const closeBtn = document.getElementById('closeModalBtn');
-  const cancelBtn = document.getElementById('cancelBtn');
-
-  function openModal() {
-  modal.classList.remove('hidden');
-  void modal.offsetWidth;
-  backdrop.classList.remove('opacity-0');
-  panel.classList.remove('scale-95', 'opacity-0');
-  panel.classList.add('scale-100', 'opacity-100');
-  document.body.style.overflow = 'hidden';
-  }
-
-  function closeModal() {
-  backdrop.classList.add('opacity-0');
-  panel.classList.remove('scale-100', 'opacity-100');
-  panel.classList.add('scale-95', 'opacity-0');
-  setTimeout(() => {
-  modal.classList.add('hidden');
-  document.body.style.overflow = '';
-  }, 200);
-  }
-
-  openBtn.addEventListener('click', openModal);
-  closeBtn.addEventListener('click', closeModal);
-  cancelBtn.addEventListener('click', closeModal);
-  backdrop.addEventListener('click', closeModal);
-
-  document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-  closeModal();
-  }
-  });
-  })();
-</script>
+<script src="{% static 'course/javascript/course_detail.js' %}" type="text/javascript" charset="utf-8"></script>
 {% endblock %}

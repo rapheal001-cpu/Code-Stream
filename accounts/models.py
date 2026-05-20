@@ -1,4 +1,5 @@
-from django.core.validators import validate_email
+from cloudinary.models import CloudinaryField
+from django.core.validators import validate_email, FileExtensionValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from decimal import Decimal
@@ -8,7 +9,7 @@ from CodeStream.utils import USER_ROLE, PAYMENT_TYPE, STATUS_TYPE
 
 
 class User(AbstractUser):
-    avatar = models.ImageField(upload_to="accounts/avatar/", blank=True, null=True, verbose_name="Avatar")
+    avatar = CloudinaryField('image', folder='accounts/avatars/', validations=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])], null=True, blank=True, verbose_name="Avatar")
     first_name = models.CharField(max_length=20, verbose_name="First Name")
     last_name = models.CharField(max_length=20, verbose_name="Last Name")
     username = models.CharField(max_length=10, unique=True, verbose_name="Username")

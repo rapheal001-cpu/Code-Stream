@@ -1,7 +1,6 @@
 {% load humanize %}
     {% for video in videos %}
     <div class="group bg-white rounded-xl overflow-hidden border border-gray-200 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 {% if video.id == active_video.id %}ring-2 ring-indigo-900{% endif %}">
-
       <!-- Thumbnail -->
       <div class="block relative aspect-video bg-gray-900 overflow-hidden">
         {% if video.thumbnail %}
@@ -41,8 +40,8 @@
         {% endif %}
 
         <!-- Duration Badge -->
-        <div class="absolute bottom-3 right-3 bg-indigo-600 text-white text-xs font-medium px-2 py-1 rounded video-duration">
-          0:00
+        <div class="absolute bottom-3 right-3 bg-indigo-600 text-white text-xs font-medium px-2 py-1 rounded">
+          {{ video.formatted_duration }}
         </div>
       </div>
 

@@ -37,12 +37,18 @@
       </span>
     </div>
     {% endif %}
-  
+      
+
     
-    <!-- Price badge (bottom-left) -->
+    <!-- Price badge And Total Videos Duration (bottom-left) -->
     <div class="absolute bottom-3 left-3">
       <span class="px-2 py-1 rounded-md bg-white/95 backdrop-blur text-sm font-bold text-blue-900 shadow-sm">
         ${{ course.price }}
+      </span>
+    </div> 
+    <div class="absolute bottom-3 right-3">
+      <span class="px-2 py-1 rounded-md bg-white/95 backdrop-blur text-sm font-bold text-blue-900 shadow-sm">
+        {{ course.total_videos_duration}}
       </span>
     </div>
   </a>

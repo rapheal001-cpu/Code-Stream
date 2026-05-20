@@ -40,8 +40,8 @@ class CoursePaymentCheckoutSession(LoginRequiredMixin, View):
                 "course_id": course_id,
                 "user_id": user.id,
             },
-            success_url=f"https://ed5d-102-223-1-130.ngrok-free.app/payment/checkout-course-success/{course.pk}/",
-            cancel_url=f"https://ed5d-102-223-1-130.ngrok-free.app/payment/checkout-course-cancel/{course.pk}/",
+            success_url=f"http://localhost:8000/payment/checkout-course-success/{course.pk}/",
+            cancel_url=f"http://localhost:8000/payment/checkout-course-cancel/{course.pk}/",
         )
         return redirect(session.url)
 

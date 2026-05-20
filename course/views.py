@@ -8,6 +8,7 @@ from .models import (
 from .forms import CreateCourseForm, UpdateCourseForm, CourseVideoForm
 from django.urls import reverse_lazy
 from CodeStream.utils import index_view_url, course_view_url, create_course_view_url
+from .task import generate_thumbnail_course_video
 
 
 class CourseView(LoginRequiredMixin, TemplateView):
@@ -107,9 +108,11 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
                 return render(request, "course/course/partials/course_videos_list.html", context)
 
         if form.is_valid():
-            video = form.save(commit=False)
-            video.course = course
-            video.save()
+            course_video = form.save(commit=False)
+            course_video.course = course
+            course_video.save()
+            course_video_id = course_video.id
+            generate_thumbnail_course_video.delay(course_video_id)
             return redirect(course.get_absolute_url())
 
         return render(request, self.template_name, context)

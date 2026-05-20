@@ -28,7 +28,7 @@ DEBUG = config("DEBUG", cast=bool, default=(ENVIRONMENT == 'development'))
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=str).split(",")
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://ed5d-102-223-1-130.ngrok-free.app'
+    'https://302d-102-223-1-130.ngrok-free.app'
 ]
 
 
@@ -188,17 +188,12 @@ STATICFILES_DIRS = [
 # Media
 MEDIA_URL = "/media/"
 
-if ENVIRONMENT == "production":
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-    CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
-        'API_KEY': config('CLOUDINARY_API_KEY'),
-        'API_SECRET': config('CLOUDINARY_API_SECRET'),
-    }
-else:
-    # Local development - store media locally
-    MEDIA_ROOT = os.path.join(BASE_DIR / 'media')
-    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': config('CLOUDINARY_API_KEY'),
+    'API_SECRET': config('CLOUDINARY_API_SECRET'),
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 # Login System
@@ -264,3 +259,12 @@ DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", cast=str)
 STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY", cast=str)
 STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY", cast=str)
 STRIPE_WEBHOOK_SECRET_KEY = config("STRIPE_WEBHOOK_SECRET_KEY", cast=str)
+
+
+
+# Celery Configuration
+CELERY_BROKER_URL = config("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND")
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"

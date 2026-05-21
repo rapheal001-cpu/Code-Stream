@@ -24,7 +24,8 @@ It is designed to provide a smooth learning experience with user authentication,
 - **Database:** PostgreSQL
 - **Media Storage:** Cloudinary
 - **Authentication:** Django Auth System & Allauth System
-- **Payment:** Stripe
+- **Payment Type:** Stripe
+- **Scaling:** Celery
 
 ---
 

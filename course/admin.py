@@ -296,10 +296,10 @@ class EnrollmentAdmin(admin.ModelAdmin):
             'fields': (
                 'user',
                 'user_preview_avatar',
-                'course__name',
+                'course__name__display',
 
             )
-        })
+        }),
     )
 
     def user_preview_avatar(self, obj):
@@ -309,3 +309,10 @@ class EnrollmentAdmin(admin.ModelAdmin):
                 obj.user.avatar.url
             )
         return "No Avatar"
+    user_preview_avatar.short_description = "User Avatar"
+
+    def course_name_display(self, obj):
+        if obj.course.name:
+            return obj.course.name
+        return "No Course Assigned"
+    course_name_display.short_description = "Course Name"

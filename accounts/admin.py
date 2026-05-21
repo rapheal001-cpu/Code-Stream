@@ -127,7 +127,6 @@ class CustomUserAdmin(UserAdmin):
     # ==========================================
     # CUSTOM METHODS
     # ==========================================
-
     def avatar_preview(self, obj):
         if obj.avatar:
             return format_html(
@@ -154,7 +153,7 @@ class CustomUserAdmin(UserAdmin):
         try:
             return f"${obj.wallet.balance}"
         except:
-            return "$0.00"
+            return "No Wallet."
 
     wallet_balance_display.short_description = "Wallet"
 

@@ -62,6 +62,8 @@ class CourseAdmin(admin.ModelAdmin):
         'total_videos',
         'total_views',
         'total_likes',
+        'published',
+        'published_at',
         'created_at',
     )
 
@@ -69,6 +71,7 @@ class CourseAdmin(admin.ModelAdmin):
         'created_at',
         'updated_at',
         'instructor',
+        'published',
     )
 
     search_fields = (
@@ -82,11 +85,12 @@ class CourseAdmin(admin.ModelAdmin):
         'slug',
         'created_at',
         'updated_at',
+        'published_at',
         'thumbnail_preview_large',
         'analytics',
     )
 
-    ordering = ('-created_at',)
+    ordering = ('-created_at', 'published_at', 'published')
 
     inlines = [CourseVideoInline]
 
@@ -98,6 +102,7 @@ class CourseAdmin(admin.ModelAdmin):
                 'slug',
                 'description',
                 'price',
+                'published',
             )
         }),
 
@@ -116,6 +121,7 @@ class CourseAdmin(admin.ModelAdmin):
 
         ("Dates", {
             'fields': (
+                'published_at',
                 'created_at',
                 'updated_at',
             )
@@ -156,6 +162,7 @@ class CourseAdmin(admin.ModelAdmin):
                 <p><strong>Total Views:</strong> {}</p>
                 <p><strong>Total Likes:</strong> {}</p>
                 <p><strong>Total Duration:</strong> {}</p>
+                <p><strong>Published:</strong> {}</p>
             </div>
             """,
             obj.total_students,
@@ -163,6 +170,7 @@ class CourseAdmin(admin.ModelAdmin):
             obj.total_views,
             obj.total_likes,
             obj.total_videos_duration,
+            obj.published,
         )
 
     analytics.short_description = "Statistics"
@@ -295,24 +303,11 @@ class EnrollmentAdmin(admin.ModelAdmin):
         ("Enrollment", {
             'fields': (
                 'user',
-                'user_preview_avatar',
-                'course__name__display',
+                'course',
+                'amount_paid',
+                'is_paid',
+                'enrolled_at',
 
             )
         }),
     )
-
-    def user_preview_avatar(self, obj):
-        if obj.user.avatar:
-            return format_html(
-                '<img src="{}" width="250" style="border-radius:10px;" />',
-                obj.user.avatar.url
-            )
-        return "No Avatar"
-    user_preview_avatar.short_description = "User Avatar"
-
-    def course_name_display(self, obj):
-        if obj.course.name:
-            return obj.course.name
-        return "No Course Assigned"
-    course_name_display.short_description = "Course Name"

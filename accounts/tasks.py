@@ -5,7 +5,7 @@ from django.core.mail import EmailMessage
 from django.conf import settings
 
 # Send Welcome Email To User
-@shared_task
+@shared_task(name="Send Welcome Email To New User", max_retries=3)
 def send_welcome_email(email):
     try:
         user = User.objects.get(email=email)

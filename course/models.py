@@ -24,6 +24,8 @@ class Course(models.Model):
     students = models.ManyToManyField(User, through="Enrollment", related_name="enrolled_courses", blank=True, verbose_name="Course Students")
     views = models.ManyToManyField(User, blank=True, verbose_name="Course Views", related_name="course_views")
     likes = models.ManyToManyField(User, blank=True, verbose_name="Course Likes", related_name="course_likes")
+    published = models.BooleanField(default=False, verbose_name="Published")
+    published_at = models.DateTimeField(null=True, blank=True, verbose_name="Published at")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
     updated_at = models.DateTimeField(null=True, blank=True, verbose_name="Updated at")
 

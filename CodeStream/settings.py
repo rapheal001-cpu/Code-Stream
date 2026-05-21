@@ -34,7 +34,7 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=str).split(",")
 
 CSRF_TRUSTED_ORIGINS = [
     'https://*onrender.com',
-    'https://7890-102-223-1-130.ngrok-free.app'
+    'https://*.ngrok-free.app'
 ]
 
 

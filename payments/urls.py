@@ -4,7 +4,7 @@ from .views import (
     course_checkout_success_view,
     course_checkout_cancel_view,
 )
-from .webhook import course_webhook
+from .webhook import purchase_course_webhook
 
 urlpatterns = [
     path(
@@ -22,5 +22,5 @@ urlpatterns = [
         course_checkout_cancel_view,
         name="checkout-course-cancel-view",
     ),
-    path("stripe/webhook/", course_webhook, name="webhook-view"),
+    path("stripe/webhook/", purchase_course_webhook, name="webhook-view"),
 ]

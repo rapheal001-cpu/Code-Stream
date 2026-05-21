@@ -9,7 +9,7 @@ from .models import Report
 from .forms import UserRoleForm, UpdateProfileForm, ProfileDescriptionForm
 from course.models import Course
 from CodeStream.utils import about_view_url, index_view_url, notification_view_url, course_view_url, setting_view_url
-
+from .tasks import create_instructor_wallet
 
 # Create your views here.
 
@@ -45,10 +45,10 @@ class IndexView(TemplateView):
                 Notification.objects.create(
                     user=user,
                     name="You're all set!",
-                    message=f"Welcome to Code Stream, {user.full_name.title()}.\n\nYour {'Student' if user.role == 'student' else 'Instructor'} account has been successfully created. You can now start exploring everything the platform has to offer.\n\nWe're glad to have you with us.",
+                    message=f"Welcome to Code Stream, {user.full_name}.\n\nYour {'Student' if user.role == 'student' else 'Instructor'} account has been successfully created. You can now start exploring everything the platform has to offer.\n\nWe're glad to have you with us.",
                 )
             if user.role == 'instructor':
-              Wallet.objects.get_or_create(user=user)
+                create_instructor_wallet.delay(user.id)
             form.save()
         context = {"form": form}
         return render(request, self.template_name, context)
@@ -71,9 +71,10 @@ class AboutView(TemplateView):
         topic = request.POST.get("topic").strip().title()
         body = request.POST.get("body").strip()
 
-        user = User.objects.filter(
-            Q(username__iexact=user_identifier) | Q(email__iexact=user_identifier)
-        ).first()
+        try:
+            user = User.objects.filter(Q(username=user_identifier) | Q(email=user_identifier)).first()
+        except User.DoesNotExist:
+            return 'This user does not exist'
 
         if user_identifier and topic and body:
             Report.objects.create(
@@ -262,11 +263,11 @@ notification_detail_view = NotificationDetailView.as_view()
 
 
 # ===================
-# SOCIAL/FRIEND VIEWS
+# SOCIAL VIEWS
 # ===================
-class FindFriendView(LoginRequiredMixin, TemplateView):
-    """Search users"""
-    template_name = "core/user/main/find_friend.html"
+class DiscoverDeveloperView(LoginRequiredMixin, TemplateView):
+    """Search Developers"""
+    template_name = "core/user/main/discover_developers.html"
 
     def get(self, request, *args, **kwargs):
         if not request.user.role:
@@ -276,19 +277,19 @@ class FindFriendView(LoginRequiredMixin, TemplateView):
         user = self.request.user
 
         if search:
-            friends = User.objects.filter(
+            developers = User.objects.filter(
                 Q(first_name__icontains=search)
                 | Q(last_name__icontains=search)
                 | Q(username__icontains=search)
             ).exclude(id=user.id)
         else:
-            friends = User.objects.exclude(id=user.id)
+            developers = User.objects.exclude(id=user.id)
 
-        context = {"search": search, "friends": friends}
+        context = {"search": search, "developers": developers}
 
         if request.htmx:
             return render(
-                request, "core/user/partials/find_friend_list.html", context
+                request, "core/user/partials/discover_developers_list.html", context
             )
 
         return render(request, self.template_name, context)
@@ -297,22 +298,21 @@ class FindFriendView(LoginRequiredMixin, TemplateView):
         user_id = int(request.POST.get("user_id"))
         user = request.user
         user_to_follow = get_object_or_404(User, pk=user_id)
-        print(user_to_follow)
-        print(user)
+
         if user in user_to_follow.followers.all():
             user_to_follow.followers.remove(user)
         else:
             user_to_follow.followers.add(user)
 
-        friends = User.objects.exclude(id=user.id)
-        context = {'friends': friends}
+        developers = User.objects.exclude(id=user.id)
+        context = {'developers': developers}
 
         if request.htmx:
-            return render(request, "core/user/partials/find_friend_list.html", context)
+            return render(request, "core/user/partials/discover_developers_list.html", context)
 
         return render(request, self.template_name, context)
 
-find_friend_view = FindFriendView.as_view()
+discover_developer_view = DiscoverDeveloperView.as_view()
 
 
 # =======================
@@ -369,26 +369,11 @@ class InstructorCoursesView(LoginRequiredMixin, TemplateView):
 instructor_course_view = InstructorCoursesView.as_view()
 
 
-# ========================
-# Follow and Unfollow VIEWS
-# ========================
-class FollowToggleView(LoginRequiredMixin, View):
-    def post(self, request, pk=None, *args, **kwargs):
-        user_to_follow = get_object_or_404(User, pk=pk)
-        current_user = request.user
+# ====================
+# Custom Error Handler
+# ====================
+def custom_500_view(request):
+    return render(request, "core/errors/500.html", status=500)
 
-        # Prevent self-follow
-        if current_user == user_to_follow:
-            return redirect(request.META.get("HTTP_REFERER", "/"))
-
-        # Unfollow
-        if current_user in user_to_follow.followers.all():
-            user_to_follow.followers.remove(current_user)
-
-        # Follow
-        else:
-            user_to_follow.followers.add(current_user)
-
-        return redirect(request.META.get("HTTP_REFERER", "/"))
-
-follow_toggle_view = FollowToggleView.as_view()
+def custom_404_view(request):
+    return render(request, "core/errors/404.html", status=404)

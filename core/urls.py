@@ -9,19 +9,17 @@ from .views import (
     profile_list_views,
     notification_view,
     notification_detail_view,
-    find_friend_view,
+    discover_developer_view,
     instructor_wallet_view,
     instructor_course_view,
-    follow_toggle_view,
 )
 
 urlpatterns = [
     path("", index_view, name="index-view"),
     path("about/", about_view, name="about-view"),
-    path("follow/<int:pk>/", follow_toggle_view, name="follow-toggle-view"),
     path("my-course/", instructor_course_view, name="instructor-courses-view"),
     path("wallet/<int:pk>/", instructor_wallet_view, name="wallet-view"),
-    path("find-friends/", find_friend_view, name="find-friends-view"),
+    path("discover-developers/", discover_developer_view, name="discover-developers-view"),
     path("notification-detail/<int:pk>/", notification_detail_view, name="notification-detail-view", ),
     path("notifications/", notification_view, name="notification-view"),
     path("profile-views/", profile_list_views, name="profile-list-views"),

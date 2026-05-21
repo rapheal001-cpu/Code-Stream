@@ -13,7 +13,7 @@ stripe_webhook_key = settings.STRIPE_WEBHOOK_SECRET_KEY
 
 # WebHook
 @csrf_exempt
-def course_webhook(request):
+def purchase_course_webhook(request):
     event = None
     payload = request.body
     sig_header = request.META.get("HTTP_STRIPE_SIGNATURE")

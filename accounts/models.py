@@ -9,7 +9,7 @@ from CodeStream.utils import USER_ROLE, PAYMENT_TYPE, STATUS_TYPE
 
 
 class User(AbstractUser):
-    avatar = CloudinaryField('image', folder='accounts/avatars/', validations=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])], null=True, blank=True, verbose_name="Avatar")
+    avatar = CloudinaryField(resource_type='image', folder='accounts/avatars/', null=True, blank=True, verbose_name="Avatar")
     first_name = models.CharField(max_length=20, verbose_name="First Name")
     last_name = models.CharField(max_length=20, verbose_name="Last Name")
     username = models.CharField(max_length=10, unique=True, verbose_name="Username")

@@ -11,9 +11,16 @@ from .utils import (
     index_view_url,
     login_view_url,
 )
+import cloudinary
 
 ENVIRONMENT = config("ENVIRONMENT", cast=str)
 
+cloudinary.config(
+    cloud_name=config("CLOUD_NAME"),
+    api_key=config("API_KEY"),
+    api_secret=config("API_SECRET"),
+    secure=True,
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,16 +35,13 @@ DEBUG = config("DEBUG", cast=bool, default=(ENVIRONMENT == 'development'))
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=str).split(",")
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://302d-102-223-1-130.ngrok-free.app'
+    'https://*onrender.com',
+    'https://8efd-102-223-1-130.ngrok-free.app'
 ]
 
 
 AUTH_USER_MODEL = "accounts.User"
 
-INTERNAL_IPS = [
-    "127.0.0.1",
-    "localhost",
-]
 
 
 # Application definition
@@ -48,6 +52,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    'cloudinary_storage',
     "django.contrib.staticfiles",
     "django.contrib.humanize",
     'django.contrib.sites',
@@ -67,7 +72,6 @@ INSTALLED_APPS = [
     "widget_tweaks",
     "django_htmx",
     'cloudinary',
-    'cloudinary_storage',
 
 ]
 
@@ -176,24 +180,27 @@ USE_TZ = True
 
 # Static
 STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR / "staticfiles")
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-STATICFILES_DIRS = [
-    # Core Static
-    os.path.join(BASE_DIR / "core" / "static"),
-    # Course Static
-    os.path.join(BASE_DIR / "course" / "static"),
-]
+
+if ENVIRONMENT == 'development':
+    STATICFILES_DIRS = [
+        # Core Static
+        os.path.join(BASE_DIR / "core" / "static"),
+        # Course Static
+        os.path.join(BASE_DIR / "course" / "static"),
+    ]
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR / "staticfiles")
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
 
 # Media
 MEDIA_URL = "/media/"
-
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': config('CLOUDINARY_API_KEY'),
-    'API_SECRET': config('CLOUDINARY_API_SECRET'),
-}
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUD_NAME'),
+    'API_KEY': config('API_KEY'),
+    'API_SECRET': config('API_SECRET'),
+}
 
 
 # Login System
@@ -256,15 +263,14 @@ DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", cast=str)
 
 
 # Stripe Secret Key
-STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY", cast=str)
 STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY", cast=str)
 STRIPE_WEBHOOK_SECRET_KEY = config("STRIPE_WEBHOOK_SECRET_KEY", cast=str)
 
 
 
 # Celery Configuration
-CELERY_BROKER_URL = config("CELERY_BROKER_URL")
-CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND")
-CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_BROKER_URL = config("CELERY_BROKER_REDIS_URL")
+CELERY_RESULT_BACKEND = config("CELERY_RESULT_REDIS_BACKEND")
+CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"

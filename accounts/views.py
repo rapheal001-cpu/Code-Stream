@@ -1,11 +1,7 @@
-from django.shortcuts import (
-    redirect,
-)
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import (
-    TemplateView,
-)
+from django.views.generic import TemplateView
 from allauth.account.views import (
     LoginView,
     LogoutView,

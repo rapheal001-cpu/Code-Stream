@@ -1,5 +1,4 @@
 from datetime import timedelta
-
 from cloudinary.models import CloudinaryField
 from django.db import models
 from accounts.models import User
@@ -15,7 +14,7 @@ class Course(models.Model):
     name = models.CharField(max_length=255, verbose_name="Course Name")
     slug = models.SlugField(unique=True, verbose_name="Course Slug")
     description = models.TextField(blank=True, null=True, verbose_name="Course Description")
-    thumbnail = CloudinaryField('image', folder='course/thumbnails/', verbose_name="Course Thumbnail")
+    thumbnail = CloudinaryField(resource_type='image', folder='course/thumbnails/', verbose_name="Course Thumbnail")
     price = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal("0.00"), verbose_name="Course Price")
     students = models.ManyToManyField(User, through="Enrollment", related_name="enrolled_courses", blank=True, verbose_name="Course Students")
     views = models.ManyToManyField(User, blank=True, verbose_name="Course Views", related_name="course_views")
@@ -65,7 +64,7 @@ class Course(models.Model):
 
     @property
     def is_new(self):
-        return self.created_at  > timezone.now() - timedelta(minutes=5)
+        return self.created_at  > timezone.now() - timedelta(days=1)
 
     @property
     def total_videos_duration(self):
@@ -90,8 +89,8 @@ class CourseVideo(models.Model):
     description = models.TextField(blank=True, null=True, verbose_name="Video Description")
     duration = models.PositiveIntegerField(default=0, verbose_name="Video Duration")
     formatted_duration = models.CharField(max_length=100, verbose_name="Formatted Video Duration")
-    video = CloudinaryField(resource_type='video', folder='courses/videos/', verbose_name="Course Video File")
-    thumbnail = CloudinaryField('image', 'courses/videos/thumbnails/', verbose_name="Course Video Thumbnail")
+    video = CloudinaryField(resource_type='video', folder='course/videos/', verbose_name="Course Video File")
+    thumbnail = CloudinaryField(resource_type='image', folder='course/video_thumbnails/', verbose_name="Course Video Thumbnail")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated at")
 
@@ -129,7 +128,7 @@ class ShortVideo(models.Model):
     slug = models.SlugField(unique=True, verbose_name="Short Video Slug")
     description = models.TextField(blank=True, null=True, verbose_name="Short Video Description")
     video = CloudinaryField(resource_type='video', folder='short_video/videos/', verbose_name="Short Video File")
-    thumbnail = CloudinaryField('image', folder='short_video/thumbnails/', verbose_name="Short Video Thumbnail")
+    thumbnail = CloudinaryField(resource_type='image', folder='short_video/thumbnails/', verbose_name="Short Video Thumbnail")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated at")
 

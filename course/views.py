@@ -5,10 +5,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import (
     Course, CourseVideo,
 )
-from .forms import CreateCourseForm, UpdateCourseForm, CourseVideoForm
+from .forms import CreateCourseForm, UpdateCourseForm, CourseVideoForm, UpdateCourseVideoForm
 from django.urls import reverse_lazy
 from CodeStream.utils import index_view_url, course_view_url, create_course_view_url
-from .task import generate_thumbnail_course_video
+from .tasks import generate_thumbnail_course_video
 
 
 class CourseView(LoginRequiredMixin, TemplateView):
@@ -111,8 +111,7 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
             course_video = form.save(commit=False)
             course_video.course = course
             course_video.save()
-            course_video_id = course_video.id
-            generate_thumbnail_course_video.delay(course_video_id)
+            generate_thumbnail_course_video.delay(course_video.id)
             return redirect(course.get_absolute_url())
 
         return render(request, self.template_name, context)
@@ -222,7 +221,7 @@ course_info_view = CourseInfoView.as_view()
 
 class UpdateCourseVideoView(LoginRequiredMixin, UpdateView):
     model = CourseVideo
-    form_class = CourseVideoForm
+    form_class = UpdateCourseVideoForm
     pk_url_kwarg = 'pk'
     pk_field = "pk"
     template_name = "course/course/update_course_video.html"

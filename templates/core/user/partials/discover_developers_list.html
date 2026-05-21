@@ -1,6 +1,6 @@
-{% if friends %}
+{% if developers %}
 <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-  {% for friend in friends %}
+  {% for developer in developers %}
   <div class="bg-white rounded-xl shadow-sm hover:shadow-md shadow-white duration-300 hover:-translate-y-2 overflow-hidden flex flex-col">
 
     <!-- Cover -->
@@ -10,17 +10,17 @@
 
     <!-- Avatar -->
     <div class="relative px-4 -mt-10 flex justify-center">
-      <a href="{{ friend.get_absolute_url }}" class="relative">
-        {% if friend.avatar %}
-        <img src="{{ friend.avatar.url }}"
-             alt="{{ friend.username }}"
+      <a href="{{ developer.get_absolute_url }}" class="relative">
+        {% if developer.avatar %}
+        <img src="{{ developer.avatar.url }}"
+             alt="{{ developer.username }}"
              class="w-20 h-20 rounded-full object-cover border-4 border-white shadow-sm hover:scale-105 transition-transform duration-200" />
         {% else %}
         <div class="w-20 h-20 rounded-full bg-indigo-900 border-4 border-white text-white text-xl font-bold flex items-center justify-center shadow-sm">
-          {{ friend.username|first|upper }}
+          {{ developer.username|first|upper }}
         </div>
         {% endif %}
-        {% if friend.online %}
+        {% if developer.online %}
         <span class="absolute bottom-1 right-1 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></span>
         {% endif %}
       </a>
@@ -28,35 +28,35 @@
 
     <!-- Info -->
     <div class="px-4 pt-3 pb-4 flex-1 flex flex-col items-center text-center">
-      <a href="{{ friend.get_absolute_url }}" class="hover:underline">
+      <a href="{{ developer.get_absolute_url }}" class="hover:underline">
         <h2 class="text-base font-semibold text-gray-900">
-          {% if friend.last_name %}
-            {{ friend.full_name|title }}
+          {% if developer.last_name %}
+            {{ developer.full_name|title }}
           {% else %}
-            {{ friend.username|title }}
+            {{ developer.username|title }}
           {% endif %}
         </h2>
       </a>
-      <p class="text-sm text-gray-500 mb-1">@{{ friend.username }}</p>
-      <p class="text-xs text-gray-400 mb-4">{{ friend.role|title }}</p>
+      <p class="text-sm text-gray-500 mb-1">@{{ developer.username }}</p>
+      <p class="text-xs text-gray-400 mb-4">{{ developer.role|title }}</p>
 
       <!-- Mutual / Stats -->
       <div class="flex items-center gap-4 text-xs text-gray-500 mb-4">
-        <span>{{ friend.followers.count }} followers</span>
+        <span>{{ developer.followers.count }} followers</span>
         <span>·</span>
-        <span>{{ friend.following.count }} following</span>
+        <span>{{ developer.following.count }} following</span>
       </div>
 
       <!-- Actions -->
-      <form hx-post="{% url 'find-friends-view' %}"
+      <form hx-post="{% url 'discover-developers-view' %}"
             hx-trigger="submit"
-            hx-target="#find-friends-list"
+            hx-target="#discover-developers-list"
             hx-swap="innerHTML"
             class="w-full mt-auto">
         {% csrf_token %}
-        <input type="hidden" name="user_id" value="{{ friend.id }}">
+        <input type="hidden" name="user_id" value="{{ developer.id }}">
 
-        {% if request.user in friend.followers.all %}
+        {% if request.user in developer.followers.all %}
           <button type="submit"
                   class="w-full py-2 px-4 rounded-lg font-medium text-sm bg-purple-900 text-white hover:bg-purple-800 transition-colors flex items-center justify-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

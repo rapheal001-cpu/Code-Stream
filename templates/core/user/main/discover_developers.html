@@ -28,16 +28,16 @@ Discover Friends | Code Stream
              name="search"
              placeholder="Search by name or username..."
              class="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-indigo-300/30 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all"
-             hx-get="{% url 'find-friends-view' %}"
+             hx-get="{% url 'discover-developers-view' %}"
              hx-trigger="keyup changed delay:300ms"
-             hx-target="#find-friends-list"
+             hx-target="#discover-developers-list"
              hx-swap="innerHTML">
     </div>
   </div>
 
   <!-- Friends Grid -->
-  <div id="find-friends-list">
-    {% include 'core/user/partials/find_friend_list.html' %}
+  <div id="discover-developers-list">
+    {% include 'core/user/partials/discover_developers_list.html' %}
   </div>
 
 </div>

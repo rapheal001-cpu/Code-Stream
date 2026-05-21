@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 
-stripe_webhook_key = settings.STRIPE_WEBHOOK_SECRET_KEY
+stripe_webhook_key = settings.STRIPE_WEBHOOK_KEY
 
 
 # WebHook

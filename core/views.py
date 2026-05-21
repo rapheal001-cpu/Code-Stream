@@ -1,32 +1,31 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from django.views import View
 from django.views.generic import TemplateView, DetailView, UpdateView, ListView
-from accounts.models import User, Notification, Wallet
+from accounts.models import Notification
 from django.db.models import Q
 from .models import Report
-from .forms import UserRoleForm, UpdateProfileForm, ProfileDescriptionForm
+from .forms import *
 from course.models import Course
-from CodeStream.utils import about_view_url, index_view_url, notification_view_url, course_view_url, setting_view_url
-from .tasks import create_instructor_wallet
+from CodeStream.utils import *
+from .tasks import *
 
 # Create your views here.
 
 
+# =================
 # Landing Page View
+# =================
 class IndexView(TemplateView):
     template_name = "core/main/index.html"
 
     def get(self, request, *args, **kwargs):
         form = UserRoleForm()
-        instructors = User.objects.filter(role="instructor").order_by("-last_login")
+        instructors = User.objects.filter(role="instructor")
         search = request.GET.get("search")
 
         if search:
-            courses = Course.objects.filter(Q(name__icontains=search)).order_by(
-                "-created_at"
-            )
+            courses = Course.objects.filter(Q(name__icontains=search) | Q(description__icontains=search))
         else:
             courses = Course.objects.order_by("-created_at")
 
@@ -41,6 +40,8 @@ class IndexView(TemplateView):
         user = request.user
         form = UserRoleForm(request.POST, instance=user)
         if form.is_valid():
+            form.save()
+
             if user.role:
                 Notification.objects.create(
                     user=user,
@@ -49,14 +50,15 @@ class IndexView(TemplateView):
                 )
             if user.role == 'instructor':
                 create_instructor_wallet.delay(user.id)
-            form.save()
         context = {"form": form}
         return render(request, self.template_name, context)
 
 index_view = IndexView.as_view()
 
 
+# ==========
 # About View
+# ==========
 class AboutView(TemplateView):
     template_name = "core/main/about.html"
 
@@ -64,6 +66,7 @@ class AboutView(TemplateView):
         context = super().get_context_data(*args, **kwargs)
         context["total_students"] = User.objects.filter(role="student").count()
         context["total_instructors"] = User.objects.filter(role="instructor").count()
+        context["total_courses"] = Course.objects.filter(published=True).count()
         return context
 
     def post(self, request, *args, **kwargs):
@@ -89,10 +92,9 @@ about_view = AboutView.as_view()
 
 
 # ==================
-# USER PROFILE VIEWS
+# User Profile View
 # ==================
 class ProfileView(LoginRequiredMixin, DetailView):
-    """Public profile display with view tracking"""
     model = User
     template_name = "core/user/main/profile.html"
 
@@ -133,8 +135,10 @@ class ProfileView(LoginRequiredMixin, DetailView):
 profile_view = ProfileView.as_view()
 
 
+# ========================
+# Update User Profile View
+# ========================
 class UpdateProfileView(LoginRequiredMixin, UpdateView):
-    """Profile updating view"""
     model = User
     form_class = UpdateProfileForm
     template_name = "core/user/main/update_profile.html"
@@ -151,10 +155,12 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
 update_profile_view = UpdateProfileView.as_view()
 
 
-class DescriptionView(LoginRequiredMixin, UpdateView):
-    """User description/bio editing"""
+# =============================
+# User Profile Description View
+# =============================
+class UpdateProfileDescriptionView(LoginRequiredMixin, UpdateView):
     model = User
-    form_class = ProfileDescriptionForm
+    form_class = UpdateProfileDescriptionForm
     template_name = "core/user/main/description.html"
     success_url = reverse_lazy(setting_view_url)
 
@@ -166,11 +172,13 @@ class DescriptionView(LoginRequiredMixin, UpdateView):
             return redirect(index_view_url)
         return super().get(request, *args, **kwargs)
 
-description_view = DescriptionView.as_view()
+update_profile_description_view = UpdateProfileDescriptionView.as_view()
 
 
+# ==================
+# User Settings View
+# ==================
 class SettingsView(LoginRequiredMixin, DetailView):
-    """User settings page"""
     model = User
     context_object_name = "user"
     template_name = "core/user/main/settings.html"
@@ -186,11 +194,13 @@ class SettingsView(LoginRequiredMixin, DetailView):
 settings_view = SettingsView.as_view()
 
 
+# =======================
+# Profile Views List View
+# =======================
 class ProfileViewsList(LoginRequiredMixin, DetailView):
-    """List of users who viewed profile"""
     model = User
     context_object_name = "profile_user"
-    template_name = "core/user/partials/profile_views.html"
+    template_name = "core/user/main/profile_views.html"
 
     def get_object(self):
         return self.request.user
@@ -198,7 +208,7 @@ class ProfileViewsList(LoginRequiredMixin, DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         profile = self.get_object()
-        context["viewer"] = profile.views.exclude(pk=profile.pk)
+        context["viewers"] = profile.views.exclude(pk=profile.pk)
         return context
 
     def get(self, request, *args, **kwargs):
@@ -213,7 +223,6 @@ profile_list_views = ProfileViewsList.as_view()
 # NOTIFICATION VIEWS
 # ==================
 class NotificationView(LoginRequiredMixin, ListView):
-    """User notifications list"""
     model = Notification
     fields = "__all__"
     context_object_name = "notifications"
@@ -221,7 +230,7 @@ class NotificationView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
-        return Notification.objects.filter(user=user).order_by("-created_at")
+        return Notification.objects.filter(user=user)
 
     def get(self, request, *args, **kwargs):
         if not request.user.role:
@@ -240,8 +249,10 @@ class NotificationView(LoginRequiredMixin, ListView):
 notification_view = NotificationView.as_view()
 
 
+# =========================
+# NOTIFICATION DETAIL VIEWS
+# =========================
 class NotificationDetailView(LoginRequiredMixin, DetailView):
-    """Single notification detail"""
     model = Notification
     pk_field = "pk"
     pk_url_kwarg = "pk"
@@ -251,9 +262,7 @@ class NotificationDetailView(LoginRequiredMixin, DetailView):
     def get(self, request, *args, **kwargs):
         if not request.user.role:
             return redirect(index_view_url)
-        notification = get_object_or_404(
-            Notification, pk=self.kwargs.get(self.pk_url_kwarg), user=self.request.user
-        )
+        notification = get_object_or_404(Notification, pk=self.kwargs.get(self.pk_url_kwarg), user=self.request.user)
         if notification and not notification.is_read:
             notification.is_read = True
             notification.save(update_fields=["is_read"])
@@ -262,11 +271,10 @@ class NotificationDetailView(LoginRequiredMixin, DetailView):
 notification_detail_view = NotificationDetailView.as_view()
 
 
-# ===================
-# SOCIAL VIEWS
-# ===================
+# ========================
+# Discover Developers View
+# ========================
 class DiscoverDeveloperView(LoginRequiredMixin, TemplateView):
-    """Search Developers"""
     template_name = "core/user/main/discover_developers.html"
 
     def get(self, request, *args, **kwargs):
@@ -296,15 +304,15 @@ class DiscoverDeveloperView(LoginRequiredMixin, TemplateView):
 
     def post(self, request, *args, **kwargs):
         user_id = int(request.POST.get("user_id"))
-        user = request.user
+        current_user = request.user
         user_to_follow = get_object_or_404(User, pk=user_id)
 
-        if user in user_to_follow.followers.all():
-            user_to_follow.followers.remove(user)
+        if current_user in user_to_follow.followers.all():
+            user_to_follow.followers.remove(current_user)
         else:
-            user_to_follow.followers.add(user)
+            user_to_follow.followers.add(current_user)
 
-        developers = User.objects.exclude(id=user.id)
+        developers = User.objects.exclude(id=current_user.id)
         context = {'developers': developers}
 
         if request.htmx:
@@ -352,9 +360,9 @@ class InstructorCoursesView(LoginRequiredMixin, TemplateView):
         if search:
             courses = Course.objects.filter(
                 Q(name__icontains=search) | Q(description__icontains=search)
-            ).order_by("-created_at")
+            )
         else:
-            courses = Course.objects.filter(instructor=user).order_by("-created_at")
+            courses = Course.objects.filter(instructor=user)
 
         context = {
             "courses": courses,
@@ -370,10 +378,11 @@ instructor_course_view = InstructorCoursesView.as_view()
 
 
 # ====================
-# Custom Error Handler
+# Custom Error Handlers
 # ====================
+# 500 (Server Error)
 def custom_500_view(request):
     return render(request, "core/errors/500.html", status=500)
-
+# 404 (Page Not Found)
 def custom_404_view(request):
     return render(request, "core/errors/404.html", status=404)

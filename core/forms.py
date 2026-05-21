@@ -3,7 +3,9 @@ from accounts.models import User
 from CodeStream.utils import role_selection
 
 
-# User Role Form
+# ===========================================
+# User Role Form (Access: Authenticated User)
+# ===========================================
 class UserRoleForm(forms.ModelForm):
   class Meta:
     model = User 
@@ -18,6 +20,9 @@ class UserRoleForm(forms.ModelForm):
     return role
 
 
+# ================================================
+# Update Profile Form (Access: Authenticated User)
+# ================================================
 class UpdateProfileForm(forms.ModelForm):
   first_name = forms.CharField(max_length=20)
   last_name = forms.CharField(max_length=20)
@@ -56,7 +61,11 @@ class UpdateProfileForm(forms.ModelForm):
     return avatar
 
 
-class ProfileDescriptionForm(forms.ModelForm):
+
+# ============================================================
+# Update Profile Description Form (Access: Authenticated User)
+# ============================================================
+class UpdateProfileDescriptionForm(forms.ModelForm):
   class Meta:
     model = User
     fields = ["description"]

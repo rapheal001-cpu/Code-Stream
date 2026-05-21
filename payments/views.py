@@ -13,7 +13,10 @@ from django.views.generic import DetailView
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
-class CoursePaymentCheckoutSession(LoginRequiredMixin, View):
+# ====================================
+# Course Payment Checkout Session View
+# ====================================
+class CoursePaymentCheckoutSessionView(LoginRequiredMixin, View):
     def get(self, request, course_id, *args, **kwargs):
         course = get_object_or_404(Course, pk=course_id)
         user = request.user
@@ -45,9 +48,12 @@ class CoursePaymentCheckoutSession(LoginRequiredMixin, View):
         )
         return redirect(session.url)
 
-course_payment_checkout_session = CoursePaymentCheckoutSession.as_view()
+course_payment_checkout_session_view = CoursePaymentCheckoutSessionView.as_view()
 
 
+# ============================
+# Course Checkout Success View
+# ============================
 class CourseCheckoutSuccessView(LoginRequiredMixin, DetailView):
     model = Course
     pk_field = "pk"
@@ -57,7 +63,9 @@ class CourseCheckoutSuccessView(LoginRequiredMixin, DetailView):
 
 course_checkout_success_view = CourseCheckoutSuccessView.as_view()
 
-
+# ===========================
+# Course Checkout Cancel View
+# ===========================
 class CourseCheckoutCancelView(LoginRequiredMixin, DetailView):
     model = Course
     pk_field = "pk"

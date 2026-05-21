@@ -5,7 +5,7 @@
       <div class="block relative aspect-video bg-gray-900 overflow-hidden">
         {% if video.thumbnail %}
         <img
-          src="{{ video.thumbnail.url }}"
+          src="{{ video.thumbnail }}"
           alt="{{ video.title }}"
           class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
@@ -79,15 +79,16 @@
           </a>
           
           <form 
-            hx-post="{% url 'course-detail-view' slug=course.slug %}" 
+            hx-post="{% url 'course-video-delete-view' %}"
             hx-trigger="submit" 
             hx-target="#videos-grid" 
             hx-swap="innerHTML"
-            hx-confirm="Delete '{{ video.name }}' ?"
+            hx-confirm="Are you sure you want to delete: '{{ video.name }}'"
             class="flex-1"
           >
             {% csrf_token %}
             <input type="hidden" name="video_id" value="{{ video.id }}">
+            <input type="hidden" name="course_id" value="{{ video.course.id }}">
             <button type="submit"
               class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">

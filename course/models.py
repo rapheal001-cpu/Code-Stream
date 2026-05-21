@@ -9,12 +9,17 @@ from decimal import Decimal
 from django.urls import reverse
 
 
+# =======
+#  Course
+# =======
 class Course(models.Model):
     instructor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="course_instructor", verbose_name="Course Instructor")
     name = models.CharField(max_length=255, verbose_name="Course Name")
     slug = models.SlugField(unique=True, verbose_name="Course Slug")
+    youtube_link = models.URLField(blank=True, null=True, verbose_name="Youtube Link")
+    github_link = models.URLField(blank=True, null=True, verbose_name="Github Link")
     description = models.TextField(blank=True, null=True, verbose_name="Course Description")
-    thumbnail = CloudinaryField(resource_type='image', folder='course/thumbnails/', verbose_name="Course Thumbnail")
+    thumbnail = CloudinaryField(resource_type='image', folder='course/thumbnails/', transformation=[{"width": 400, "height": 400}], verbose_name="Course Thumbnail")
     price = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal("0.00"), verbose_name="Course Price")
     students = models.ManyToManyField(User, through="Enrollment", related_name="enrolled_courses", blank=True, verbose_name="Course Students")
     views = models.ManyToManyField(User, blank=True, verbose_name="Course Views", related_name="course_views")
@@ -23,11 +28,11 @@ class Course(models.Model):
     updated_at = models.DateTimeField(null=True, blank=True, verbose_name="Updated at")
 
     def get_absolute_url(self):
-        return reverse("course-detail-view", kwargs={"slug": self.slug})
+        return reverse("course-detail-view", kwargs={"pk": self.pk})
 
     @property
     def is_updated(self):
-        return self.updated_at != self.created_at
+        return self.created_at != self.updated_at
 
     class Meta:
         ordering = ["-created_at"]
@@ -41,7 +46,6 @@ class Course(models.Model):
 
     def __str__(self):
         return f'{self.name} ({self.instructor})'
-
 
     def course_videos(self):
         return self.videos.all()
@@ -83,6 +87,9 @@ class Course(models.Model):
         return f"{days}d {hours}h {minutes}m {seconds}s"
 
 
+# =============
+#  Course Video
+# =============
 class CourseVideo(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="videos", verbose_name="Course")
     name = models.CharField(max_length=255, verbose_name="Video Name")
@@ -90,11 +97,10 @@ class CourseVideo(models.Model):
     duration = models.PositiveIntegerField(default=0, verbose_name="Video Duration")
     formatted_duration = models.CharField(max_length=100, verbose_name="Formatted Video Duration")
     video = CloudinaryField(resource_type='video', folder='course/videos/', verbose_name="Course Video File")
-    thumbnail = CloudinaryField(resource_type='image', folder='course/video_thumbnails/', verbose_name="Course Video Thumbnail")
+    thumbnail = CloudinaryField(resource_type='image', folder='course/videos/thumbnails/', verbose_name="Course Video Thumbnail Image")
+    thumbnail_url = models.URLField(unique=True, blank=True, null=True, verbose_name="Course Video Thumbnail Url")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated at")
-
-
 
     class Meta:
         ordering = ["created_at"]
@@ -105,6 +111,9 @@ class CourseVideo(models.Model):
         return f"{self.course.name}  ({self.name})"
 
 
+# ==================
+#  Course Enrollment
+# ==================
 class Enrollment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_enrollment", verbose_name="Enrolled User")
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="course_enrollment", verbose_name="Course")
@@ -120,30 +129,3 @@ class Enrollment(models.Model):
 
     def __str__(self):
         return f"{self.user} ({self.course.name})"
-
-
-class ShortVideo(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="public_video", verbose_name="User")
-    name = models.CharField(max_length=225, verbose_name="Short Video Name")
-    slug = models.SlugField(unique=True, verbose_name="Short Video Slug")
-    description = models.TextField(blank=True, null=True, verbose_name="Short Video Description")
-    video = CloudinaryField(resource_type='video', folder='short_video/videos/', verbose_name="Short Video File")
-    thumbnail = CloudinaryField(resource_type='image', folder='short_video/thumbnails/', verbose_name="Short Video Thumbnail")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated at")
-
-    def get_absolute_url(self):
-        return reverse("short-video-detail-view", kwargs={"slug": self.slug})
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
-
-    class Meta:
-        ordering = ["-created_at"]
-        verbose_name = "Short Video"
-        verbose_name_plural = "Short Videos"
-
-    def __str__(self):
-        return f"{self.user} ({self.name})"

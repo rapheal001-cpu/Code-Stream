@@ -87,7 +87,7 @@ class CourseVideoForm(forms.ModelForm):
                     "A video is required. Please upload your content."
                 )
 
-            if video.size > 100 * 1024 * 1024:
+            if video.size > 20 * 1024 * 1024:
                 raise forms.ValidationError('Your video is too large.')
 
             if not video.endwith((".mp4", '.avi', '.mov')):

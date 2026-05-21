@@ -318,9 +318,6 @@
   .pointer-events-none {
     pointer-events: none;
   }
-  .collapse {
-    visibility: collapse;
-  }
   .sr-only {
     position: absolute;
     width: 1px;
@@ -1869,9 +1866,6 @@
   .px-3 {
     padding-inline: calc(var(--spacing) * 3);
   }
-  .px-3\.5 {
-    padding-inline: calc(var(--spacing) * 3.5);
-  }
   .px-4 {
     padding-inline: calc(var(--spacing) * 4);
   }
@@ -2986,11 +2980,6 @@
       margin-right: calc(var(--spacing) * 4);
     }
   }
-  .file\:cursor-pointer {
-    &::file-selector-button {
-      cursor: pointer;
-    }
-  }
   .file\:rounded-lg {
     &::file-selector-button {
       border-radius: var(--radius-lg);
@@ -3000,11 +2989,6 @@
     &::file-selector-button {
       border-style: var(--tw-border-style);
       border-width: 0px;
-    }
-  }
-  .file\:bg-indigo-50 {
-    &::file-selector-button {
-      background-color: var(--color-indigo-50);
     }
   }
   .file\:bg-purple-600 {
@@ -3022,11 +3006,6 @@
       padding-block: calc(var(--spacing) * 2);
     }
   }
-  .file\:py-2\.5 {
-    &::file-selector-button {
-      padding-block: calc(var(--spacing) * 2.5);
-    }
-  }
   .file\:text-sm {
     &::file-selector-button {
       font-size: var(--text-sm);
@@ -3039,21 +3018,9 @@
       font-weight: var(--font-weight-medium);
     }
   }
-  .file\:text-indigo-700 {
-    &::file-selector-button {
-      color: var(--color-indigo-700);
-    }
-  }
   .file\:text-white {
     &::file-selector-button {
       color: var(--color-white);
-    }
-  }
-  .file\:transition-colors {
-    &::file-selector-button {
-      transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
-      transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-      transition-duration: var(--tw-duration, var(--default-transition-duration));
     }
   }
   .placeholder\:text-indigo-300\/30 {
@@ -3667,15 +3634,6 @@
         --tw-shadow-color: #fff;
         @supports (color: color-mix(in lab, red, red)) {
           --tw-shadow-color: color-mix(in oklab, var(--color-white) var(--tw-shadow-alpha), transparent);
-        }
-      }
-    }
-  }
-  .hover\:file\:bg-indigo-100 {
-    &:hover {
-      @media (hover: hover) {
-        &::file-selector-button {
-          background-color: var(--color-indigo-100);
         }
       }
     }

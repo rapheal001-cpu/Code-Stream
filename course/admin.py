@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Course, CourseVideo, Enrollment, ShortVideo
+from .models import Course, CourseVideo, Enrollment
 
 
 # =========================
@@ -216,6 +216,7 @@ class CourseVideoAdmin(admin.ModelAdmin):
                 'video',
                 'video_preview',
                 'thumbnail',
+                'thumbnail_url',
                 'thumbnail_preview_large',
             )
         }),
@@ -229,18 +230,18 @@ class CourseVideoAdmin(admin.ModelAdmin):
     )
 
     def thumbnail_preview(self, obj):
-        if obj.thumbnail:
+        if obj.thumbnail or obj.thumbnail_url:
             return format_html(
                 '<img src="{}" width="80" style="border-radius:8px;" />',
-                obj.thumbnail.url
+                obj.thumbnail.url if obj.thumbnail.url else obj.thumbnail_url
             )
         return "No Thumbnail"
 
     def thumbnail_preview_large(self, obj):
-        if obj.thumbnail:
+        if obj.thumbnail or obj.thumbnail_url:
             return format_html(
                 '<img src="{}" width="250" style="border-radius:10px;" />',
-                obj.thumbnail.url
+                obj.thumbnail.url if obj.thumbnail.url else obj.thumbnail_url
             )
         return "No Thumbnail"
 
@@ -290,89 +291,21 @@ class EnrollmentAdmin(admin.ModelAdmin):
         'enrolled_at',
     )
 
-
-# =========================
-# SHORT VIDEO ADMIN
-# =========================
-
-@admin.register(ShortVideo)
-class ShortVideoAdmin(admin.ModelAdmin):
-
-    list_display = (
-        'thumbnail_preview',
-        'name',
-        'user',
-        'created_at',
-    )
-
-    list_filter = (
-        'created_at',
-        'user',
-    )
-
-    search_fields = (
-        'name',
-        'user__username',
-    )
-
-    readonly_fields = (
-        'slug',
-        'thumbnail_preview_large',
-        'video_preview',
-        'created_at',
-        'updated_at',
-    )
-
-
     fieldsets = (
-        ("Video Info", {
+        ("Enrollment", {
             'fields': (
                 'user',
-                'name',
-                'slug',
-                'description',
-            )
-        }),
+                'user_preview_avatar',
+                'course__name',
 
-        ("Media", {
-            'fields': (
-                'video',
-                'video_preview',
-                'thumbnail',
-                'thumbnail_preview_large',
             )
-        }),
-
-        ("Dates", {
-            'fields': (
-                'created_at',
-                'updated_at',
-            )
-        }),
+        })
     )
 
-    def thumbnail_preview(self, obj):
-        if obj.thumbnail:
-            return format_html(
-                '<img src="{}" width="80" style="border-radius:8px;" />',
-                obj.thumbnail.url
-            )
-        return "No Thumbnail"
-
-    def thumbnail_preview_large(self, obj):
-        if obj.thumbnail:
+    def user_preview_avatar(self, obj):
+        if obj.user.avatar:
             return format_html(
                 '<img src="{}" width="250" style="border-radius:10px;" />',
-                obj.thumbnail.url
+                obj.user.avatar.url
             )
-        return "No Thumbnail"
-
-    def video_preview(self, obj):
-        if obj.video:
-            return format_html(
-                '<video width="300" controls>'
-                '<source src="{}" type="video/mp4">'
-                '</video>',
-                obj.video.url
-            )
-        return "No Video"
+        return "No Avatar"

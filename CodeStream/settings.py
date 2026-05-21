@@ -13,20 +13,17 @@ from .utils import (
 )
 import cloudinary
 
+
 ENVIRONMENT = config("ENVIRONMENT", cast=str)
 
-cloudinary.config(
-    cloud_name=config("CLOUD_NAME"),
-    api_key=config("API_KEY"),
-    api_secret=config("API_SECRET"),
-    secure=True,
-)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config("SECRET_KEY", cast=str)
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool, default=(ENVIRONMENT == 'development'))
@@ -34,31 +31,29 @@ DEBUG = config("DEBUG", cast=bool, default=(ENVIRONMENT == 'development'))
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=str).split(",")
 
+
 CSRF_TRUSTED_ORIGINS = [
     'https://*onrender.com',
-    'https://8efd-102-223-1-130.ngrok-free.app'
+    'https://7890-102-223-1-130.ngrok-free.app'
 ]
 
 
 AUTH_USER_MODEL = "accounts.User"
 
 
-
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    'cloudinary_storage',
     "django.contrib.staticfiles",
     "django.contrib.humanize",
     'django.contrib.sites',
-    # Fake Admin
+    # Admin Honeypot
     'admin_honeypot',
-    # Apps
+    # Django Apps
     "accounts.apps.AccountsConfig",
     "core.apps.CoreConfig",
     "course.apps.CourseConfig",
@@ -72,10 +67,12 @@ INSTALLED_APPS = [
     "widget_tweaks",
     "django_htmx",
     'cloudinary',
-
+    'cloudinary_storage',
 ]
 
+
 SITE_ID = 1
+
 
 AUTHENTICATION_BACKENDS = [
     # Needed to log in by username in Django admin, regardless of `allauth`
@@ -102,12 +99,14 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     # Allauth Account Middleware
     "allauth.account.middleware.AccountMiddleware",
-    # Django htmx Middleware
+    # Django Htmx Middleware
     "django_htmx.middleware.HtmxMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+
 ROOT_URLCONF = "CodeStream.urls"
+
 
 TEMPLATES = [
     {
@@ -123,6 +122,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = "CodeStream.wsgi.application"
 
@@ -178,8 +178,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 
-# Static
-STATIC_URL = "static/"
+# ====================
+# Static Configuration
+# ====================
+STATIC_URL = "/static/"
 
 if ENVIRONMENT == 'development':
     STATICFILES_DIRS = [
@@ -193,23 +195,33 @@ else:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 
-# Media
+# ====================
+# Media Configuration
+# ====================
 MEDIA_URL = "/media/"
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': config('CLOUD_NAME'),
-    'API_KEY': config('API_KEY'),
-    'API_SECRET': config('API_SECRET'),
-}
+
+if ENVIRONMENT != 'development':
+    MEDIA_ROOT = os.path.join(BASE_DIR / "mediafiles")
+else:
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    cloudinary.config(
+        cloud_name=config("CLOUD_NAME"),
+        api_key=config("API_KEY"),
+        api_secret=config("API_SECRET"),
+        secure=True,
+    )
 
 
+# ============
 # Login System
+# ============
 LOGIN_REDIRECT_URL = index_view_url
 LOGOUT_REDIRECT_URL = index_view_url
 LOGOUT_URL = login_view_url
 
-
-# Allauth Permissions
+# =====================
+# Allauth Configuration
+# =====================
 ACCOUNT_SIGNUP_FIELDS = [
     "first_name*",
     "last_name*",
@@ -240,7 +252,9 @@ ACCOUNT_RATE_LIMITS = {
 }
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
-# Account Adapter
+# ======================
+# Custom Account Adapter
+# ======================
 ACCOUNT_ADAPTER = "accounts.adapter.CustomAdapter"
 SOCIALACCOUNT_PROVIDERS = {
   'google': {
@@ -252,7 +266,9 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 
-# Email
+# ===================
+# Email Configuration
+# ===================
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = config("EMAIL_HOST", cast=str)
 EMAIL_PORT = config("EMAIL_PORT", cast=int)
@@ -262,15 +278,18 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", cast=str)
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", cast=str)
 
 
-# Stripe Secret Key
+# ====================
+# Stripe Configuration
+# ====================
 STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY", cast=str)
-STRIPE_WEBHOOK_SECRET_KEY = config("STRIPE_WEBHOOK_SECRET_KEY", cast=str)
+STRIPE_WEBHOOK_KEY = config("STRIPE_WEBHOOK_KEY", cast=str)
 
 
-
+# ====================
 # Celery Configuration
-CELERY_BROKER_URL = config("CELERY_BROKER_REDIS_URL")
-CELERY_RESULT_BACKEND = config("CELERY_RESULT_REDIS_BACKEND")
-CELERY_ACCEPT_CONTENT = ["json"]
+# ====================
+CELERY_BROKER_URL = config("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND")
+CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"

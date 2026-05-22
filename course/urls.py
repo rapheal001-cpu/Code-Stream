@@ -2,9 +2,7 @@ from django.urls import path
 
 from .views import (
     course_index_view,
-    course_action_delete_and_like_view,
     course_detail_view,
-    course_video_action_delete_view,
     create_course_view,
     create_course_done_view,
     update_course_view,
@@ -16,8 +14,6 @@ from .views import (
 
 urlpatterns = [
     path("", course_index_view, name="course-index-view"),
-    path('action/', course_action_delete_and_like_view, name='course-action-view'),
-    path('video-delete/', course_video_action_delete_view, name="course-video-delete-view"),
     path("create/", create_course_view, name="create-course-view"),
     path("create-done/<int:pk>/", create_course_done_view, name="create-course-done-view"),
     path("update/<int:pk>/", update_course_view, name="update-course-view"),

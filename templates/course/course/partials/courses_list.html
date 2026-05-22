@@ -118,7 +118,7 @@
         <div class="flex items-center justify-between pt-3 border-t border-gray-200">
         {% if request.user.role %}
         <form
-          hx-post="{% url 'course-action-view' %}"
+          hx-post="{% url 'course-index-view' %}"
           hx-trigger="submit"
           hx-target="#courses-grid"
           hx-swap="innerHTML"
@@ -157,7 +157,7 @@
           
           {% if request.user == course.instructor %}
             <form 
-              hx-post="{% url 'course-action-view' %}"
+              hx-post="{% url 'course-index-view' %}"
               hx-trigger="submit" 
               hx-target="#courses-grid" 
               hx-swap="innerHTML" 

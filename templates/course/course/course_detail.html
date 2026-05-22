@@ -1,6 +1,6 @@
 {% extends 'core/base/base.html' %}
 
-{% load static humanize %}
+{% load static humanize django_htmx %}
 
 {% block title %}
 {{ course.name }} | Code Stream
@@ -8,28 +8,69 @@
 
 {% block content %}
 
-<div class="bg-gray-50 min-h-screen pb-safe">
-  <!-- Course Header -->
-  <div class="bg-linear-to-tr from-indigo-900 via-purple-900 to-indigo-900 text-white sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      <h1 class="text-base font-semibold truncate pr-4">{{ course.name }}</h1>
-      <span class="text-xs bg-white/10 px-2 py-1 rounded-md whitespace-nowrap">
-        {{ course.total_videos }} {{ course.total_videos|pluralize:'video,videos' }}
-      </span>
-    </div>
-    <!-- Back Navigation -->
-    <div class="bg-white border-b border-gray-200">
-      <div class="max-w-7xl mx-auto px-4 py-3">
+<div class="bg-gray-50 min-h-screen pb-safe" id="course-detail">
+<!-- Course Header Area -->
+<div class="sticky top-0 z-40 bg-white border-b border-slate-300 shadow-xs">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="h-16 flex items-center justify-between gap-4">
+      
+      <!-- Left Section: Navigation & Title -->
+      <div class="flex items-center gap-4 min-w-0">
         <a href="{% url 'course-index-view' %}"
-          class="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-indigo-600 active:text-indigo-700 transition delay-300 hover:-translate-x-1">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+           class="inline-flex items-center justify-center p-2 rounded-xl text-indigo-900 hover:text-white hover:bg-indigo-900 active:bg-indigo-800 transition-all"
+           title="Back to Courses">
+          <svg class="w-5 h-5 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
-          Back to Courses
         </a>
+        
+        <div class="min-w-0">
+          <h1 class="text-base font-bold text-indigo-900 truncate sm:text-lg">
+            {{ course.name }}
+          </h1>
+          <p class="text-xs font-medium text-indigo-800">
+            {{ course.total_videos }} {{ course.total_videos|pluralize:'video,videos' }} total
+          </p>
+        </div>
       </div>
+
+      {% if request.user == course.instructor %}
+      <!-- Right Section: Interactive Publication Toggle Form -->
+      <div class="flex items-center shrink-0">
+        <form hx-post="{% url 'course-detail-view' pk=course.pk %}" 
+              hx-trigger="submit" 
+              hx-target="#course-detail" 
+              hx-confirm="Are you sure you want to change the publication status of this course?">
+          {% csrf_token %}
+          <input type="hidden" name="course_id" value="{{ course.id }}">
+          
+          <button type="submit" class="cursor-pointer">
+            {% if course.published %}
+              <!-- Status: Published (Green Checked Pill badge) -->
+              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200 shadow-xs hover:bg-emerald-200 transition-colors">
+                Published
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </span>
+            {% else %}
+              <!-- Status: Draft/Unpublished (Amber Warning Pill badge) -->
+              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-red-100 text-red-600 border border-red-200 shadow-xs hover:bg-red-200 transition-colors">
+                Draft
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </span>
+            {% endif %}
+          </button>
+        </form>
+      </div>
+      {% endif %}
+
     </div>
   </div>
+</div>
+
 
 
   <!-- Main Video Player -->

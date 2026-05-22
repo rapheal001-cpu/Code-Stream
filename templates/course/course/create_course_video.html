@@ -1,0 +1,108 @@
+{% extends 'core/base/base.html' %}
+{% load static %}
+
+{% block title %}
+Add New Video | Code Stream
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 dark:bg-slate-900">
+    <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-100 p-8 dark:bg-slate-800 dark:border-slate-700">
+        
+        <!-- Header -->
+        <div class="mb-8">
+            <a href="{{ course.get_absolute_url }}" class="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-500 mb-4 transition-colors">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back to Course Management
+            </a>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Upload Course Video</h1>
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Adding content to: <span class="font-semibold text-slate-700 dark:text-slate-200">{{ course.title }}</span></p>
+        </div>
+
+        <!-- Form -->
+        <form action="{% url 'create-course-video-view' course_id=course.pk %}" method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Django Form Fields Rendering -->
+            {% if form.non_field_errors %}
+                <div class="p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-sm dark:bg-rose-900/20 dark:border-rose-800 dark:text-rose-400">
+                    {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="space-y-5">
+                {% for field in form %}
+                    <div class="flex flex-col gap-1.5">
+                        <label for="{{ field.id_for_label }}" class="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                            {{ field.label }}
+                        </label>
+                        
+                        <!-- Custom styled input injection -->
+                        <div class="relative">
+                            {% if field.field.widget.input_type == 'file' %}
+                                <!-- Styled File Upload wrapper -->
+                                <div class="flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-xl hover:border-indigo-500 dark:border-slate-600 transition-colors bg-slate-50/50 dark:bg-slate-900/20">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-slate-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                            <path d="M28 8H12a4 4 0 00-4 4v20a4 4 0 004 4h16l12-12V12a4 4 0 00-4-4z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M32 14v12H20v-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <div class="flex text-sm text-slate-600 dark:text-slate-400">
+                                            <label class="relative cursor-pointer rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none">
+                                                <span>Upload a file</span>
+                                                <input id="{{ field.id_for_label }}" name="{{ field.html_name }}" type="file" class="sr-only" {% if field.field.required %}required{% endif %}>
+                                            </label>
+                                            <p class="pl-1">or drag and drop</p>
+                                        </div>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400" id="file-chosen-{{ field.id_for_label }}">MP4, MKV up to 500MB</p>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <!-- Text/Textarea Fields -->
+                                <input type="{{ field.field.widget.input_type }}" 
+                                       name="{{ field.html_name }}" 
+                                       id="{{ field.id_for_label }}"
+                                       value="{{ field.value|default_if_none:'' }}"
+                                       class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm dark:bg-slate-900 dark:border-slate-700 dark:text-white"
+                                       {% if field.field.required %}required{% endif %}>
+                            {% endif %}
+                        </div>
+
+                        <!-- Help text and validation errors -->
+                        {% if field.help_text %}
+                            <p class="text-xs text-slate-400 dark:text-slate-500">{{ field.help_text }}</p>
+                        {% endif %}
+                        {% if field.errors %}
+                            <p class="text-xs font-medium text-rose-600 dark:text-rose-400">{{ field.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-4 border-t border-slate-100 dark:border-slate-700 flex items-center justify-end gap-3">
+                <a href="{{ course.get_absolute_url }}" class="px-5 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-900">
+                    Cancel
+                </a>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-sm shadow-indigo-600/10 hover:shadow-indigo-600/20 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    Publish Video
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Simple Vanilla JS to handle displaying the filename dynamically -->
+<script>
+    document.querySelectorAll('input[type="file"]').forEach(input => {
+        input.addEventListener('change', function() {
+            const fileNameId = 'file-chosen-' + this.id;
+            const labelElement = document.getElementById(fileNameId);
+            if (labelElement && this.files.length > 0) {
+                labelElement.textContent = this.files[0].name + ' (' + (this.files[0].size/1024/1024).toFixed(2) + ' MB)';
+                labelElement.classList.add('text-indigo-600', 'font-medium');
+            }
+        });
+    });
+</script>
+{% endblock %}

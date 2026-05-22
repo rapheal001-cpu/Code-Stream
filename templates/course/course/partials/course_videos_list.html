@@ -3,9 +3,9 @@
     <div class="group bg-white rounded-xl overflow-hidden border border-gray-200 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 {% if video.id == active_video.id %}ring-2 ring-indigo-900{% endif %}">
       <!-- Thumbnail -->
       <div class="block relative aspect-video bg-gray-900 overflow-hidden">
-        {% if video.thumbnail %}
+        {% if video.thumbnail or video.thumbnail_url %}
         <img
-          src="{{ video.thumbnail }}"
+          src="{% if video.thumbnail %}{{ video.thumbnail.url }}{% else %}{{ video.thumbnail_url }}{% endif %}"
           alt="{{ video.title }}"
           class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"

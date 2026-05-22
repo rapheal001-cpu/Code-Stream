@@ -17,14 +17,6 @@ def generate_thumbnail_task(course_video_id):
 
     video_public_id = video_instance.video.public_id
 
-    clip = VideoFileClip(video_public_id)
-    duration = int(clip.duration)
-
-    hours = duration // 3600
-    minutes = duration % 3600
-    seconds = (duration % 3600) % 60
-
-
     thumbnail_url, options = cloudinary_url(
         video_public_id,
         resource_type='video',
@@ -35,9 +27,7 @@ def generate_thumbnail_task(course_video_id):
         ]
     )
 
-    video_instance.duration = duration
-    video_instance.formatted_duration = f'{hours:02}:{minutes:02}:{seconds:02}'
-    video_instance.thumbnail = thumbnail_url
+    video_instance.thumbnail_url = thumbnail_url
     video_instance.save()
 
     return f"Thumbnail generated successfully: {thumbnail_url}"
@@ -53,7 +43,7 @@ def send_user_notification_task(course_video_id):
     except CourseVideo.DoesNotExist:
         return f"Video {course_video_id} does not exist."
 
-    instructor = course_video.instructor
+    instructor = course_video.course.instructor
     course = course_video.course
 
     Notification(

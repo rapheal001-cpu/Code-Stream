@@ -89,12 +89,12 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
     template_name = "course/course/course_detail.html"
 
     def get(self, request, *args, **kwargs):
-        course = self.object
+        course = self.get_object()
         videos = course.course_videos()
         active_video = videos.first() if videos.exists() else None
         user = request.user
 
-        if user not in course.views.all():
+        if user not in course.views.all() and user != course.instructor:
             course.views.add(user)
 
         context = {
@@ -275,36 +275,55 @@ course_info_view = CourseInfoView.as_view()
 class CreateCourseVideoView(LoginRequiredMixin, TemplateView):
     template_name = "course/course/create_course_video.html"
 
-    def get(self, request, course_id, *args, **kwargs):
-        course = get_object_or_404(Course, id=course_id)
+    def dispatch(self, request, *args, **kwargs):
+        self.course = get_object_or_404(Course, id=kwargs['course_id'])
+
+        if request.user.role != 'instructor' or request.user != self.course.instructor:
+            return redirect(self.course.get_absolute_url())
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
         form = CourseVideoForm()
         context = {
-            'form': form,
-            'course': course,
+            "course": self.course,
+            "form": form,
         }
-        if request.user.role != 'instructor' or request.user != course.instructor:
-            return redirect(course.get_absolute_url())
         return render(request, self.template_name, context)
 
-    def post(self, request, course_id, *args, **kwargs):
-        course = get_object_or_404(Course, id=course_id)
-        form = CourseVideoForm(request.POST, request.FILE)
-        context = {
-            'form': form,
-            'course': course,
-        }
+    def post(self, request, *args, **kwargs):
+        form = CourseVideoForm(request.POST, request.FILES)
 
-        if request.user.role != 'instructor' or request.user != course.instructor:
-            return redirect(course.get_absolute_url())
-
-        if form.is_valid(raise_exception=True):
+        if form.is_valid():
             course_video = form.save(commit=False)
-            course_video.course = course
+            course_video.course = self.course
             course_video.save()
-            # Run Celery Task
+
+            video_url = course_video.video.url
+
+            clip = VideoFileClip(video_url)
+            duration = int(clip.duration)
+
+            hours = duration // 3600
+            minutes = (duration % 3600) // 60
+            seconds = duration % 60
+
+            # Save the Course Duration
+            course_video.duration = duration
+            course_video.formatted_duration = f'{hours:02}:{minutes:02}:{seconds:02}'
+            course_video.save()
+
+            # Trigger Celery asynchronous tasks
             generate_thumbnail_task.delay(course_video.id)
             send_user_notification_task.delay(course_video.id)
-            return redirect(course.get_absolute_url())
+
+            return redirect(self.course.get_absolute_url())
+
+        context = {
+            "course": self.course,
+            "form": form,
+        }
+
         return render(request, self.template_name, context)
 
 create_course_video_view = CreateCourseVideoView.as_view()

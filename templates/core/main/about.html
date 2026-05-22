@@ -12,35 +12,23 @@ About | Code Stream
 {% include 'core/base/header.html' %}
 
 <!-- Hero Section -->
-<section class="relative bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900 text-white py-32 px-6 overflow-hidden">
-  <!-- Background Pattern -->
-  <div class="absolute inset-0 opacity-10">
-    <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-      <pattern id="hero-pattern" width="20" height="20" patternUnits="userSpaceOnUse">
-        <circle cx="2" cy="2" r="1" fill="white"></circle>
-        <circle cx="10" cy="10" r="1.5" fill="white"></circle>
-        <circle cx="18" cy="18" r="1" fill="white"></circle>
-      </pattern>
-      <rect width="100" height="100" fill="url(#hero-pattern)"></rect>
-    </svg>
-  </div>
-
+<section class="relative bg-linear-to-tr from-indigo-900 via-purple-900 to-indigo-900 text-white py-32 px-6 overflow-hidden">
   <div class="relative max-w-5xl mx-auto text-center">
     <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-8 border border-white/20">
-      <span class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></span>
+      <span class="w-3 h-3 bg-white/50 rounded-full animate-pulse"></span>
       Empowering learners worldwide
     </div>
     <h1 class="text-5xl md:text-6xl font-bold mb-8 leading-tight">
       Unlock Your Potential with <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-400">Code Stream</span>
     </h1>
-    <p class="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto leading-relaxed font-light">
+    <p class="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed font-light">
       Transform your curiosity into expertise. Join thousands of learners who are building their dreams, one line of code at a time.
     </p>
     <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="{% url 'index-view' %}" class="px-8 py-4 bg-white text-indigo-900 rounded-2xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95">
+      <a href="{% url 'index-view' %}" class="px-8 py-4 bg-white hover:bg-white/10 hover:backdrop-blur-lg  text-indigo-900 hover:text-white rounded-2xl font-semibold transition-all duration-300 shadow-md hover:border hover:border-white/50 active:scale-95">
         Start Learning
       </a>
-      <a href="#" class="px-8 py-4 bg-white/10 backdrop-blur-sm text-white border border-white/30 rounded-2xl font-semibold hover:bg-white/20 transition-all duration-300">
+      <a href="#" class="px-8 py-4 bg-white/10 backdrop-blur-lg text-white border border-white/30 rounded-2xl font-semibold hover:bg-white hover:text-indigo-900 hover:border-none transition-all duration-300">
         Join Community
       </a>
     </div>
@@ -246,7 +234,7 @@ About | Code Stream
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
-        <div class="text-4xl font-bold text-yellow-400 mb-2">
+        <div class="text-4xl font-bold text-white mb-2">
           {{ total_students }}
         </div>
         <div class="text-gray-300">
@@ -254,7 +242,7 @@ About | Code Stream
         </div>
       </div>
       <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
-        <div class="text-4xl font-bold text-yellow-400 mb-2">
+        <div class="text-4xl font-bold text-white mb-2">
           {{ total_instructors }}
         </div>
         <div class="text-gray-300">
@@ -262,7 +250,7 @@ About | Code Stream
         </div>
       </div>      
       <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
-        <div class="text-4xl font-bold text-yellow-400 mb-2">
+        <div class="text-4xl font-bold text-white mb-2">
           {{ total_courses }}
         </div>
         <div class="text-gray-300">
@@ -379,7 +367,7 @@ About | Code Stream
         <div class="text-center">
           <button
             type="submit"
-            class="inline-flex items-center gap-2 px-10 py-3.5 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95"
+            class="inline-flex items-center gap-2 px-10 py-3.5 bg-linear-to-tr from-indigo-900 via-purple-900 to-indigo-900 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95 hover:-translate-y-1.5"
             >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>

@@ -14,7 +14,7 @@
   <div class="bg-white border-b border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="h-16 flex items-center justify-between gap-4">
-        
+
         <!-- Left: Back + Title -->
         <div class="flex items-center gap-3 min-w-0">
           <a href="{% url 'course-index-view' %}"
@@ -24,7 +24,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </a>
-          
+
           <div class="min-w-0">
             <h1 class="text-base font-semibold text-slate-900 truncate sm:text-lg">
               {{ course.name }}
@@ -38,13 +38,13 @@
         {% if request.user == course.instructor %}
         <!-- Right: Publication Toggle -->
         <div class="flex-shrink-0">
-          <form hx-post="{% url 'course-detail-view' pk=course.pk %}" 
-                hx-trigger="submit" 
-                hx-target="#course-detail" 
+          <form hx-post="{% url 'course-detail-view' pk=course.pk %}"
+                hx-trigger="submit"
+                hx-target="#course-detail"
                 hx-confirm="Are you sure you want to change the publication status of this course?">
             {% csrf_token %}
             <input type="hidden" name="course_id" value="{{ course.id }}">
-            
+
             <button type="submit" class="cursor-pointer">
               {% if course.published %}
                 <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors">

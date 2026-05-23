@@ -1,0 +1,53 @@
+{% extends 'core/base/base.html' %}
+
+{% load static humanize django_htmx %}
+
+{% block title %}
+My Courses | Code Stream
+{% endblock %}
+
+{% block content %}
+
+{% include 'core/base/header.html' %}
+
+<div class="min-h-screen bg-gray-50">
+
+  <!-- Search Section -->
+  <div class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+
+      <!-- Search Bar -->
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
+        </div>
+        <input 
+          type="text" 
+          name="search" 
+          class="w-full pl-12 pr-4 py-3 sm:py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200"
+          placeholder="Search your courses..."
+          hx-get="{% url 'instructor-courses-view' %}" 
+          hx-trigger="keyup changed delay:300ms" 
+          hx-target="#courses-grid" 
+          hx-swap="innerHTML">
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Course Grid -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    <div id="courses-grid">
+      {% include 'course/course/partials/my_courses_list.html' %}
+    </div>
+  </main>
+
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'core/base/javascript/header.js' %}" type="text/javascript" charset="utf-8"></script>
+{% endblock %}

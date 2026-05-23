@@ -265,29 +265,6 @@
 
         </a>
 
-        <!-- ═══ INSTRUCTOR AND STUDENT ACTIONS: View Courses ═══ -->
-        {% if request.user == user and user.role == 'instructor' %}
-        <div class="flex sm:flex-row items-center justify-center lg:justify-start gap-3 mt-6 w-full border-t border-white/50 pt-5">
-          <!-- View Courses Button (For Instructor) -->
-          <a href="{% url 'instructor-courses-view' %}" class="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 rounded-xl font-semibold active:scale-95 transition-all duration-300 shadow-sm hover:shadow-md shadow-white hover:-translate-y-1.5">
-            <svg class="w-5 h-5 text-white group-hover:text-white group-hover:font-semibold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-            </svg>
-            <span class="text-white group-hover:text-white group-hover:font-semibold">My Courses</span>
-          </a>
-        </div>
-        {% elif request.user == user and user.role != 'student' %}
-        <div class="flex sm:flex-row items-center justify-center lg:justify-start gap-3 mt-6 w-full">
-          <!-- View Courses Button (For Student) -->
-          <a href="#" class="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 rounded-xl font-semibold active:scale-95 transition-all duration-300 shadow-sm hover:shadow-md shadow-white hover:-translate-y-1.5">          
-            <svg class="w-5 h-5 text-white group-hover:text-white group-hover:font-semibold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-            </svg>
-            <span class="text-white group-hover:text-white group-hover:font-semibold">My Courses</span>
-          </a>
-        </div>
-        {% endif %}
-
       </div>
     </div>
 

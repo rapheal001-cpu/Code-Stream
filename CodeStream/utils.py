@@ -24,14 +24,14 @@ role_selection = ["student", "instructor"]
 
 
 # ==========
-# Core Urls
+# Core URL
 # ==========
 index_view_url = "index-view"
 about_view_url = "about-view"
 
 
 # ===========
-# Course Urls
+# Course URL
 # ===========
 course_view_url = "course-index-view"
 create_course_view_url = "create-course-view"
@@ -41,7 +41,7 @@ notification_view_url = "notification-view"
 
 
 # ===========
-# Accounts Urls
+# Accounts URL
 # ===========
 login_view_url = "account_login"
 setting_view_url = "settings-view"

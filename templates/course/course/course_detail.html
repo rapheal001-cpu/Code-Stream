@@ -8,110 +8,109 @@
 
 {% block content %}
 
-<div class="bg-gray-50 min-h-screen pb-safe" id="course-detail">
-<!-- Course Header Area -->
-<div class="sticky top-0 z-40 bg-white border-b border-slate-300 shadow-xs">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="h-16 flex items-center justify-between gap-4">
-      
-      <!-- Left Section: Navigation & Title -->
-      <div class="flex items-center gap-4 min-w-0">
-        <a href="{% url 'course-index-view' %}"
-           class="inline-flex items-center justify-center p-2 rounded-xl text-indigo-900 hover:text-white hover:bg-indigo-900 active:bg-indigo-800 transition-all"
-           title="Back to Courses">
-          <svg class="w-5 h-5 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-        </a>
+<div class="min-h-screen bg-slate-50" id="course-detail">
+
+  <!-- Course Header -->
+  <div class="bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="h-16 flex items-center justify-between gap-4">
         
-        <div class="min-w-0">
-          <h1 class="text-base font-bold text-indigo-900 truncate sm:text-lg">
-            {{ course.name }}
-          </h1>
-          <p class="text-xs font-medium text-indigo-800">
-            {{ course.total_videos }} {{ course.total_videos|pluralize:'video,videos' }} total
+        <!-- Left: Back + Title -->
+        <div class="flex items-center gap-3 min-w-0">
+          <a href="{% url 'course-index-view' %}"
+             class="inline-flex items-center justify-center p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all flex-shrink-0"
+             title="Back to Courses">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </a>
+          
+          <div class="min-w-0">
+            <h1 class="text-base font-semibold text-slate-900 truncate sm:text-lg">
+              {{ course.name }}
+            </h1>
+            <p class="text-xs text-slate-500">
+              {{ course.total_videos }} {{ course.total_videos|pluralize:'video,videos' }}
+            </p>
+          </div>
+        </div>
+
+        {% if request.user == course.instructor %}
+        <!-- Right: Publication Toggle -->
+        <div class="flex-shrink-0">
+          <form hx-post="{% url 'course-detail-view' pk=course.pk %}" 
+                hx-trigger="submit" 
+                hx-target="#course-detail" 
+                hx-confirm="Are you sure you want to change the publication status of this course?">
+            {% csrf_token %}
+            <input type="hidden" name="course_id" value="{{ course.id }}">
+            
+            <button type="submit" class="cursor-pointer">
+              {% if course.published %}
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors">
+                  Published
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </span>
+              {% else %}
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 transition-colors">
+                  Draft
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </span>
+              {% endif %}
+            </button>
+          </form>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Video Player -->
+  <div class="bg-linear-to-tr from-indigo-900 via-purple-900 to-indigo-900 w-full max-w-7xl mx-auto">
+    {% if active_video %}
+      {% if request.user in course.students.all or request.user == course.instructor %}
+      <div class="relative aspect-video max-w-7xl mx-auto">
+        <video class="w-full h-full object-contain" controls
+          poster="{{ active_video.thumbnail.url }}"
+          controlsList="nodownload"
+          disablePictureInPicture
+          oncontextmenu="return false;" autoplay>
+          <source src="{{ active_video.video.url }}" type="video/mp4">
+        </video>
+      </div>
+      {% else %}
+      <!-- Locked Preview -->
+      <div class="aspect-video max-w-7xl mx-auto flex items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 px-6">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
+            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
+          <p class="text-white text-lg font-semibold mb-2">
+            Buy the course to start learning
+          </p>
+          <p class="text-slate-400 text-sm">
+            Get full access to all {{ course.total_videos }} videos
           </p>
         </div>
       </div>
-
-      {% if request.user == course.instructor %}
-      <!-- Right Section: Interactive Publication Toggle Form -->
-      <div class="flex items-center shrink-0">
-        <form hx-post="{% url 'course-detail-view' pk=course.pk %}" 
-              hx-trigger="submit" 
-              hx-target="#course-detail" 
-              hx-confirm="Are you sure you want to change the publication status of this course?">
-          {% csrf_token %}
-          <input type="hidden" name="course_id" value="{{ course.id }}">
-          
-          <button type="submit" class="cursor-pointer">
-            {% if course.published %}
-              <!-- Status: Published (Green Checked Pill badge) -->
-              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200 shadow-xs hover:bg-emerald-200 transition-colors">
-                Published
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-              </span>
-            {% else %}
-              <!-- Status: Draft/Unpublished (Amber Warning Pill badge) -->
-              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-red-100 text-red-600 border border-red-200 shadow-xs hover:bg-red-200 transition-colors">
-                Draft
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-              </span>
-            {% endif %}
-          </button>
-        </form>
-      </div>
       {% endif %}
-
-    </div>
-  </div>
-</div>
-
-
-
-  <!-- Main Video Player -->
-  <div class="bg-black w-full max-w-7xl mx-auto lg:rounded-b-xl shadow-lg">
-    {% if active_video %}
-    {% if request.user in course.students.all or request.user == course.instructor %}
-    <div class="relative aspect-video">
-      <video class="w-full h-full object-contain" controls
-        poster="{{ active_video.thumbnail.url }}"
-        controlsList="nodownload"
-        disablePictureInPicture
-        oncontextmenu="return false;">
-        <source src="{{ active_video.video.url }}" type="video/mp4">
-      </video>
-    </div>
     {% else %}
-    <div class="aspect-video flex items-center justify-center bg-linear-to-tr from-indigo-900 via-purple-900 to-indigo-900 px-6">
+    <!-- No Video Selected -->
+    <div class="aspect-video max-w-7xl mx-auto flex items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 px-6">
       <div class="text-center">
         <div class="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
           <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
             <path d="M8 5v14l11-7z" />
           </svg>
         </div>
-        <p class="text-white text-lg font-medium mb-2">
-          Buy the course to start learning
-        </p>
-        <p class="text-white text-sm">
-          Get full access to all {{ course.total_videos }} videos
-        </p>
-      </div>
-    </div>
-    {% endif %}
-    {% else %}
-    <div class="aspect-video flex items-center justify-center bg-linear-to-tr from-indigo-900 via-purple-900 to-indigo-900 px-6">
-      <div class="text-center">
-        <div class="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
-          <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M8 5v14l11-7z" />
-          </svg>
-        </div>
-        <p class="text-white text-lg font-medium">
+        <p class="text-white text-lg font-semibold">
           Select a video to start learning
         </p>
       </div>
@@ -119,92 +118,105 @@
     {% endif %}
   </div>
 
-  <!-- Content Container -->
-  <div class="max-w-7xl mx-auto px-4 lg:px-6 py-6 space-y-6">
+  <!-- Content Area -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
     {% if request.user in course.students.all or request.user == course.instructor %}
-    {% if active_video %}
-    <!-- Video Info Card -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-      <div class="flex items-start gap-3">
-        <div class="flex-1 min-w-0">
-          <h2 class="text-lg font-bold text-gray-900 leading-snug mb-2">
-            {{ active_video.name }}
-          </h2>
-          <div class="flex items-center gap-2 text-sm text-gray-500">
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700">
-              {{ active_video.created_at|naturaltime }}
+      {% if active_video %}
+      <!-- Active Video Info -->
+      <div class="bg-white rounded-xl border border-slate-200 p-6">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex-1 min-w-0">
+            <h2 class="text-xl font-semibold text-slate-900 mb-2">
+              {{ active_video.name }}
+            </h2>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+              Added {{ active_video.created_at|naturaltime }}
             </span>
           </div>
         </div>
-      </div>
 
-      {% if active_video.description %}
-      <div class="mt-4 pt-4 border-t border-gray-100">
-        <p class="text-gray-600 text-sm leading-relaxed">
-          {{ active_video.description }}
-        </p>
+        {% if active_video.description %}
+        <div class="mt-4 pt-4 border-t border-slate-100">
+          <p class="text-slate-600 text-sm leading-relaxed">
+            {{ active_video.description }}
+          </p>
+        </div>
+        {% endif %}
       </div>
       {% endif %}
-    </div>
-    {% endif %}
     {% else %}
-    <!-- Purchase Banner -->
-    <div class="bg-linear-to-tr from-indigo-900 via-purple-900 to-indigo-900 rounded-xl shadow-lg py-10 px-4 text-white flex flex-col justify-center items-center">
-      <h2 class="text-xl font-bold mb-2 text-center">{{ course.name }}</h2>
-      <a href="{{ course.instructor.get_absolute_url }}" class="text-white mb-4 hover:underline hover:underline-offset-4 transition delay-300">
-        Instructor: {{ course.instructor.full_name|title }}
-      </a>
-      <a href="{% url 'checkout-course-view' course_id=course.id %}"
-        class="inline-flex items-center justify-center sm:w-auto px-6 py-3 bg-white text-indigo-900 font-semibold rounded-lg hover:scale-110 transition delay-300">
-        Buy Now - Unlock Course
-      </a>
-    </div>
+      {% if course.published %}
+      <!-- Purchase CTA -->
+      <div class="bg-gradient-to-br from-indigo-900 via-slate-900 to-indigo-950 rounded-2xl shadow-xl overflow-hidden">
+        <div class="px-8 py-12 text-center">
+          <h2 class="text-2xl font-bold text-white mb-2">{{ course.name }}</h2>
+          <a href="{{ course.instructor.get_absolute_url }}" class="inline-block text-indigo-300 text-sm mb-8 hover:text-white transition-colors">
+            {{ course.instructor.full_name|title }}
+          </a>
+          <a href="{% url 'checkout-course-view' course_id=course.id %}"
+             class="inline-flex items-center justify-center px-8 py-3.5 bg-white text-indigo-900 font-semibold rounded-xl hover:bg-indigo-50 transition-colors shadow-lg">
+            Buy Now — Unlock Course
+          </a>
+        </div>
+      </div>
+      {% else %}
+      <!-- Unpublished Notice -->
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 text-center">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-100 mb-3">
+          <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-amber-900 mb-1">Course Not Published</h3>
+        <p class="text-sm text-amber-700">This course is currently being prepared. Check back later!</p>
+      </div>
+      {% endif %}
     {% endif %}
 
-    <!-- Videos Section -->
+    <!-- Course Content Section -->
     <div>
       <!-- Section Header -->
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
-        <h3 class="text-lg font-bold text-indigo-900">Course Content</h3>
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <h3 class="text-lg font-semibold text-slate-900">Course Content</h3>
 
-        <div class="flex items-center gap-2 flex-wrap">
+        <div class="flex items-center gap-2">
           {% if course.instructor == request.user %}
           <a href="{% url 'update-course-view' pk=course.pk %}"
-            class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors shadow-sm">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+             class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
             Edit
           </a>
 
-          <a href="{% url 'create-course-video-view' course_id=course.pk%}"
-            class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-white bg-indigo-800 rounded-lg hover:bg-indigo-900 transition-colors shadow-sm">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          <a href="{% url 'create-course-video-view' course_id=course.pk %}"
+             class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
             </svg>
             Add Video
           </a>
           {% endif %}
 
           <a href="{% url 'course-info-view' pk=course.pk %}"
-            class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-indigo-900 bg-indigo-50 rounded-lg hover:bg-indigo-100 active:bg-indigo-200 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+             class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-indigo-700 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Info
           </a>
         </div>
       </div>
 
-{% if request.user in course.students.all or request.user == course.instructor %}
-<div class="overflow-y-auto min-h-screen p-4">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5" id="videos-grid">
-  {% include 'course/course/partials/course_videos_list.html' %}
-</div>
-  </div>
-{% endif %}
+      {% if request.user in course.students.all or request.user == course.instructor %}
+      <!-- Videos Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5" id="videos-grid">
+        {% include 'course/course/partials/course_videos_list.html' %}
+      </div>
+      {% endif %}
     </div>
+
   </div>
 
 </div>

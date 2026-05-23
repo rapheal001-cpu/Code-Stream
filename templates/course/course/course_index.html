@@ -10,48 +10,60 @@ Courses | Code Stream
 
 {% include 'core/base/header.html' %}
 
-<main class="min-h-screen bg-gray-50 pb-24">
+<main class="min-h-screen bg-slate-50 pb-24">
 
-  <!-- Hero Section with Search -->
-  <div class="relative bg-gradient-to-tr from-indigo-900 via-purple-900 to-indigo-900 overflow-hidden">
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-12">
+  <!-- Hero Section -->
+  <div class="relative bg-linear-to-tr from-indigo-900 via-purple-900 to-indigo-900 overflow-hidden">
+    <!-- Subtle pattern overlay -->
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0); background-size: 32px 32px;"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
       <div class="text-center max-w-3xl mx-auto">
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight mb-6">
-          Master New Skills with <span class="text-indigo-300">Expert-Led</span> Courses
+        
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-4">
+          Master New Skills with <span class="text-indigo-400">Expert-Led</span> Courses
         </h1>
-        <p class="text-lg text-indigo-200 mb-10 max-w-2xl mx-auto">
+        <p class="text-base sm:text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
           Learn from industry professionals and transform your career
         </p>
 
-        <!-- Create Course Button -->
+        <!-- Create Course CTA -->
         {% if request.user.role == 'instructor' %}
-        <a href="{% url 'create-course-view' %}">
-          <div class="bg-white/10 backdrop-blur-md mx-auto max-w-md rounded-full p-3 text-white font-semibold mb-8 md:mb-16 lg:mb-16 xl:mb-16 border border-white/30 shadow-white shadow-sm hover:shadow-md hover:-translate-y-1.5 delay-300 transition hover:scale[98]">
-            Create Course
-          </div>
+        <a href="{% url 'create-course-view' %}" 
+           class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 backdrop-blur border border-white/20 text-white text-sm font-medium hover:bg-white/20 hover:-translate-y-0.5 transition-all duration-200 mb-10">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          Create Course
         </a>
         {% endif %}
 
         <!-- Search Bar -->
-        <div class="relative max-w-md mx-auto">
-          <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none z-20">
-            <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        <div class="relative max-w-xl mx-auto">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
           </div>
-          <input type="text" class="w-full pl-14 pr-4 py-4 rounded-full bg-white/10 backdrop-blur-md placeholder-white text-base text-white outline-none" placeholder="What do you want to learn today {{ request.user.username }} ?" name="search" hx-get="{% url 'course-index-view' %}" hx-trigger="keyup changed delay:300ms" hx-target="#courses-grid" hx-swap="innerHTML">
+          <input 
+            type="text" 
+            name="search" 
+            class="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 transition-all duration-200"
+            placeholder="Search courses..."
+            hx-get="{% url 'course-index-view' %}" 
+            hx-trigger="keyup changed delay:300ms" 
+            hx-target="#courses-grid" 
+            hx-swap="innerHTML"
+          >
         </div>
 
       </div>
     </div>
   </div>
 
-  <!-- Courses Container -->
-
-  <div class="w-full max-w-7xl mx-auto mx-auto py-4 px-4 md:px-10 lg:px-14" id="courses-grid">
-
+  <!-- Courses Grid -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" id="courses-grid">
     {% include 'course/course/partials/courses_list.html' %}
-
   </div>
 
 </main>

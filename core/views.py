@@ -25,9 +25,9 @@ class IndexView(TemplateView):
         search = request.GET.get("search")
 
         if search:
-            courses = Course.objects.filter(Q(name__icontains=search) | Q(description__icontains=search))
+            courses = Course.objects.filter(Q(name__icontains=search) | Q(description__icontains=search)).exclude(published=False)
         else:
-            courses = Course.objects.order_by("-created_at")
+            courses = Course.objects.exclude(published=False)
 
         context = {"form": form, "instructors": instructors, "courses": courses}
 
@@ -343,38 +343,6 @@ class InstructorWalletView(LoginRequiredMixin, DetailView):
         return super().get(request, *args, **kwargs)
 
 instructor_wallet_view = InstructorWalletView.as_view()
-
-
-# ========================
-# INSTRUCTOR Courses VIEWS
-# ========================
-class InstructorCoursesView(LoginRequiredMixin, TemplateView):
-    template_name = "core/user/main/instructor_courses.html"
-
-    def get(self, request, *args, **kwargs):
-        user = request.user
-        search = request.GET.get("search")
-        if not user.role and not user.role == 'instructor':
-            return redirect(course_view_url)
-
-        if search:
-            courses = Course.objects.filter(
-                Q(name__icontains=search) | Q(description__icontains=search)
-            )
-        else:
-            courses = Course.objects.filter(instructor=user)
-
-        context = {
-            "courses": courses,
-            "search": search,
-        }
-
-        if request.htmx:
-            return render(request, "course/course/partials/courses_list.html", context)
-
-        return render(request, self.template_name, context)
-
-instructor_course_view = InstructorCoursesView.as_view()
 
 
 # ====================

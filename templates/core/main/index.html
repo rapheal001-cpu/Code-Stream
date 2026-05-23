@@ -8,67 +8,85 @@ Code Stream
 
 {% block content %}
 
-<!-- Logged In but No Role -->
+<!-- Role Selection for New Users -->
 {% if request.user.is_authenticated and not request.user.role %}
-
-<!-- Role Selection -->
-{% include 'core/partials/account_role_selection.html' %}
+  {% include 'core/partials/account_role_selection.html' %}
 
 {% else %}
 
-<!-- Header -->
-{% include 'core/base/header.html' %}
-<!-- Main App -->
-<main class="p-4 pb-8 bg-gray-50 min-h-screen">
-  {% if instructors %}
-  <!-- Scrollable instructors row -->
-  <div class="flex max-w-6xl mx-auto gap-5 overflow-x-auto pb-3 scrollbar-hide border-b border-gray-400 mb-3">
-      {% for instructor in instructors %}
-    <a href="{{ instructor.get_absolute_url }}" class="flex flex-col items-center flex-shrink-0 cursor-pointer group">
-      <!-- Avatar with ring -->
-      <div class="overflow-hidden">
-        {% if instructor.avatar %}
-        <img src="{{ instructor.avatar.url }}" alt="{{ instructor.username }}" class="w-14 h-14 rounded-full object-cover">
-        {% else %}
-        <div class="w-14 h-14 rounded-full ring-2 ring-gray-200 font-extrabold bg-indigo-800 text-white flex justify-center items-center text-lg">
-          {{ instructor.username|first|upper }}
+  <!-- Header -->
+  {% include 'core/base/header.html' %}
+
+  <!-- Main Content -->
+  <main class="min-h-screen bg-gray-50">
+
+    <!-- Instructors Strip -->
+    {% if instructors %}
+    <div class="bg-white border-b border-gray-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex gap-6 overflow-x-auto py-6 scrollbar-hide">
+          {% for instructor in instructors %}
+          <a href="{{ instructor.get_absolute_url }}" class="flex flex-col items-center flex-shrink-0 group">
+            <div class="relative">
+              {% if instructor.avatar %}
+              <img src="{{ instructor.avatar.url }}" alt="{{ instructor.username }}" class="w-14 h-14 rounded-full object-cover ring-2 ring-gray-100 group-hover:ring-indigo-200 transition-all">
+              {% else %}
+              <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-indigo-700 to-purple-700 text-white text-lg font-bold flex items-center justify-center ring-2 ring-gray-100 group-hover:ring-indigo-200 transition-all">
+                {{ instructor.username|first|upper }}
+              </div>
+              {% endif %}
+              {% if instructor.online %}
+              <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+              {% endif %}
+            </div>
+            <span class="text-xs text-gray-600 mt-2 max-w-[4rem] truncate group-hover:text-indigo-700 transition-colors font-medium">{{ instructor.username }}</span>
+          </a>
+          {% endfor %}
         </div>
-        {% endif %}
       </div>
-      <!-- Username -->
-      <span class="text-xs text-gray-700 mt-2 max-w-[4rem] truncate group-hover:text-indigo-700 transition-colors">{{ instructor.username }}</span>
-    </a>
-     {% endfor %}
-  </div>
-
-  {% endif %}
- 
- <span class="spinner-border text-secondary"></span>
-
-  <!-- Search Input -->
-  <div class="max-w-xl mx-auto mb-8">
-    <div class="relative">
-      <input type="text" name="search" placeholder="Search courses..." class="w-full pl-10 pr-8 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all" hx-get="{% url 'index-view' %}" hx-trigger="keyup changed delay:300ms, search" hx-target="#course-grid" hx-swap="innerHTML" hx-indicator="#search-spinner" />
-    <!-- Search Icon -->
-    <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-    </svg>
-    <!-- Loading Spinner -->
-    <div id="search-spinner" class="htmx-indicator absolute right-3 top-1/2 -translate-y-1/2">
-      <svg class="animate-spin w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-      </svg>
     </div>
-  </div>
-</div>
+    {% endif %}
 
-<!-- Course Grid (target for HTMX swaps) -->
-<div id="course-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-  {% include 'core/partials/index_content.html' %}
-</div>
+    <!-- Search & Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      
+      <!-- Search Bar -->
+      <div class="max-w-2xl mx-auto mb-10">
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+          </div>
+          <input 
+            type="text" 
+            name="search" 
+            placeholder="Search courses..." 
+            class="w-full pl-12 pr-12 py-3.5 rounded-xl bg-white border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200"
+            hx-get="{% url 'index-view' %}" 
+            hx-trigger="keyup changed delay:300ms" 
+            hx-target="#course-grid" 
+            hx-swap="innerHTML" 
+            hx-indicator="#search-spinner" 
+          />
+          <!-- Loading Spinner -->
+          <div id="search-spinner" class="htmx-indicator absolute right-4 top-1/2 -translate-y-1/2">
+            <svg class="animate-spin w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
 
-</main>
+      <!-- Course Grid -->
+      <div id="course-grid">
+        {% include 'core/partials/index_content.html' %}
+      </div>
+
+    </div>
+
+  </main>
 {% endif %}
 
 {% endblock %}

@@ -10,10 +10,12 @@ from .views import (
     course_info_view,
     create_course_video_view,
     update_course_video_view,
+    instructor_courses_view,
 )
 
 urlpatterns = [
     path("", course_index_view, name="course-index-view"),
+    path('my-courses/', instructor_courses_view, name="instructor-courses-view"),
     path("create/", create_course_view, name="create-course-view"),
     path("create-done/<int:pk>/", create_course_done_view, name="create-course-done-view"),
     path("update/<int:pk>/", update_course_view, name="update-course-view"),

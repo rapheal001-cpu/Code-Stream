@@ -88,7 +88,6 @@ class Course(models.Model):
 
         return f"{days}d {hours}h {minutes}m {seconds}s"
 
-
 # =============
 #  Course Video
 # =============

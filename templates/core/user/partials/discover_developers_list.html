@@ -1,10 +1,12 @@
+{% load humanize %}
+
 {% if developers %}
-<div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+<div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
   {% for developer in developers %}
-  <div class="bg-white rounded-xl shadow-sm hover:shadow-md shadow-white duration-300 hover:-translate-y-2 overflow-hidden flex flex-col">
+  <div class="group bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300 hover:-translate-y-1 overflow-hidden flex flex-col">
 
     <!-- Cover -->
-    <div class="h-24 bg-gradient-to-tr from-indigo-900 via-purple-900 to-indigo-900 relative">
+    <div class="h-28 bg-gradient-to-tr from-indigo-900 via-purple-900 to-indigo-900 relative">
       <div class="absolute inset-0 bg-black/10"></div>
     </div>
 
@@ -14,22 +16,22 @@
         {% if developer.avatar %}
         <img src="{{ developer.avatar.url }}"
              alt="{{ developer.username }}"
-             class="w-20 h-20 rounded-full object-cover border-4 border-white shadow-sm hover:scale-105 transition-transform duration-200" />
+             class="w-20 h-20 rounded-full object-cover border-4 border-white shadow-md group-hover:scale-105 transition-transform duration-300" />
         {% else %}
-        <div class="w-20 h-20 rounded-full bg-indigo-900 border-4 border-white text-white text-xl font-bold flex items-center justify-center shadow-sm">
+        <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 border-4 border-white text-white text-xl font-bold flex items-center justify-center shadow-md">
           {{ developer.username|first|upper }}
         </div>
         {% endif %}
         {% if developer.online %}
-        <span class="absolute bottom-1 right-1 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></span>
+        <span class="absolute bottom-1 right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full shadow-sm"></span>
         {% endif %}
       </a>
     </div>
 
     <!-- Info -->
-    <div class="px-4 pt-3 pb-4 flex-1 flex flex-col items-center text-center">
-      <a href="{{ developer.get_absolute_url }}" class="hover:underline">
-        <h2 class="text-base font-semibold text-gray-900">
+    <div class="px-5 pt-4 pb-5 flex-1 flex flex-col items-center text-center">
+      <a href="{{ developer.get_absolute_url }}">
+        <h2 class="text-base font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors">
           {% if developer.last_name %}
             {{ developer.full_name|title }}
           {% else %}
@@ -37,17 +39,23 @@
           {% endif %}
         </h2>
       </a>
-      <p class="text-sm text-gray-500 mb-1">@{{ developer.username }}</p>
-      <p class="text-xs text-gray-400 mb-4">{{ developer.role|title }}</p>
+      <p class="text-sm text-gray-500 mt-0.5">@{{ developer.username }}</p>
+      <p class="text-xs text-gray-400 mt-1 mb-4">{{ developer.role|title }}</p>
 
-      <!-- Mutual / Stats -->
-      <div class="flex items-center gap-4 text-xs text-gray-500 mb-4">
-        <span>{{ developer.followers.count }} followers</span>
-        <span>·</span>
-        <span>{{ developer.following.count }} following</span>
+      <!-- Stats -->
+      <div class="flex items-center gap-4 text-xs text-gray-500 mb-5">
+        <div class="flex flex-col items-center">
+          <span class="font-semibold text-gray-900 text-sm">{{ developer.followers.count|intcomma }}</span>
+          <span class="text-gray-400">followers</span>
+        </div>
+        <span class="text-gray-300">·</span>
+        <div class="flex flex-col items-center">
+          <span class="font-semibold text-gray-900 text-sm">{{ developer.following.count|intcomma }}</span>
+          <span class="text-gray-400">following</span>
+        </div>
       </div>
 
-      <!-- Actions -->
+      <!-- Follow Button -->
       <form hx-post="{% url 'discover-developers-view' %}"
             hx-trigger="submit"
             hx-target="#discover-developers-list"
@@ -58,15 +66,15 @@
 
         {% if request.user in developer.followers.all %}
           <button type="submit"
-                  class="w-full py-2 px-4 rounded-lg font-medium text-sm bg-purple-900 text-white hover:bg-purple-800 transition-colors flex items-center justify-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  class="w-full py-2.5 px-4 rounded-xl font-medium text-sm bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200 transition-colors flex items-center justify-center gap-2">
+            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
             </svg>
             Following
           </button>
         {% else %}
           <button type="submit"
-                  class="w-full py-2 px-4 rounded-lg font-medium text-sm bg-indigo-900 hover:bg-indigo-800 text-white transition-colors flex items-center justify-center gap-2">
+                  class="w-full py-2.5 px-4 rounded-xl font-medium text-sm bg-indigo-600 hover:bg-indigo-700 text-white transition-colors shadow-sm shadow-indigo-200 flex items-center justify-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
             </svg>
@@ -81,13 +89,13 @@
 
 {% else %}
 <!-- Empty State -->
-<div class="max-w-md mx-auto text-center py-20">
-  <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-    <svg class="w-8 h-8 text-white/40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+<div class="max-w-md mx-auto text-center py-24">
+  <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4 ring-1 ring-gray-200">
+    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
     </svg>
   </div>
-  <h3 class="text-lg font-semibold text-white mb-1">No users found</h3>
-  <p class="text-white/50 text-sm">Try adjusting your search or check back later.</p>
+  <h3 class="text-lg font-semibold text-white mb-1">No developers found</h3>
+  <p class="text-sm text-white">Try adjusting your search or check back later.</p>
 </div>
 {% endif %}

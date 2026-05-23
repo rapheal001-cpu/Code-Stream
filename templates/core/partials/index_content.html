@@ -1,95 +1,121 @@
 {% load humanize %}
 
-{% for course in courses %}
-<a href="{{ course.get_absolute_url }}" class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+{% if courses %}
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+  {% for course in courses %}
+  <a href="{{ course.get_absolute_url }}" class="group flex flex-col bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300 hover:-translate-y-1 border border-gray-200">
 
-  <!-- Thumbnail -->
-  <div class="relative h-48 overflow-hidden bg-gray-200">
-    {% if course.thumbnail %}
-    <img src="{{ course.thumbnail.url }}" alt="{{ course.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-    {% else %}
-    <div class="w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-      <svg class="w-12 h-12 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-      </svg>
-    </div>
-    {% endif %}
-
-    <!-- Price Badge -->
-    <div class="absolute top-3 right-3">
-      <span class="px-3 py-1 rounded-full text-xs font-bold bg-white/95 text-emerald-700 backdrop-blur-sm shadow-sm">
-        ${{ course.price }}
-      </span>
-    </div>
-  </div>
-
-  <!-- Content -->
-  <div class="p-4">
-    <!-- Name -->
-    <h3 class="font-bold text-gray-900 text-lg leading-tight mb-2 line-clamp-2 group-hover:text-indigo-700 transition-colors">{{ course.name }}</h3>
-
-    <!-- Description -->
-    <p class="text-sm text-gray-500 mb-4 line-clamp-2 leading-relaxed">
-      {{ course.description|default:"No description available." }}
-    </p>
-
-    <!-- Stats Row -->
-    <div class="flex items-center gap-4 mb-4 pb-4 border-b border-gray-100">
-      <div class="flex items-center gap-1.5 text-sm text-gray-600">
-        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+    <!-- Thumbnail -->
+    <div class="relative aspect-video overflow-hidden bg-gray-100">
+      {% if course.thumbnail %}
+      <img src="{{ course.thumbnail.url }}" alt="{{ course.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" loading="lazy">
+      {% else %}
+      <div class="w-full h-full bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-900 flex items-center justify-center">
+        <svg class="w-12 h-12 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
         </svg>
-        <span class="font-medium">{{ course.total_videos }}</span>
-        <span class="text-gray-400">videos</span>
       </div>
-      <div class="flex items-center gap-1.5 text-sm text-gray-600">
-        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-        <span class="font-medium">{{ course.total_students|intcomma }}</span>
-        <span class="text-gray-400">students</span>
+      {% endif %}
+
+      <!-- Badges -->
+      <div class="absolute top-3 left-3 flex flex-wrap gap-2">
+        {% if course.is_new %}
+        <span class="px-2.5 py-1 rounded-lg bg-white/95 backdrop-blur text-xs font-bold text-indigo-900 shadow-sm">
+          New
+        </span>
+        {% endif %}
+        {% if course.price == 0 %}
+        <span class="px-2.5 py-1 rounded-lg bg-emerald-500 text-xs font-bold text-white shadow-sm">
+          Free
+        </span>
+        {% endif %}
       </div>
+
+      <!-- Price Badge -->
+      {% if course.price > 0 %}
+      <div class="absolute bottom-3 right-3">
+        <span class="px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-md text-sm font-bold text-white shadow-sm">
+          ${{ course.price }}
+        </span>
+      </div>
+      {% endif %}
     </div>
 
-    <!-- Instructor & Date -->
-    <div class="flex items-center justify-between gap-3">
-      <div class="flex items-center gap-2.5 min-w-0">
-        <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
-          {% if course.instructor.avatar %}
-          <img src="{{ course.instructor.avatar.url }}" alt="{{ course.instructor.username }}" class="w-full h-full object-cover">
-          {% else %}
-          <div class="w-full h-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold">
-            {{ course.instructor.username|first|upper }}
-          </div>
-          {% endif %}
+    <!-- Content -->
+    <div class="flex flex-col flex-1 p-5">
+      
+      <!-- Title -->
+      <h3 class="font-semibold text-gray-900 text-base leading-snug mb-2 line-clamp-2 group-hover:text-indigo-700 transition-colors duration-200">
+        {{ course.name }}
+      </h3>
+
+      <!-- Description -->
+      <p class="text-sm text-gray-500 mb-4 line-clamp-2 leading-relaxed flex-1">
+        {{ course.description|default:"No description available." }}
+      </p>
+
+      <!-- Stats -->
+      <div class="flex items-center gap-4 mb-4 text-xs text-gray-600">
+        <div class="flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+          </svg>
+          <span class="font-medium">{{ course.total_videos }}</span>
+          <span class="text-gray-400">{{ course.total_videos|pluralize:'video,videos' }}</span>
         </div>
-        <div class="flex flex-col justify-start items-start">
-          <span class="text-sm font-semibold text-gray-700 truncate">
-            {% if course.instructor.first_name %}
-            {{ course.instructor.full_name }}
+        <div class="flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+          </svg>
+          <span class="font-medium">{{ course.total_students|intcomma }}</span>
+          <span class="text-gray-400">{{ course.total_students|pluralize:'student,students' }}</span>
+        </div>
+      </div>
+
+      <!-- Footer: Instructor & Date -->
+      <div class="flex items-center justify-between gap-3 pt-4 border-t border-gray-100">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex-shrink-0 ring-2 ring-white shadow-sm">
+            {% if course.instructor.avatar %}
+            <img src="{{ course.instructor.avatar.url }}" alt="{{ course.instructor.username }}" class="w-full h-full object-cover">
             {% else %}
-            {{ course.instructor.username|title }}
+            <div class="w-full h-full bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white text-xs font-bold">
+              {{ course.instructor.username|first|upper }}
+            </div>
             {% endif %}
-          </span>
-          <span class="text-sm font-semibold text-gray-500 truncate">
-            {{ course.instructor.role|title }}
-          </span>
+          </div>
+          <div class="min-w-0">
+            <span class="text-sm font-medium text-gray-700 truncate block">
+              {% if course.instructor.first_name %}
+              {{ course.instructor.full_name }}
+              {% else %}
+              {{ course.instructor.username|title }}
+              {% endif %}
+            </span>
+            <span class="text-xs text-gray-400 truncate block">
+              {{ course.instructor.role|title }}
+            </span>
+          </div>
         </div>
+        <span class="text-xs text-gray-400 whitespace-nowrap flex-shrink-0">{{ course.created_at|date:"M d, Y" }}</span>
       </div>
-      <span class="text-xs text-gray-400 whitespace-nowrap flex-shrink-0">{{ course.created_at|date:"M d, Y" }}</span>
     </div>
-  </div>
 
-  <!-- Bottom Accent Line -->
-  <div class="h-1 bg-gradient-to-r from-indigo-500 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
-</a>
-{% empty %}
-<div class="col-span-full text-center py-16">
-  <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-  </svg>
-  <p class="text-gray-500 text-lg">
-    No courses available yet.
-  </p>
+    <!-- Bottom Accent Line -->
+    <div class="h-1 bg-linear-to-tr from-indigo-900 via-purple-900 to-indigo-900 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+  </a>
+  {% endfor %}
 </div>
-{% endfor %}
+
+{% else %}
+<!-- Empty State -->
+<div class="flex flex-col items-center justify-center py-24 text-center">
+  <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mb-4 ring-1 ring-gray-200">
+    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+    </svg>
+  </div>
+  <h3 class="text-lg font-semibold text-gray-900 mb-1">No courses available</h3>
+  <p class="text-sm text-gray-500">Check back later for new content.</p>
+</div>
+{% endif %}

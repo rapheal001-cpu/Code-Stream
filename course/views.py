@@ -1,11 +1,11 @@
 from django.db.models import Q
+from django.http import Http404
 from django.shortcuts import redirect, render, get_object_or_404
-from django.views.generic import DetailView, CreateView, TemplateView, UpdateView
-from django.views import View
+from django.views.generic import DetailView, CreateView, TemplateView, UpdateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Course, CourseVideo
+from .models import Course
 from .forms import CreateCourseForm, UpdateCourseForm, CourseVideoForm, UpdateCourseVideoForm
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from CodeStream.utils import *
 from .tasks import *
 
@@ -20,8 +20,8 @@ class CourseIndexView(LoginRequiredMixin, TemplateView):
         self.courses = Course.objects.all()
         self.user = request.user
 
-        if not self.user.role:
-            return redirect(index_view_url)
+        if not self.user.is_authenticated or not self.user.role:
+            return redirect(login_view_url)
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -32,9 +32,9 @@ class CourseIndexView(LoginRequiredMixin, TemplateView):
                 Q(name__icontains=search)
                 | Q(instructor__username__icontains=search)
                 | Q(description__icontains=search)
-            ).exclude(published=False).distinct()
+            ).exclude(published=False)
         else:
-            courses = self.courses.exclude(published=False).distinct()
+            courses = self.courses.exclude(published=False)
 
         context = {"courses": courses, "search": search}
 
@@ -48,7 +48,7 @@ class CourseIndexView(LoginRequiredMixin, TemplateView):
         course_like = request.POST.get("course_like_id")
 
         context = {
-            'courses': self.courses,
+            'courses': self.courses.exclude(published=False),
         }
 
         # Action for deleting course
@@ -70,7 +70,6 @@ class CourseIndexView(LoginRequiredMixin, TemplateView):
                 return render(request, "course/course/partials/courses_list.html", context)
         return render(request, self.template_name, context)
 
-
 course_index_view = CourseIndexView.as_view()
 
 
@@ -89,47 +88,54 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
         self.videos = self.course.course_videos()
         self.active_video = self.videos.first() if self.videos.exists() else None
 
-        if not self.user.role:
-            return redirect(course_view_url)
-
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_shared_context(self):
-        return {
-            'course': self.course,
-            'videos': self.videos,
-            'active_video': self.active_video,
-        }
-
-    def get(self, request, *args, **kwargs):
+        if not self.user.is_authenticated or not self.user.role:
+            return redirect(login_view_url)
 
         if self.user not in self.course.views.all() and self.user != self.course.instructor:
             self.course.views.add(self.user)
 
-        return render(request, self.template_name, self.get_shared_context())
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_shared_context(self, active_video):
+        return {
+            'course': self.course,
+            'videos': self.videos,
+            'active_video': active_video,
+        }
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.get_shared_context(self.active_video))
 
     def post(self, request, *args, **kwargs):
         course_id = request.POST.get("course_id")
         video_id = request.POST.get("video_id")
+        select_active_video_id = request.POST.get("select_active_video_id")
 
         # Access: Course Instructor (Toggle Course Published Status)
         if course_id and self.user == self.course.instructor:
             self.course.published = not self.course.published
             self.course.save(update_fields=["published"])
             if request.htmx:
-                return render(request, self.template_name, self.get_shared_context())
+                return render(request, self.template_name, self.get_shared_context(self.active_video))
+
         # Access: Course Instructor (Delete Course Videos)
         if video_id and self.user == self.course.instructor:
             if request.htmx:
                 try:
                     course_video =self.videos.get(pk=int(video_id))
                 except self.videos.DoesNotExist:
-                    return render(request, self.template_name, self.get_shared_context())
+                    return render(request, self.template_name, self.get_shared_context(self.active_video))
 
                 course_video.delete()
-                return render(request, "course/course/partials/course_videos_list.html", self.get_shared_context())
+                return render(request, "course/course/partials/course_videos_list.html", self.get_shared_context(self.active_video))
 
-        return render(request, self.template_name, self.get_shared_context())
+        # Access: Authenticated User (Select A video to become the active video)
+        if select_active_video_id:
+            active_video = self.course.videos.filter(id=int(select_active_video_id)).first()
+            if request.htmx:
+                return render(request, self.template_name, self.get_shared_context(active_video))
+
+        return render(request, self.template_name, self.get_shared_context(active_video))
 
 course_detail_view = CourseDetailView.as_view()
 
@@ -142,15 +148,15 @@ class CreateCourseView(LoginRequiredMixin, CreateView):
     form_class = CreateCourseForm
     template_name = "course/course/create_course.html"
 
-    def get(self, request, *args, **kwargs):
-        user = request.user
-        if user.role != "instructor" or not user.role:
-            return redirect(course_view_url)
-        return super().get(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        self.user = request.user
+        if not self.user.is_authenticated or self.user.role != 'instructor':
+            return redirect(login_view_url)
+        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         course = form.save(commit=False)
-        course.instructor = self.request.user
+        course.instructor = self.user
         course.save()
         return super().form_valid(form)
 
@@ -170,12 +176,12 @@ class CreateCourseDoneView(LoginRequiredMixin, DetailView):
     context_object_name = "course"
     template_name = "course/course/create_course_done.html"
 
-    def get(self, request, *args, **kwargs):
-        obj = self.get_object()
-        user = request.user
-        if user.role != "instructor" or not user.role or user != obj.instructor:
-            return redirect(create_course_view_url)
-        return super().get(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.user = request.user
+        if not self.user.is_authenticated or self.user != self.object.instructor:
+            return redirect(course_view_url)
+        return super().dispatch(request, *args, **kwargs)
 
 create_course_done_view = CreateCourseDoneView.as_view()
 
@@ -185,16 +191,18 @@ create_course_done_view = CreateCourseDoneView.as_view()
 # ===============================================
 class UpdateCourseView(LoginRequiredMixin, UpdateView):
     model = Course
+    pk_field = "pk"
+    pk_url_kwarg = "pk"
     form_class = UpdateCourseForm
     context_object_name = 'course'
     template_name = "course/course/update_course.html"
 
-    def get(self, request, *args, **kwargs):
-        user = request.user
-        obj = self.get_object()
-        if user.role != "instructor" or not user.role or user != obj.instructor:
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.user = request.user
+        if not self.user.is_authenticated or self.user != self.object.instructor:
             return redirect(course_view_url)
-        return super().get(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy(update_course_done_view_url, kwargs={"pk": self.object.pk})
@@ -212,12 +220,12 @@ class UpdateCourseDoneView(LoginRequiredMixin, DetailView):
     context_object_name = "course"
     template_name = "course/course/update_course_done.html"
 
-    def get(self, request, *args, **kwargs):
-        obj = self.get_object()
-        user = request.user
-        if user.role != "instructor" or not user.role or user != obj.instructor:
-            return redirect(create_course_view_url)
-        return super().get(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.user = request.user
+        if not self.user.is_authenticated or self.user != self.object.instructor:
+            return redirect(course_view_url)
+        return super().dispatch(request, *args, **kwargs)
 
 update_course_done_view = UpdateCourseDoneView.as_view()
 
@@ -231,26 +239,27 @@ class CourseInfoView(LoginRequiredMixin, DetailView):
     pk_field = "pk"
     template_name = "course/course/partials/course_info.html"
 
-    def get(self, request, *args, **kwargs):
-        user = request.user
+    def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
-        course = self.object
+        self.user = request.user
+
+        if not self.user.is_authenticated or not self.user.role:
+            return redirect(login_view_url)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
         enrolled_student = request.GET.get("enrolled_student")
 
-        if not user.role:
-            return redirect(course_view_url)
-
-
         if enrolled_student:
-            students = course.students.filter(
+            students = self.object.students.filter(
                 Q(username__icontains=enrolled_student)
                 | Q(first_name__icontains=enrolled_student)
                 | Q(last_name__icontains=enrolled_student)
             )
         else:
-            students = course.students.all()
+            students = self.object.students.all()
         context = {
-            "course": course,
+            "course": self.object,
             "students": students,
             "enrolled_student": enrolled_student,
         }
@@ -275,19 +284,22 @@ class CreateCourseVideoView(LoginRequiredMixin, TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         self.course = get_object_or_404(Course, id=kwargs['course_id'])
+        self.user = request.user
 
-        if request.user.role != 'instructor' or request.user != self.course.instructor:
+        if not self.user.is_authenticated or self.user != self.course.instructor:
             return redirect(self.course.get_absolute_url())
 
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        form = CourseVideoForm()
-        context = {
+    def get_shared_context(self, form):
+        return {
             "course": self.course,
             "form": form,
         }
-        return render(request, self.template_name, context)
+
+    def get(self, request, *args, **kwargs):
+        form = CourseVideoForm()
+        return render(request, self.template_name, self.get_shared_context(form))
 
     def post(self, request, *args, **kwargs):
         form = CourseVideoForm(request.POST, request.FILES)
@@ -317,12 +329,7 @@ class CreateCourseVideoView(LoginRequiredMixin, TemplateView):
 
             return redirect(self.course.get_absolute_url())
 
-        context = {
-            "course": self.course,
-            "form": form,
-        }
-
-        return render(request, self.template_name, context)
+        return render(request, self.template_name, self.get_shared_context(form))
 
 create_course_video_view = CreateCourseVideoView.as_view()
 
@@ -339,19 +346,79 @@ class UpdateCourseVideoView(LoginRequiredMixin, UpdateView):
     template_name = "course/course/update_course_video.html"
 
     def dispatch(self, request, *args, **kwargs):
-        self.course_video = get_object_or_404(CourseVideo, id=self.kwargs.get('pk'))
+        self.course_video = self.get_object()
+        self.course = self.course_video.course
         self.user = request.user
-        if not self.user.role or self.user.role != "instructor" or self.user != self.course_video.course.instructor:
-            return redirect(self.course_video.course.get_absolute_url())
+
+        if not self.user.is_authenticated or self.user != self.course.instructor:
+            return redirect(self.course.get_absolute_url())
+
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         video_form = form.save(commit=False)
-        if self.user == self.course_video.course.instructor:
+        if self.user == self.course.instructor:
             video_form.save()
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy("course-detail-view", kwargs={"pk": self.course_video.course.pk})
+        return reverse("course-detail-view", kwargs={"pk": self.course.pk})
 
 update_course_video_view = UpdateCourseVideoView.as_view()
+
+
+
+class InstructorCoursesView(LoginRequiredMixin, TemplateView):
+    template_name = "course/course/instructor_courses.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        self.user = request.user
+        self.courses = Course.objects.filter(instructor=self.user)
+
+
+        if self.user.role != 'instructor':
+            return redirect(course_view_url)
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        search = request.GET.get("search")
+
+        if search:
+            courses = self.courses.objects.filter(
+                Q(name__icontains=search) | Q(description__icontains=search)
+            )
+        else:
+            courses = self.courses
+
+        context = {
+            "courses": courses,
+            "search": search,
+        }
+
+        if request.htmx:
+            return render(request, "course/course/partials/my_courses_list.html", context)
+
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        course_id = request.POST.get("course_id")
+
+        context = {
+            'courses': self.courses,
+        }
+
+        # Access: Course Instructor (Toggle Course Published Status)
+        if course_id:
+            try:
+                course = self.courses.get(pk=int(course_id))
+                course.published = not course.published
+                course.save(update_fields=['published'])
+            except Course.DoesNotExist:
+                return render(request, 'course/course/partials/my_courses_list.html', context)
+
+            if request.htmx:
+                return render(request, 'course/course/partials/my_courses_list.html', context)
+
+
+instructor_courses_view = InstructorCoursesView.as_view()

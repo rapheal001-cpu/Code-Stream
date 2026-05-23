@@ -11,13 +11,11 @@ from .views import (
     notification_detail_view,
     discover_developer_view,
     instructor_wallet_view,
-    instructor_course_view,
 )
 
 urlpatterns = [
     path("", index_view, name="index-view"),
     path("about/", about_view, name="about-view"),
-    path("my-course-list/", instructor_course_view, name="instructor-courses-view"),
     path("discover-developers/", discover_developer_view, name="discover-developers-view"),
     path("notifications/", notification_view, name="notification-view"),
     path("profile-views/", profile_list_views, name="profile-list-views"),

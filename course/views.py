@@ -1,10 +1,12 @@
+from CodeStream.views import RoleRequiredMixin, InstructorRequiredMixin
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import redirect, render, get_object_or_404
-from django.views.generic import DetailView, CreateView, TemplateView, UpdateView, ListView
+from django.views.generic import DetailView, CreateView, TemplateView, UpdateView, ListView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from moviepy import VideoFileClip
 from .models import Course
-from .forms import CreateCourseForm, UpdateCourseForm, CourseVideoForm, UpdateCourseVideoForm
+from .forms import CourseForm, UpdateCourseForm, CourseVideoForm, UpdateCourseVideoForm
 from django.urls import reverse_lazy, reverse
 from CodeStream.utils import *
 from .tasks import *
@@ -13,28 +15,24 @@ from .tasks import *
 # ==================
 #  Course Index View
 # ==================
-class CourseIndexView(LoginRequiredMixin, TemplateView):
+class CourseIndexView(LoginRequiredMixin, RoleRequiredMixin, TemplateView):
     template_name = "course/course/course_index.html"
 
     def dispatch(self, request, *args, **kwargs):
-        self.courses = Course.objects.all()
+        self.courses = Course.objects.exclude(published=False)
         self.user = request.user
-
-        if not self.user.is_authenticated or not self.user.role:
-            return redirect(login_view_url)
-
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        search = request.GET.get("search", "")
+        search = request.GET.get("search")
         if search:
             courses = Course.objects.filter(
                 Q(name__icontains=search)
                 | Q(instructor__username__icontains=search)
                 | Q(description__icontains=search)
-            ).exclude(published=False)
+            )
         else:
-            courses = self.courses.exclude(published=False)
+            courses = self.courses
 
         context = {"courses": courses, "search": search}
 
@@ -48,7 +46,7 @@ class CourseIndexView(LoginRequiredMixin, TemplateView):
         course_like = request.POST.get("course_like_id")
 
         context = {
-            'courses': self.courses.exclude(published=False),
+            'courses': self.courses,
         }
 
         # Action for deleting course
@@ -76,7 +74,7 @@ course_index_view = CourseIndexView.as_view()
 # ===================
 #  Course Detail View
 # ===================
-class CourseDetailView(LoginRequiredMixin, DetailView):
+class CourseDetailView(LoginRequiredMixin, RoleRequiredMixin, DetailView):
     model = Course
     pk_field = "pk"
     pk_url_kwarg = "pk"
@@ -88,12 +86,6 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
         self.videos = self.course.course_videos()
         self.active_video = self.videos.first() if self.videos.exists() else None
 
-        if not self.user.is_authenticated or not self.user.role:
-            return redirect(login_view_url)
-
-        if self.user not in self.course.views.all() and self.user != self.course.instructor:
-            self.course.views.add(self.user)
-
         return super().dispatch(request, *args, **kwargs)
 
     def get_shared_context(self, active_video):
@@ -104,6 +96,8 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
         }
 
     def get(self, request, *args, **kwargs):
+        if self.user not in self.course.views.all() and self.user != self.course.instructor:
+            self.course.views.add(self.user)
         return render(request, self.template_name, self.get_shared_context(self.active_video))
 
     def post(self, request, *args, **kwargs):
@@ -143,21 +137,26 @@ course_detail_view = CourseDetailView.as_view()
 # ========================================
 #  Create Course View (Access: Instructor)
 # ========================================
-class CreateCourseView(LoginRequiredMixin, CreateView):
+class CreateCourseView(LoginRequiredMixin, InstructorRequiredMixin, CreateView):
     model = Course
-    form_class = CreateCourseForm
+    form_class = CourseForm
     template_name = "course/course/create_course.html"
 
     def dispatch(self, request, *args, **kwargs):
         self.user = request.user
-        if not self.user.is_authenticated or self.user.role != 'instructor':
-            return redirect(login_view_url)
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        course = form.save(commit=False)
-        course.instructor = self.user
-        course.save()
+        form.save(commit=False)
+        name = form.cleaned_data.get("name")
+        description = form.cleaned_data.get("description")
+        thumbnail = form.cleaned_data.get("thumbnail")
+        price = form.cleaned_data.get("price")
+        youtube_link = form.cleaned_data.get("youtube_link")
+        github_link = form.cleaned_data.get("github_link")
+        is_paid = form.cleaned_data.get("is_paid")
+        # Celery Handle This
+        process_course_creation_task.delay(self.user, name, description, thumbnail, price, youtube_link, github_link, is_paid)
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -169,7 +168,7 @@ create_course_view = CreateCourseView.as_view()
 # ====================================================
 #  Create Course Done View (Access: Course Instructor)
 # ====================================================
-class CreateCourseDoneView(LoginRequiredMixin, DetailView):
+class CreateCourseDoneView(LoginRequiredMixin, InstructorRequiredMixin, DetailView):
     model = Course
     pk_field = "pk"
     pk_url_kwarg = "pk"
@@ -179,7 +178,7 @@ class CreateCourseDoneView(LoginRequiredMixin, DetailView):
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.user = request.user
-        if not self.user.is_authenticated or self.user != self.object.instructor:
+        if self.user != self.object.instructor:
             return redirect(course_view_url)
         return super().dispatch(request, *args, **kwargs)
 
@@ -189,7 +188,7 @@ create_course_done_view = CreateCourseDoneView.as_view()
 # ===============================================
 #  Update Course View (Access: Course Instructor)
 # ===============================================
-class UpdateCourseView(LoginRequiredMixin, UpdateView):
+class UpdateCourseView(LoginRequiredMixin, InstructorRequiredMixin, UpdateView):
     model = Course
     pk_field = "pk"
     pk_url_kwarg = "pk"
@@ -198,11 +197,24 @@ class UpdateCourseView(LoginRequiredMixin, UpdateView):
     template_name = "course/course/update_course.html"
 
     def dispatch(self, request, *args, **kwargs):
-        self.object = self.get_object()
+        self.course = self.get_object()
         self.user = request.user
-        if not self.user.is_authenticated or self.user != self.object.instructor:
+        if self.user != self.course.instructor:
             return redirect(course_view_url)
         return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.save(commit=False)
+
+        name = form.cleaned_data.get('name')
+        thumbnail = form.cleaned_data.get('thumbnail')
+        description = form.cleaned_data.get('description')
+        youtube_link = form.cleaned_data.get('youtube_link')
+        github_link = form.cleaned_data.get('github_link')
+        # Celery Handle Update Course
+        process_update_course_task.delay(self.course.id, self.user, name, thumbnail, description, youtube_link, github_link)
+
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy(update_course_done_view_url, kwargs={"pk": self.object.pk})
@@ -213,7 +225,7 @@ update_course_view = UpdateCourseView.as_view()
 # ====================================================
 #  Update Course Done View (Access: Course Instructor)
 # ====================================================
-class UpdateCourseDoneView(LoginRequiredMixin, DetailView):
+class UpdateCourseDoneView(LoginRequiredMixin, InstructorRequiredMixin, DetailView):
     model = Course
     pk_field = "pk"
     pk_url_kwarg = "pk"
@@ -233,7 +245,7 @@ update_course_done_view = UpdateCourseDoneView.as_view()
 # ==============================================
 #  Course Info View (Access: Authenticated User)
 # ==============================================
-class CourseInfoView(LoginRequiredMixin, DetailView):
+class CourseInfoView(LoginRequiredMixin, RoleRequiredMixin, DetailView):
     model = Course
     pk_url_kwarg = "pk"
     pk_field = "pk"
@@ -279,33 +291,36 @@ course_info_view = CourseInfoView.as_view()
 # =====================================================
 #  Create Course Video View (Access: Course Instructor)
 # =====================================================
-class CreateCourseVideoView(LoginRequiredMixin, TemplateView):
+class CreateCourseVideoView(LoginRequiredMixin, InstructorRequiredMixin, FormView):
+    model = CourseVideo
+    form_class = CourseVideoForm
     template_name = "course/course/create_course_video.html"
 
     def dispatch(self, request, *args, **kwargs):
         self.course = get_object_or_404(Course, id=kwargs['course_id'])
         self.user = request.user
 
-        if not self.user.is_authenticated or self.user != self.course.instructor:
+        if self.user != self.course.instructor:
             return redirect(self.course.get_absolute_url())
 
         return super().dispatch(request, *args, **kwargs)
 
-    def get_shared_context(self, form):
-        return {
-            "course": self.course,
-            "form": form,
-        }
+    def form_valid(self, form):
+        form.save(commit=False)
+        name = form.cleaned_data.get('name')
 
-    def get(self, request, *args, **kwargs):
-        form = CourseVideoForm()
-        return render(request, self.template_name, self.get_shared_context(form))
+        return super().form_valid(form)
+
 
     def post(self, request, *args, **kwargs):
         form = CourseVideoForm(request.POST, request.FILES)
 
         if form.is_valid():
-            course_video = form.save(commit=False)
+            form.save(commit=False)
+            name = form.cleaned_data.get('name')
+
+            # Celery Process Course Video Task
+            process_course_video_task.delay()
             course_video.course = self.course
             course_video.save()
 

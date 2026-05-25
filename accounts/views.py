@@ -1,4 +1,3 @@
-from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
@@ -25,7 +24,7 @@ from allauth.account.models import EmailAddress
 from CodeStream.utils import (
     index_view_url,
 )
-
+from CodeStream.views import RoleRequiredMixin
 
 # ====================
 # AUTHENTICATION VIEWS
@@ -44,7 +43,7 @@ class CustomLoginView(LoginView):
 login_view = CustomLoginView.as_view()
 
 
-class CustomLogoutView(LoginRequiredMixin, LogoutView):
+class CustomLogoutView(LogoutView):
     """User logout view"""
     template_name = "accounts/account/logout.html"
     next_page = reverse_lazy(index_view_url)
@@ -69,23 +68,15 @@ class CustomConfirmEmailView(ConfirmEmailView):
 confirm_email_view = CustomConfirmEmailView.as_view()
 
 
-class CustomEmailView(LoginRequiredMixin, EmailView):
+class CustomEmailView(LoginRequiredMixin, RoleRequiredMixin, EmailView):
     """Email management view"""
     template_name = "accounts/account/change_email.html"
 
-    def get_object(self):
-        return self.request.user
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = self.get_object()
+        user = self.request.user
         context["email_addresses"] = EmailAddress.objects.filter(user=user)
         return context
-
-    def get(self, request, *args, **kwargs):
-        if not request.user.role:
-            return redirect(index_view_url)
-        return super().get(request, *args, **kwargs)
 
 email_view = CustomEmailView.as_view()
 
@@ -93,52 +84,32 @@ email_view = CustomEmailView.as_view()
 # ==============
 # PASSWORD VIEWS
 # ==============
-class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
+class CustomPasswordChangeView(LoginRequiredMixin, RoleRequiredMixin, PasswordChangeView):
     """Password change view"""
     template_name = "accounts/account/password_change.html"
     success_url = reverse_lazy("password_change_done")
 
-    def get(self, request, *args, **kwargs):
-        if not request.user.role:
-            return redirect(index_view_url)
-        return super().get(request, *args, **kwargs)
-
 password_change_view = CustomPasswordChangeView.as_view()
 
 
-class CustomPasswordChangeDoneView(LoginRequiredMixin, TemplateView):
+class CustomPasswordChangeDoneView(LoginRequiredMixin, RoleRequiredMixin, TemplateView):
     """Password change success view"""
     template_name = "accounts/account/password_change_done.html"
-
-    def get(self, request, *args, **kwargs):
-        if not request.user.role:
-            return redirect(index_view_url)
-        return super().get(request, *args, **kwargs)
 
 password_change_done_view = CustomPasswordChangeDoneView.as_view()
 
 
-class CustomPasswordSetView(LoginRequiredMixin, PasswordSetView):
+class CustomPasswordSetView(LoginRequiredMixin, RoleRequiredMixin, PasswordSetView):
     """Initial password set (social auth users)"""
     template_name = "accounts/socialaccount/password_set.html"
     success_url = reverse_lazy("password_set_done")
 
-    def get(self, request, *args, **kwargs):
-        if not request.user.role:
-            return redirect(index_view_url)
-        return super().get(request, *args, **kwargs)
-
 password_set_view = CustomPasswordSetView.as_view()
 
 
-class CustomPasswordSetDoneView(LoginRequiredMixin, TemplateView):
+class CustomPasswordSetDoneView(LoginRequiredMixin, RoleRequiredMixin, TemplateView):
     """Password set success view"""
     template_name = "accounts/socialaccount/password_set_done.html"
-
-    def get(self, request, *args, **kwargs):
-        if not request.user.role:
-            return redirect(index_view_url)
-        return super().get(request, *args, **kwargs)
 
 password_set_done_view = CustomPasswordSetDoneView.as_view()
 
@@ -188,7 +159,7 @@ class CustomLoginErrorView(LoginErrorView):
 login_error_view = CustomLoginErrorView.as_view()
 
 
-class CustomSocialConnectionsView(LoginRequiredMixin, ConnectionsView):
+class CustomSocialConnectionsView(LoginRequiredMixin, RoleRequiredMixin, ConnectionsView):
     """Social account management"""
     template_name = "accounts/socialaccount/social_account_connections.html"
 
@@ -198,10 +169,5 @@ class CustomSocialConnectionsView(LoginRequiredMixin, ConnectionsView):
             account.provider for account in context["form"].accounts
         ]
         return context
-
-    def get(self, request, *args, **kwargs):
-        if not request.user.role:
-            return redirect(index_view_url)
-        return super().get(request, *args, **kwargs)
 
 social_connections_view = CustomSocialConnectionsView.as_view()

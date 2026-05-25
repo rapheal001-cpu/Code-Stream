@@ -9,5 +9,5 @@ def create_instructor_wallet(user_id):
     except User.DoesNotExist:
         return 'This user does not exist'
 
-    Wallet.objects.create(user=user)
+    Wallet.objects.get_or_create(user=user)
     return 'Instructor Wallet created successfully'

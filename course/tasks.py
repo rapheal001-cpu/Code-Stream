@@ -1,8 +1,45 @@
 from accounts.models import Notification
 from celery import shared_task
 from cloudinary.utils import cloudinary_url
-from course.models import CourseVideo
-from moviepy import VideoFileClip
+from course.models import Course, CourseVideo
+
+
+# =============================
+#  Process Course Creation Data
+# =============================
+@shared_task(name="Process Course Creation Data", max_retries=3)
+def process_course_creation_task(user, name, description, thumbnail, price, youtube_link, github_link, is_paid):
+    Course.objects.create(
+        instructor=user,
+        name=name,
+        description=description,
+        thumbnail=thumbnail,
+        price=price,
+        youtube_link=youtube_link,
+        github_link=github_link,
+        is_paid=is_paid
+    )
+    return f"Course created successfully: {name}"
+
+
+# =============================
+#  Process Update Course Data
+# =============================
+def process_update_course_task(course_id, user, name, thumbnail, description, youtube_link, github_link):
+    try:
+        course = Course.objects.get(id=course_id)
+    except Course.DoesNotExist:
+        return f"Course {course_id} does not exist."
+
+    course.name = name
+    course.description = description
+    course.thumbnail = thumbnail
+    course.description = description
+    course.youtube_link = youtube_link
+    course.github_link = github_link
+    course.save()
+
+    return f"Course ({course_id}) updated successfully: {name}"
 
 
 # =============================================

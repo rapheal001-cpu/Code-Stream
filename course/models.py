@@ -22,6 +22,7 @@ class Course(models.Model):
     thumbnail = CloudinaryField(resource_type='image', folder='course/thumbnails/', transformation=[{"width": 400, "height": 400}], verbose_name="Course Thumbnail")
     price = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal("0.00"), verbose_name="Course Price")
     students = models.ManyToManyField(User, through="Enrollment", related_name="enrolled_courses", blank=True, verbose_name="Course Students")
+    is_paid = models.BooleanField(default=False, verbose_name="Is Paid")
     views = models.ManyToManyField(User, blank=True, verbose_name="Course Views", related_name="course_views")
     likes = models.ManyToManyField(User, blank=True, verbose_name="Course Likes", related_name="course_likes")
     published = models.BooleanField(default=False, verbose_name="Published")
@@ -31,10 +32,6 @@ class Course(models.Model):
 
     def get_absolute_url(self):
         return reverse("course-detail-view", kwargs={"pk": self.pk})
-
-    @property
-    def is_updated(self):
-        return self.created_at != self.updated_at
 
     class Meta:
         ordering = ["-created_at"]

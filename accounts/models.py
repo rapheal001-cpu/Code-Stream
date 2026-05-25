@@ -1,5 +1,5 @@
 from cloudinary.models import CloudinaryField
-from django.core.validators import validate_email, FileExtensionValidator
+from django.core.validators import validate_email
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from decimal import Decimal
@@ -9,15 +9,15 @@ from CodeStream.utils import USER_ROLE, PAYMENT_TYPE, STATUS_TYPE
 
 
 class User(AbstractUser):
-    avatar = CloudinaryField(resource_type='image', folder='accounts/avatars/', null=True, blank=True, verbose_name="Avatar")
-    first_name = models.CharField(max_length=20, verbose_name="First Name")
-    last_name = models.CharField(max_length=20, verbose_name="Last Name")
-    username = models.CharField(max_length=10, unique=True, verbose_name="Username")
+    avatar = CloudinaryField( resource_type='image', folder='accounts/avatars/', null=True, blank=True, verbose_name="Avatar", transformation={"width": 300, "height": 300, "crop": "fill"})
+    first_name = models.CharField(max_length=30, verbose_name="First Name")
+    last_name = models.CharField(max_length=30, verbose_name="Last Name")
+    username = models.CharField(max_length=20, unique=True, verbose_name="Username")
     email = models.EmailField(validators=[validate_email], max_length=255, unique=True, verbose_name="Email Address")
     description = models.TextField(null=True, blank=True, verbose_name="Description")
     role = models.CharField(max_length=10, choices=USER_ROLE, verbose_name="Role")
     followers = models.ManyToManyField("self", symmetrical=False, blank=True, related_name="following", verbose_name="Followers")
-    views = models.ManyToManyField("self", symmetrical=False, blank=True, verbose_name="Views")
+    views = models.ManyToManyField("self", symmetrical=False, blank=True, verbose_name="Views", related_name="viewed_by")
 
     def __str__(self):
         return f"{self.username} ({self.role})"
@@ -43,7 +43,18 @@ class User(AbstractUser):
 
     @property
     def wallet_balance(self):
-        return self.wallet.balance
+        try:
+            return self.wallet.balance
+        except Wallet.DoesNotExist:
+            return Decimal("0.00")
+
+    @property
+    def is_instructor(self):
+        return self.role == "instructor"
+
+    @property
+    def is_student(self):
+        return self.role == "student"
 
     class Meta:
         ordering = ["-date_joined"]
